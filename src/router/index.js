@@ -12,7 +12,9 @@ const routes = [
     {path: "/",redirect:"/workbench"},
     {path:"/home",component:()=>import('../components/navigationbar.vue'),
         children:[
-        {path:"/workbench",component:()=>import('../components/workbench_management/workbench_main.vue')}
+            {path:"/workbench",component:()=>import('../components/workbench_management/workbench_main.vue')},
+            {path:"/user",component:()=>import('../components/sys/user.vue')},
+            {path:"/role",component:()=>import('../components/sys/role.vue')},
     ]
     },
 
