@@ -10,27 +10,12 @@ export default{
       location.reload();
     },
   },
-  mounted() {
-    const route=[]
-    const a=[]
-    this.menulist.forEach(item=>{
-
-        if (item.son){
-          route.path=item.MENU_ROUTE
-          route.component='()=>import(../'+item.MENU_MODULE+')'
-        }
-      route.path=item.MENU_ROUTE
-      route.component='()=>import(../'+item.MENU_MODULE+')'
-       a.push(route)
-    })
-
-  }
 }
 </script>
 
 <template>
   <el-container>
-    <el-aside width="190px" style="background-color: #001529;overflow-x: hidden">
+    <el-aside width="190px" style="background-color:#252832;overflow-x: hidden" id="container">
       <div>
         <div class="logo">
           <img src="https://jingdouyun888.com/assets/images/logo.png" style="width: 150px;margin: 10px 0;" alt="">
@@ -40,14 +25,14 @@ export default{
             text-color="white"
             class="el-menu-vertical-demo"
             :collapse="isCollapse"
-            background-color="#001529"
+            background-color="#272a36"
             style="height: calc(100vh - 65px);border-right: none"
             :unique-opened="true"
             router
         >
           <template v-for="(item,i) in menulist">
             <!-- 判断一级导航是否有叶子: 有-->
-            <el-sub-menu :index="item.MENU_ROUTE +''" :key="item.MENU_ID" v-if="item.MENU_LEAF==0" >
+            <el-sub-menu :index="item.MENU_ROUTE +''" :key="item.MENU_ID" v-if="item.MENU_LEAF==0">
               <!--一级菜单模板区域-->
               <template #title>
                 <!--图标-->
@@ -62,8 +47,8 @@ export default{
               <template v-if="item.son[0].MENU_LEAF==1">
                 <el-menu-item :index="subItem.MENU_ROUTE +'' " v-for="subItem in item.son"
                               :key="subItem.MENU_ID"
-                              @click="selectquerts(subItem)">
-                  <template #title><span style="margin-left:30px">{{ subItem.MENU_NAME }}</span></template>
+                              @click="saveNavState(subItem.MENU_ROUTE)">
+                  <template #title><span style="margin-left: 30px">{{ subItem.MENU_NAME }}</span></template>
                 </el-menu-item>
               </template>
             </el-sub-menu>
@@ -71,7 +56,7 @@ export default{
 
             <!-- 判断一级导航是否有叶子: 无-->
             <el-menu-item :index="item.MENU_ROUTE +'' " :key="item.MENU_ID" v-if="item.MENU_LEAF==1"
-                          @click="selectquerts(item)">
+                          @click="saveNavState(item.MENU_ROUTE)">
               <!--一级菜单模板区域-->
               <el-icon><i-fold /></el-icon>
               <template #title>
@@ -86,13 +71,7 @@ export default{
     <el-container>
       <el-header style="display: flex;height: 65px;padding:0 10px">
         <div style="flex:1;">
-          <el-breadcrumb separator="/">
-            <el-breadcrumb-item class="el-breadcrumb-item" :to="{ path: '/' }"></el-breadcrumb-item>
-            <el-breadcrumb-item class="el-breadcrumb-item" v-for="items in this.a">
-              <a :href="items.MENU_ROUTE">{{items.MENU_NAME}}</a>
-            </el-breadcrumb-item>
-
-          </el-breadcrumb>
+         
         </div>
         <div style="line-height: 65px">
           <div style="display: flex;align-items: center">
@@ -120,34 +99,6 @@ export default{
 
 
 <style scoped>
-.el-menu {
-  --el-menu-active-color: var(--el-color-primary);
-  --el-menu-text-color: var(--el-text-color-primary);
-  --el-menu-hover-text-color: var(--el-text-color-primary);
-  --el-menu-bg-color: var(--el-fill-color-blank);
-  --el-menu-hover-bg-color: var(--el-color-primary-light-9);
-  --el-menu-item-height: 45px;
-  --el-menu-item-font-size: var(--el-font-size-base);
-  --el-menu-item-hover-fill: var(--el-color-primary-light-9);
-  --el-menu-border-color: var(--el-border-color);
-  border-right: solid 1px var(--el-menu-border-color);
-  list-style: none;
-  position: relative;
-  margin: 0;
-  padding-left: 0;
-  background-color: var(--el-menu-bg-color);
-  box-sizing: border-box;
-}
-.el-main {
-  --el-main-padding: 10px;
-  display: block;
-  flex: 1;
-  flex-basis: 0%;
-  flex-basis: auto;
-  overflow: auto;
-  box-sizing: border-box;
-  padding: var(--el-main-padding);
-}
 @font-face {
   font-family: 'iconfont';  /* project id 3284006 */
   src: url('');
@@ -176,7 +127,9 @@ export default{
 }
 
 .el-main{
-  background-color: #f5f5f5;;
+  margin: 0;
+  padding: 8px 8px 25px 8px;
+  background-color: #E8E8E8;
 }
 .el-breadcrumb-item{
   display: inline-block;
@@ -195,5 +148,16 @@ export default{
 .iconfontdiv:hover{
     cursor: default ;
   background-color: #F8F8F8;
+}
+#container::-webkit-scrollbar{
+width:5px;
+}
+#container::-webkit-scrollbar-thumb{
+background:linear-gradient(rgb(17,157,212),rgb(17,212,105));
+border-radius:5px;
+transition:1s;
+}
+#container::-webkit-scrollbar-thumb:hover{
+background:linear-gradient(rgb(17,212,105),rgb(17,157,212));
 }
 </style>

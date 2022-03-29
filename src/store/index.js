@@ -199,11 +199,33 @@ const store = createStore({
                 MENU_ID: 7,//菜单编号
                 MENU_NAME: '系统管理',//菜单名称
                 PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                MENU_ROUTE: '/organization',//路由地址
+                MENU_ROUTE: '/sys',//路由地址
                 MENU_MODULE: 'organization_management/organization_main',//组件地址
                 MENU_STATE: 0,//是否启用 0启用 1禁用
                 MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
-                MENU_LEAF: 1,//是否有叶子 0有 1没有
+                MENU_LEAF: 0,//是否有叶子 0有 1没有
+                son:[
+                    {
+                        MENU_ID: 7.1,//菜单编号
+                        MENU_NAME: '账户管理',//菜单名称
+                        PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                        MENU_ROUTE: '/user',//路由地址
+                        MENU_MODULE: 'organization_management/organization_main',//组件地址
+                        MENU_STATE: 0,//是否启用 0启用 1禁用
+                        MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                        MENU_LEAF: 1,//是否有叶子 0有 1没有
+                    },
+                    {
+                        MENU_ID: 7.2,//菜单编号
+                        MENU_NAME: '权限设置',//菜单名称
+                        PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                        MENU_ROUTE: '/role',//路由地址
+                        MENU_MODULE: 'organization_management/organization_main',//组件地址
+                        MENU_STATE: 0,//是否启用 0启用 1禁用
+                        MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                        MENU_LEAF: 1,//是否有叶子 0有 1没有
+                    }
+                ]
             }
         ],
 
