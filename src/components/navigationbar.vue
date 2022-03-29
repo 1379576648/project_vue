@@ -24,9 +24,6 @@ export default{
        a.push(route)
     })
 
-  this.$route=a
-    console.error("===========",this.$route)
-
   }
 }
 </script>
@@ -43,14 +40,14 @@ export default{
             text-color="white"
             class="el-menu-vertical-demo"
             :collapse="isCollapse"
-            background-color="#272a36"
+            background-color="#001529"
             style="height: calc(100vh - 65px);border-right: none"
             :unique-opened="true"
             router
         >
           <template v-for="(item,i) in menulist">
             <!-- 判断一级导航是否有叶子: 有-->
-            <el-sub-menu :index="item.MENU_ROUTE +''" :key="item.MENU_ID" v-if="item.MENU_LEAF==0">
+            <el-sub-menu :index="item.MENU_ROUTE +''" :key="item.MENU_ID" v-if="item.MENU_LEAF==0" >
               <!--一级菜单模板区域-->
               <template #title>
                 <!--图标-->
@@ -61,26 +58,13 @@ export default{
                 <span>{{ item.MENU_NAME }}</span>
               </template>
 
-              <!--二级菜单-->
-              <template v-if="item.son[0].MENU_LEAF==0" >
-                <el-sub-menu :index="subItem.MENU_ROUTE +'' " v-for="subItem in item.son"
-                             :key="subItem.MENU_ID">
-                  <template #title><span style="padding-left: 15px">{{ subItem.MENU_NAME }}</span></template>
-                  <!--三级菜单-->
-                  <el-menu-item :index="vsbItem.MENU_ROUTE +'' " v-for="vsbItem in subItem.son"
-                                :key="vsbItem.MENU_ID"
-                                style="width: 100%"
-                               >
-                    {{ vsbItem.MENU_NAME }}
-                  </el-menu-item>
-                </el-sub-menu>
-              </template>
+
               <!--二级菜单-->
               <template v-if="item.son[0].MENU_LEAF==1">
                 <el-menu-item :index="subItem.MENU_ROUTE +'' " v-for="subItem in item.son"
                               :key="subItem.MENU_ID"
-                              @click="saveNavState(subItem.MENU_ROUTE)">
-                  <template #title>{{ subItem.MENU_NAME }}</template>
+                              @click="selectquerts(subItem)">
+                  <template #title><span style="margin-left:30px">{{ subItem.MENU_NAME }}</span></template>
                 </el-menu-item>
               </template>
             </el-sub-menu>
@@ -88,7 +72,7 @@ export default{
 
             <!-- 判断一级导航是否有叶子: 无-->
             <el-menu-item :index="item.MENU_ROUTE +'' " :key="item.MENU_ID" v-if="item.MENU_LEAF==1"
-                          @click="saveNavState(item.MENU_ROUTE)">
+                          @click="selectquerts(item)">
               <!--一级菜单模板区域-->
               <el-icon><i-fold /></el-icon>
               <template #title>
@@ -104,10 +88,11 @@ export default{
       <el-header style="display: flex;height: 65px;padding:0 10px">
         <div style="flex:1;">
           <el-breadcrumb separator="/">
-            <el-breadcrumb-item class="el-breadcrumb-item" :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item class="el-breadcrumb-item"><a href="/">活动管理</a></el-breadcrumb-item>
-            <el-breadcrumb-item class="el-breadcrumb-item">活动列表</el-breadcrumb-item>
-            <el-breadcrumb-item class="el-breadcrumb-item">活动详情</el-breadcrumb-item>
+            <el-breadcrumb-item class="el-breadcrumb-item" :to="{ path: '/' }"></el-breadcrumb-item>
+            <el-breadcrumb-item class="el-breadcrumb-item" v-for="items in this.a">
+              <a :href="items.MENU_ROUTE">{{items.MENU_NAME}}</a>
+            </el-breadcrumb-item>
+
           </el-breadcrumb>
         </div>
         <div style="line-height: 65px">
@@ -136,6 +121,34 @@ export default{
 
 
 <style scoped>
+.el-menu {
+  --el-menu-active-color: var(--el-color-primary);
+  --el-menu-text-color: var(--el-text-color-primary);
+  --el-menu-hover-text-color: var(--el-text-color-primary);
+  --el-menu-bg-color: var(--el-fill-color-blank);
+  --el-menu-hover-bg-color: var(--el-color-primary-light-9);
+  --el-menu-item-height: 45px;
+  --el-menu-item-font-size: var(--el-font-size-base);
+  --el-menu-item-hover-fill: var(--el-color-primary-light-9);
+  --el-menu-border-color: var(--el-border-color);
+  border-right: solid 1px var(--el-menu-border-color);
+  list-style: none;
+  position: relative;
+  margin: 0;
+  padding-left: 0;
+  background-color: var(--el-menu-bg-color);
+  box-sizing: border-box;
+}
+.el-main {
+  --el-main-padding: 10px;
+  display: block;
+  flex: 1;
+  flex-basis: 0%;
+  flex-basis: auto;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: var(--el-main-padding);
+}
 @font-face {
   font-family: 'iconfont';  /* project id 3284006 */
   src: url('');
@@ -164,7 +177,7 @@ export default{
 }
 
 .el-main{
-  background-color: aliceblue;
+  background-color: #f5f5f5;;
 }
 .el-breadcrumb-item{
   display: inline-block;
