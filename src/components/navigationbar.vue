@@ -164,7 +164,7 @@ export default{
 }
 
 .el-main{
-  background-color: #42b983;
+  background-color: aliceblue;
 }
 .el-breadcrumb-item{
   display: inline-block;

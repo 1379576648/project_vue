@@ -9,11 +9,13 @@ import store from '../store/index.js';
  */
 const modules = import.meta.glob('../components/**/*.vue');
 const routes = [
-    {path: "/",redirect:"/workbench"},
-    {path:"/home",component:()=>import('../components/navigationbar.vue'),
-        children:[
-        {path:"/workbench",component:()=>import('../components/workbench_management/workbench_main.vue')}
-    ]
+    {path: "/", redirect: "/workbench"},
+    {
+        path: "/home", component: () => import('../components/navigationbar.vue'),
+        children: [
+            {path: "/workbench", component: () => import('../components/workbench_management/workbench_main.vue')},
+            {path: "/financing/collection", component: () => import('../components/financing/collection.vue')}
+        ]
     },
 
 ]
@@ -24,7 +26,7 @@ const router = createRouter({
 })
 //全局前置守卫，可用作前端权限验证的简单实现
 router.beforeEach(function (to, from, next) {
-        next()
+    next()
 
 });
 export default router
