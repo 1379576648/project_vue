@@ -25,7 +25,7 @@ const app=createApp(App).use(ElementPlus, {
 }).use(router).use(VueAxios, axios).use(store)
 // 统一注册el-icon图标
 for(let iconName in ElIcons){
-    console.log(iconName)
+    // console.log(iconName)
     app.component(iconName,ElIcons[iconName])
 }
 /**以上代码为最新代码**/

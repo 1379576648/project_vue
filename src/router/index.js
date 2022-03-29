@@ -9,6 +9,12 @@ import store from '../store/index.js';
  */
 const modules = import.meta.glob('../components/**/*.vue');
 const routes = [
+    {path: "/",redirect:"/workbench"},
+    {path:"/home",component:()=>import('../components/navigationbar.vue'),
+        children:[
+        {path:"/workbench",component:()=>import('../components/workbench_management/workbench_main.vue')}
+    ]
+    },
 
 ]
 
