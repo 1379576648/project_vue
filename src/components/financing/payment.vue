@@ -37,11 +37,11 @@
               style="width: 100%;max-height:calc(100vh - 218px);"
               :header-cell-style="{background:'#F8F8F9',color:'#606266'}"
           >
-            <el-table-column prop="name" label="供应商" type="index" width="210">
-              <el-popover placement="bottom" :width="600" trigger="click" v-show="payclick" :key="one">
+            <el-table-column prop="name" label="供应商" type="index" width="235">
+              <el-popover placement="bottom" :width="600" trigger="click" v-show="payClick" :key="one">
                 <template #reference>
                   <!--         <el-input v-model="payment" placeholder="请选择供应商"  @click="this.payclick=true"/>-->
-                  <el-input @click="this.payclick=true"
+                  <el-input @click="this.payClick=true"
                             style="width: 140px;"
                             v-model="payment"
                             placeholder="请选择供应商"
@@ -54,7 +54,7 @@
                   <el-table-column width="150" property="address" label="联系电话"/>
                 </el-table>
               </el-popover>
-              <el-button @click="this.payclick=false,this.become=true">
+              <el-button @click="this.payClick=false,this.become=true">
                 <el-icon>
                   <user/>
                 </el-icon>
@@ -143,7 +143,7 @@
     </div>
 
   </div>
-
+  <!--  选择供应商弹框-->
   <div>
     <el-dialog
         v-model="become"
@@ -151,7 +151,7 @@
         width="65%"
         :close-on-click-modal="false"
     >
-      <button type="button" class="fl ant-btn"><span>新增供应商</span></button>&nbsp;&nbsp;
+      <button type="button" class="fl ant-btn" @click="this.become2=true,this.become=false"><span>新增供应商</span></button>&nbsp;&nbsp;
       <el-select v-model="payType" placeholder="全部分类" style="width: 150px;">
         <el-option label="现金" value="现金"/>
         <el-option label="微信" value="微信"/>
@@ -164,7 +164,7 @@
                 class="input-with-select"
       >
         <template #append>
-          <el-button @click="this.payclick=false,this.become=true">
+          <el-button @click="this.payClick=false,this.become=true">
             <el-icon>
               <search/>
             </el-icon>
@@ -189,6 +189,7 @@
                 <el-radio
                     :label="scope.$index"
                     v-model="currentRow"
+                    @click="b(scope.row)"
                     style="color: #fff; padding-left: 10px; margin-right: -25px"
                 ></el-radio>
               </template>
@@ -220,13 +221,65 @@
         </el-pagination>
       </div>
       <div style="margin-top: 10px;margin-left: 770px;">
-        <el-button>取消</el-button>
-        <el-button type="primary">确认选择</el-button>
+        <el-button @click="this.become=false,this.payment = undefined,this.currentRow=undefined">取消</el-button>
+        <el-button type="primary" @click="this.become=false">确认选择</el-button>
       </div>
     </el-dialog>
 
   </div>
 
+  <!--  新增供应商-->
+  <div>
+    <el-dialog
+        v-model="become2"
+        title="新增供应商"
+        width="50%"
+        :close-on-click-modal="false"
+    >
+      <div>
+        <el-form
+            ref="ruleFormRef"
+            :model="ruleForm"
+            :rules="rules"
+            label-width="120px"
+            class="demo-ruleForm"
+        >
+          <el-form-item label="供应商编号：">
+            <el-input v-model="ruleForm.id"/>
+          </el-form-item>
+          <el-form-item label="供应商名称：" prop="name" required>
+            <el-input v-model="ruleForm.name" placeholder="请输入供应商名称"/>
+          </el-form-item>
+          <el-form-item label="供应商分类:" required>
+            <el-select v-model="ruleForm.type" placeholder="全部分类">
+              <el-option label="家电" value="家电"/>
+              <el-option label="批发" value="批发"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="期初应付款：">
+            <el-input v-model="ruleForm.money"/>
+          </el-form-item>
+          <el-form-item label="期初预付款：">
+            <el-input v-model="ruleForm.money2"/>
+          </el-form-item>
+          <el-form-item label="联系地址：">
+            <el-input v-model="ruleForm.address"/>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-model="ruleForm.remark2" type="textarea"/>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="this.become2=false,this.become=true">取消并返回</el-button>
+            <el-button type="primary" @click="this.become2=false,this.become=true"
+            >保存
+            </el-button
+            >
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-dialog>
+
+  </div>
 </template>
 
 <script>
@@ -235,14 +288,25 @@ import {defineComponent, ref} from 'vue'
 export default defineComponent({
   data() {
     return {
+      ruleForm: ({
+        id: '',
+        name: '',
+        type: '',
+        money: '',
+        money2: '',
+        address: '',
+        remark2: '',
+      }),
       //单选框
       currentRow: false,
       //搜索
       seek: '',
       //弹框
       become: false,
+      //弹框2
+      become2: false,
       //隐藏
-      payclick: true,
+      payClick: true,
       one: 1,
       //经手人
       region: '',
@@ -258,9 +322,9 @@ export default defineComponent({
       tableData: [{}],
       //表格
       tableData3: [{
-        name: '111',
+        address: '111',
       }, {
-        name: '222',
+        address: '222',
       }],
       //供应商
       payment: '',
@@ -282,13 +346,29 @@ export default defineComponent({
         pagesize: 5, // 页大小
         total: 0, // 总页数
       },
+      //验证
+      rules: {
+        name: [
+          {
+            required: true,
+            message: '请输入供应商名称',
+            trigger: 'blur'
+          },
+        ],
+      }
     }
+
   },
   methods: {
+    //选中名称赋值进供应商文本框
     a(val) {
       this.payment = val.name;
-      this.payclick = false;
+      this.payClick = false;
       this.one = this.one + 1;
+    },
+    //单选按钮选中供应商名称进文本框
+    b(val) {
+      this.payment = val.address;
     },
   },
 
