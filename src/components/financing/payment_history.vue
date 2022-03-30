@@ -18,8 +18,6 @@
             </el-button>
           </template>
         </el-input>
-        &nbsp;
-        <el-button @click="drawer = true">高级搜索</el-button>
         <br/>
         <br/>
         <el-table
@@ -33,9 +31,9 @@
           <el-table-column prop="name" label="序号" type="index" width="80"/>
           <el-table-column prop="name" label="业务日期" width="160" sortable/>
           <el-table-column prop="address" label="单据编号" width="160" sortable/>
-          <el-table-column prop="address" label="客户名称" width="160" sortable/>
+          <el-table-column prop="address" label="供应商名称" width="160" sortable/>
           <el-table-column prop="address" label="结算账户" width="160" sortable/>
-          <el-table-column prop="address" label="本单收回欠款(元)" width="160" sortable/>
+          <el-table-column prop="address" label="本单付出欠款(元)" width="160" sortable/>
           <el-table-column prop="address" label="本单优惠金额(元)" width="160" sortable/>
           <el-table-column prop="address" label="经手人" width="160" sortable/>
           <el-table-column prop="address" label="制单人" width="160" sortable/>
@@ -76,52 +74,6 @@
       </div>
     </div>
   </div>
-
-  <!-- 抽屉 -->
-  <el-drawer v-model="drawer" :with-header="false">
-    <span>高级搜索</span>
-    <el-divider/>
-    <el-form :inline="true" :model="formInline" class="demo-form-inline" ref="formInline">
-      <el-form-item label="收款单编号:" prop="collectionId">
-        <el-input v-model="formInline.collectionId" placeholder="输入收款单编号"></el-input>
-      </el-form-item>
-      <el-form-item label="结算账户:" prop="closeAccount">
-        <el-select v-model="formInline.closeAccount" placeholder="全部">
-          <el-option label="全部" value="全部"></el-option>
-          <el-option label="现金" value="现金"></el-option>
-          <el-option label="微信" value="微信"></el-option>
-          <el-option label="支付宝" value="支付宝"></el-option>
-          <el-option label="系统账户" value="系统账户"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="制单人:" prop="name">
-        <el-select v-model="formInline.preparedName" placeholder="全部">
-        </el-select>
-      </el-form-item>
-      <el-form-item label="经手人:" prop="passName">
-        <el-select v-model="formInline.passName" placeholder="全部">
-        </el-select>
-      </el-form-item>
-      <el-form-item label="客户名称:" prop="clientName">
-        <el-select v-model="formInline.clientName" placeholder="全部">
-        </el-select>
-      </el-form-item>
-      <el-form-item label="业务时间:" prop="operationDate">
-        <el-date-picker
-            v-model="formInline.operationDate"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始时间"
-            end-placeholder="结束时间"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="resetForm()">清空</el-button>
-        <el-button>查询</el-button>
-      </el-form-item>
-    </el-form>
-  </el-drawer>
-
 </template>
 
 <script>
@@ -140,31 +92,16 @@ export default {
       },
       //搜索
       seek: '',
-      // 抽屉
-      drawer: false,
-// 抽屉表单
-      formInline: {
-        collectionId: '',
-        closeAccount: '',
-        preparedName: '',
-        passName: '',
-        clientName: '',
-        operationDate: []
-      },
     }
   },
   methods: {
-    //跳转到收款单
+    //跳转到付款单
     goBack() {
-      this.$router.push({path: '/financing/proceeds'})
+      this.$router.push({path: '/financing/payment'})
     },
-    //跳转到收款详情
+    //跳转到付款详情
     goBack2() {
-      this.$router.push({path: '/financing/collection_details'})
-    },
-    // 清空表单
-    resetForm() {
-      this.$refs.formInline.resetFields()
+      this.$router.push({path: '/financing/payment_details'})
     }
   }
 }

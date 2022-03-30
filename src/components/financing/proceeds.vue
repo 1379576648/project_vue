@@ -1,13 +1,13 @@
-<!--付款单页面-->
+<!--收款单页面-->
 <template>
   <div class="ant-card">
     <div class="ant-card-head" style="border-bottom: 1px dashed rgb(217, 217, 217);padding: 24px 16px 0px;">
       <div class="ant-card-head-wrapper">
         <div class="ant-card-head-title">
           <div class="ant-col ant-col-8" align="middle">
-            <span class="font-size-24 font-bold-700">付款单</span>
+            <span class="font-size-24 font-bold-700">收款单</span>
           </div>
-            <el-button @click="goBack()" style="margin-left: 1100px;margin-bottom: 5px;">付款历史</el-button>
+          <el-button @click="goBack()" style="margin-left: 1100px;margin-bottom: 5px;">收款历史</el-button>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">单据编号：</span>
           <span busitype="104">FK202203290001</span></span><!----></span></span>
@@ -51,9 +51,9 @@
                   </el-input>
                 </template>
                 <el-table :data="tableData2" @row-click="a">
-                  <el-table-column width="150" prop="supplierId" label="供应商编号"/>
-                  <el-table-column width="300" property="supplierName" label="供应商名称"/>
-                  <el-table-column width="150" property="supplierPhone" label="联系电话"/>
+                  <el-table-column width="150" property="date" label="供应商编号"/>
+                  <el-table-column width="300" property="name" label="供应商名称"/>
+                  <el-table-column width="150" property="address" label="联系电话"/>
                 </el-table>
               </el-popover>
               <el-button @click="this.payClick=false,this.become=true">
@@ -178,7 +178,7 @@
       <div>
         <div style="height:calc(100vh - 218px);border:1px solid #e8e8e8;border-top:none">
           <el-table
-              :data="tableData2"
+              :data="tableData3"
               border
               id="scroll3"
               style="width: 100%;max-height:calc(100vh - 218px);"
@@ -196,11 +196,11 @@
                 ></el-radio>
               </template>
             </el-table-column>
-            <el-table-column prop="supplierId" label="供应商编号" width="150"/>
-            <el-table-column prop="supplierName" label="供应商名称" width="170"/>
-            <el-table-column prop="supplierPhone" label="联系电话" width="166"/>
-            <el-table-column prop="supplierAddress" label="地址" width="150"/>
-            <el-table-column prop="supplierRemark" label="备注" width="150"/>
+            <el-table-column prop="address" label="供应商编号" width="150"/>
+            <el-table-column prop="address" label="供应商名称" width="170"/>
+            <el-table-column prop="address" label="联系电话" width="166"/>
+            <el-table-column prop="address" label="地址" width="150"/>
+            <el-table-column prop="address" label="备注" width="150"/>
           </el-table>
         </div>
       </div>
@@ -286,12 +286,10 @@
 
 <script>
 import {defineComponent, ref} from 'vue'
-import {ElMessage} from "element-plus";
+
 export default defineComponent({
   data() {
     return {
-      // 访问地址
-      url: "http://localhost:9090/",
       ruleForm: ({
         id: '',
         name: '',
@@ -317,10 +315,19 @@ export default defineComponent({
       //业务日期
       time: '',
       //下拉表格
-      tableData2: [],
+      tableData2: [{
+        name: '111',
+      }, {
+        name: '222',
+      }],
       //表格
       tableData: [{}],
       //表格
+      tableData3: [{
+        address: '111',
+      }, {
+        address: '222',
+      }],
       //供应商
       payment: '',
       //供应商2
@@ -357,44 +364,19 @@ export default defineComponent({
   methods: {
     //选中名称赋值进供应商文本框
     a(val) {
-      this.payment = val.supplierName;
+      this.payment = val.name;
       this.payClick = false;
       this.one = this.one + 1;
     },
     //单选按钮选中供应商名称进文本框
     b(val) {
-      this.payment = val.supplierName;
+      this.payment = val.address;
     },
     //跳转到付款历史
     goBack() {
-      this.$router.push({path: '/financing/payment_history'})
-    },
-    //查询供应商
-    selectSupplier() {
-      this.axios({
-        method: 'post',
-        url: this.url + 'supplier/selectSupplier',
-        data: {},
-        responseType: 'json',
-        responseEncoding: 'utf-8',
-      }).then((response) => {
-        console.log("查询所有供应商");
-        console.log(response);
-        if (response.data.state === 200 && response.data.msg === "查询成功") {
-          this.tableData2 = response.data.info;
-        } else {
-          ElMessage({
-            message: response.data.msg,
-            type: 'warning',
-          })
-        }
-      })
+      this.$router.push({path: '/financing/collection'})
     },
   },
-  mounted() {
-    //查询供应商
-    this.selectSupplier();
-  }
 
 })
 </script>
@@ -447,7 +429,7 @@ export default defineComponent({
 }
 
 /deep/ .el-button {
-  margin-top: -4px;
+  margin-top: -1px;
 }
 
 /deep/ .ant-card-head-wrapper {
