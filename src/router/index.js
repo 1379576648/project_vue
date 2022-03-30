@@ -9,19 +9,27 @@ import store from '../store/index.js';
  */
 const modules = import.meta.glob('../components/**/*.vue');
 const routes = [
-    {path: "/",redirect:"/workbench"},
-    {path:"/home",component:()=>import('../components/navigationbar.vue'),
-        children:[
-            {path:"/workbench",component:()=>import('../components/workbench_management/workbench_main.vue')},
-            {path:"/user",component:()=>import('../components/sys/user.vue')},
-            {path:"/role",component:()=>import('../components/sys/role.vue')},
-            {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
-            {path:"/financing/payment",component:()=>import('../components/financing/payment.vue')},
+    {path: "/", redirect: "/workbench"},
+    {
+        path: "/home", component: () => import('../components/navigationbar.vue'),
+        children: [
+            {path: "/workbench", component: () => import('../components/workbench_management/workbench_main.vue')},
+            {path: "/user", component: () => import('../components/sys/user.vue')},
+            {path: "/role", component: () => import('../components/sys/role.vue')},
+            {path: "/financing/collection", component: () => import('../components/financing/collection.vue')},
+            {path: "/financing/payment", component: () => import('../components/financing/payment.vue')},
         ]
     },
-    {path:"/stock",component:()=>import('../components/navigationbar.vue'),
-        children:[
-            {path:"/otherOutStock",component:()=>import('../components/stock/OtherOutStock.vue')},
+    {
+        path: "/stock", component: () => import('../components/navigationbar.vue'),
+        children: [
+            {path: "/otherOutStock", component: () => import('../components/stock/OtherOutStock.vue')},
+            {path: "/godownEntry", component: () => import('../components/stock/godownEntry.vue')},
+            {
+                path:"/earlyWarning",
+                component:()=>import("../components/stock/earlyWarning.vue"),
+
+            },
             // {path:"/user",component:()=>import('../components/sys/user.vue')},
             // {path:"/role",component:()=>import('../components/sys/role.vue')},
             // {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
