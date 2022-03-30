@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div style="width: 100%;height: 100%;">
+    <div>
     <el-button>新增收款</el-button>
     &nbsp;
     <el-checkbox>
@@ -147,6 +148,7 @@
         </el-form-item>
       </el-form>
     </el-drawer>
+    </div>
   </div>
 </template>
 
