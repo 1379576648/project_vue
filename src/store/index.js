@@ -117,7 +117,7 @@ const store = createStore({
                     MENU_ID: 5.1,//菜单编号
                     MENU_NAME: '库存查询',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                    MENU_ROUTE: '/repertory',//路由地址
+                    MENU_ROUTE: '/otherOutStock',//路由地址
                     MENU_MODULE: '/components/organization_management/zz_evection',//组件地址
                     MENU_STATE: 0,//是否启用 0启用 1禁用
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮

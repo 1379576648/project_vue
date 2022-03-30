@@ -21,7 +21,7 @@ const routes = [
     },
     {path:"/stock",component:()=>import('../components/navigationbar.vue'),
         children:[
-            {path:"/repertory",component:()=>import('../components/stock/repertory.vue')},
+            {path:"/otherOutStock",component:()=>import('../components/stock/OtherOutStock.vue')},
             // {path:"/user",component:()=>import('../components/sys/user.vue')},
             // {path:"/role",component:()=>import('../components/sys/role.vue')},
             // {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
