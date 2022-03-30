@@ -1,13 +1,13 @@
-<!--付款单页面-->
+<!--收款单页面-->
 <template>
   <div class="ant-card">
     <div class="ant-card-head" style="border-bottom: 1px dashed rgb(217, 217, 217);padding: 24px 16px 0px;">
       <div class="ant-card-head-wrapper">
         <div class="ant-card-head-title">
           <div class="ant-col ant-col-8" align="middle">
-            <span class="font-size-24 font-bold-700">付款单</span>
+            <span class="font-size-24 font-bold-700">收款单</span>
           </div>
-            <el-button @click="goBack()" style="margin-left: 1100px;margin-bottom: 5px;">付款历史</el-button>
+          <el-button @click="goBack()" style="margin-left: 1100px;margin-bottom: 5px;">收款历史</el-button>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">单据编号：</span>
           <span busitype="104">FK202203290001</span></span><!----></span></span>
@@ -374,7 +374,7 @@ export default defineComponent({
     },
     //跳转到付款历史
     goBack() {
-      this.$router.push({path: '/financing/payment_history'})
+      this.$router.push({path: '/financing/collection'})
     },
   },
 

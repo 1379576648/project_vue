@@ -15,8 +15,12 @@ const routes = [
             {path:"/workbench",component:()=>import('../components/workbench_management/workbench_main.vue')},
             {path:"/user",component:()=>import('../components/sys/user.vue')},
             {path:"/role",component:()=>import('../components/sys/role.vue')},
-            //收款历史
+            // 收款历史
             {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
+            // 收款详情
+            {path:"/financing/collection_details",component:()=>import('../components/financing/collection_details.vue')},
+            // 收款单
+            {path:"/financing/proceeds",component:()=>import('../components/financing/proceeds.vue')},
             //付款单
             {path:"/financing/payment",component:()=>import('../components/financing/payment.vue')},
             //付款历史

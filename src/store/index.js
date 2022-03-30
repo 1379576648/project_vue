@@ -298,6 +298,66 @@ const store = createStore({
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
                     MENU_LEAF: 1,//是否有叶子 0有 1没有
                 },
+                    {
+                        MENU_ID: 6.2,//菜单编号
+                        MENU_NAME: '应付欠款',//菜单名称
+                        PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                        MENU_ROUTE: 'financing/message',//路由地址
+                        MENU_MODULE: '/components/financing/',//组件地址
+                        MENU_STATE: 0,//是否启用 0启用 1禁用
+                        MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                        MENU_LEAF: 1,//是否有叶子 0有 1没有
+                    },
+                    {
+                        MENU_ID: 6.3,//菜单编号
+                        MENU_NAME: '收款单',//菜单名称
+                        PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                        MENU_ROUTE: '/financing/proceeds',//路由地址
+                        MENU_MODULE: '/components/financing/proceeds',//组件地址
+                        MENU_STATE: 0,//是否启用 0启用 1禁用
+                        MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                        MENU_LEAF: 1,//是否有叶子 0有 1没有
+                    },
+                    {
+                        MENU_ID: 6.4,//菜单编号
+                        MENU_NAME: '收款历史',//菜单名称
+                        PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                        MENU_ROUTE: '/financing/collection',//路由地址
+                        MENU_MODULE: '/components/financing/collection',//组件地址
+                        MENU_STATE: 0,//是否启用 0启用 1禁用
+                        MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                        MENU_LEAF: 1,//是否有叶子 0有 1没有
+                    },
+                    {
+                        MENU_ID: 6.5,//菜单编号
+                        MENU_NAME: '付款单',//菜单名称
+                        PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                        MENU_ROUTE: '/financing/payment',//路由地址
+                        MENU_MODULE: '/components/financing/payment',//组件地址
+                        MENU_STATE: 0,//是否启用 0启用 1禁用
+                        MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                        MENU_LEAF: 1,//是否有叶子 0有 1没有
+                    },
+                    {
+                        MENU_ID: 6.6,//菜单编号
+                        MENU_NAME: '付款历史',//菜单名称
+                        PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                        MENU_ROUTE: '/financing/payment_history',//路由地址
+                        MENU_MODULE: '/components/financing/payment_history',//组件地址
+                        MENU_STATE: 0,//是否启用 0启用 1禁用
+                        MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                        MENU_LEAF: 1,//是否有叶子 0有 1没有
+                    },
+                    {
+                        MENU_ID: 6.7,//菜单编号
+                        MENU_NAME: '资金流水',//菜单名称
+                        PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                        MENU_ROUTE: '/financing/message/else',//路由地址
+                        MENU_MODULE: 'components/organization_management/zz_post',//组件地址
+                        MENU_STATE: 0,//是否启用 0启用 1禁用
+                        MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                        MENU_LEAF: 1,//是否有叶子 0有 1没有
+                    },
                 {
                     MENU_ID: 6.2,//菜单编号
                     MENU_NAME: '应付欠款',//菜单名称
