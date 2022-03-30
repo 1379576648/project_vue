@@ -21,8 +21,11 @@ const routes = [
             {path:"/financing/collection_details",component:()=>import('../components/financing/collection_details.vue')},
             // 收款单
             {path:"/financing/proceeds",component:()=>import('../components/financing/proceeds.vue')},
+            //付款单
             {path:"/financing/payment",component:()=>import('../components/financing/payment.vue')},
+            //付款历史
             {path:"/financing/payment_history",component:()=>import('../components/financing/payment_history.vue')},
+            //付款详情
             {path:"/financing/payment_details",component:()=>import('../components/financing/payment_details.vue')},
             {path:"/goin",component:()=>import('../components/commodity/goin.vue')},
             {path:"/edit",component:()=>import('../components/commodity/edit.vue')},
@@ -32,6 +35,10 @@ const routes = [
     {path:"/stock",component:()=>import('../components/navigationbar.vue'),
         children:[
             {path:"/otherOutStock",component:()=>import('../components/stock/OtherOutStock.vue')},
+            {path:"/otherOutStockAll",component:()=>import('../components/stock/OtherOutStockAll.vue')},
+            {path:"/otherOutStockDetails",component:()=>import('../components/stock/OtherOutStockDetails.vue')},
+
+
             // {path:"/user",component:()=>import('../components/sys/user.vue')},
             // {path:"/role",component:()=>import('../components/sys/role.vue')},
             // {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
@@ -54,6 +61,25 @@ const routes = [
             {path:"/client",component:()=>import('../components/market/client.vue')},
 
         ]
+    },
+    {
+        path:"/purchase",component:()=>import('../components/navigationbar.vue'),
+        children:[
+            {
+                path:'/returnOrder',component:()=>import('../components/purchase/return_order.vue')
+            },
+            {
+                path:'/returnHistory',component:()=>import('../components/purchase/return_history.vue')
+            },
+            {
+                path:'/purchaseHistory',component:()=>import('../components/purchase/purchase_history.vue')
+            },
+            {
+                path:'/inGoods',component:()=>import('../components/purchase/inGoods.vue')
+            }
+
+        ]
+
     },
 
 ]
