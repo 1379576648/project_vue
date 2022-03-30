@@ -17,6 +17,7 @@ const routes = [
             {path:"/role",component:()=>import('../components/sys/role.vue')},
             {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
             {path:"/financing/payment",component:()=>import('../components/financing/payment.vue')},
+            {path:"/sales_management/sales_history",component:()=>import('../components/sales_management/sales_history.vue')},
         ]
     },
 
