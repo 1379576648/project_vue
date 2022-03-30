@@ -1,12 +1,13 @@
 <template>
-  <div>
+  <div style="width: 100%;height: 100%;">
+    <div>
     <el-button>新增收款</el-button>
     &nbsp;
     <el-checkbox>
       查看作废单据
     </el-checkbox>
     &nbsp;
-    <el-button>高级搜索</el-button>
+    <el-button @click="drawer = true">高级搜索</el-button>
     <el-table
         :data="tableData"
         border
@@ -102,19 +103,60 @@
         next-text="下一页"
         >
       </el-pagination>
-      </div>
+    </div>
+    <!-- 抽屉 -->
+    <el-drawer v-model="drawer" :with-header="false">
+      <span>高级搜索</span>
+      <el-divider/>
+      <el-form :inline="true" :model="formInline" class="demo-form-inline" ref="formInline">
+        <el-form-item label="收款单编号:" prop="collectionId">
+          <el-input v-model="formInline.collectionId" placeholder="输入收款单编号"></el-input>
+        </el-form-item>
+        <el-form-item label="结算账户:" prop="closeAccount">
+          <el-select v-model="formInline.closeAccount" placeholder="全部">
+            <el-option label="全部" value="全部"></el-option>
+            <el-option label="现金" value="现金"></el-option>
+            <el-option label="微信" value="微信"></el-option>
+            <el-option label="支付宝" value="支付宝"></el-option>
+            <el-option label="系统账户" value="系统账户"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="制单人:" prop="name">
+          <el-select v-model="formInline.preparedName" placeholder="全部">
+          </el-select>
+        </el-form-item>
+        <el-form-item label="经手人:" prop="passName">
+          <el-select v-model="formInline.passName" placeholder="全部">
+          </el-select>
+        </el-form-item>
+        <el-form-item label="客户名称:" prop="clientName">
+          <el-select v-model="formInline.clientName" placeholder="全部">
+          </el-select>
+        </el-form-item>
+        <el-form-item label="业务时间:" prop="operationDate">
+          <el-date-picker
+              v-model="formInline.operationDate"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始时间"
+              end-placeholder="结束时间"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="resetForm()">清空</el-button>
+          <el-button>查询</el-button>
+        </el-form-item>
+      </el-form>
+    </el-drawer>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  methods: {
-    handleClick(row) {
-      console.log(row);
-    }
-  },
   data() {
     return {
+      // 表格
       tableData: [{
         date: '1',
         businessDate: '2016-05-02',
@@ -136,7 +178,27 @@ export default {
         pageSize: 3, // 页大小
         total: 0, // 总页数
       },
+      // 抽屉
+      drawer: false,
+      // 抽屉表单
+      formInline: {
+        collectionId: '',
+        closeAccount: '',
+        preparedName: '',
+        passName: '',
+        clientName: '',
+        operationDate:[]
+      },
     }
-  }
+  },
+  methods: {
+    handleClick(row) {
+      console.log(row);
+    },
+    // 清空表单
+    resetForm() {
+      this.$refs.formInline.resetFields()
+    }
+  },
 }
 </script>
