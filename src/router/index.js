@@ -23,6 +23,9 @@ const routes = [
             {path:"/financing/payment_history",component:()=>import('../components/financing/payment_history.vue')},
             //付款详情
             {path:"/financing/payment_details",component:()=>import('../components/financing/payment_details.vue')},
+            {path:"/goin",component:()=>import('../components/commodity/goin.vue')},
+            {path:"/edit",component:()=>import('../components/commodity/edit.vue')},
+            {path:"/details",component:()=>import('../components/commodity/details.vue')},
         ]
     },
     {path:"/stock",component:()=>import('../components/navigationbar.vue'),
