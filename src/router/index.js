@@ -15,7 +15,7 @@ const routes = [
             {path:"/workbench",component:()=>import('../components/workbench_management/workbench_main.vue')},
             {path:"/user",component:()=>import('../components/sys/user.vue')},
             {path:"/role",component:()=>import('../components/sys/role.vue')},
-            {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
+            {path:"/fi nancing/collection",component:()=>import('../components/financing/collection.vue')},
             {path:"/financing/payment",component:()=>import('../components/financing/payment.vue')},
         ]
     },
@@ -25,6 +25,24 @@ const routes = [
             // {path:"/user",component:()=>import('../components/sys/user.vue')},
             // {path:"/role",component:()=>import('../components/sys/role.vue')},
             // {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
+        ]
+    },
+    //销售
+    {path:"/market",component:()=>import('../components/navigationbar.vue'),
+        children:[
+            //退货单
+            {path:"/refundReturn",component:()=>import('../components/market/refundReturn.vue')},
+             //销售单
+            {path:"/salesTicket",component:()=>import('../components/market/salesTicket.vue')},
+            //销售历史
+            {path:"/salesHistory",component:()=>import('../components/market/salesHistory.vue')},
+             //销售明细
+            {path:"/salesParticular",component:()=>import('../components/market/salesParticular.vue')},
+             //退货历史
+            {path:"/refundHistory",component:()=>import('../components/market/refundHistory.vue')},
+             //客户
+            {path:"/client",component:()=>import('../components/market/client.vue')},
+
         ]
     },
 
