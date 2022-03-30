@@ -70,7 +70,7 @@
 				<el-input style="width: 200px;" placeholder="商品名称" />
 				&nbsp;&nbsp;
 				<el-button type="primary" >搜索</el-button>
-				
+
 			</div>
 			<br /><br />
 
@@ -186,9 +186,9 @@
 </script>
 
 <style>
-	
+
 	body{
-		background-color: gray;
+		/*background-color: gray;*/
 	}
-	
+
 </style>
