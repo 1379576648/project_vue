@@ -192,7 +192,7 @@ const store = createStore({
                     MENU_ID: 5.1,//菜单编号
                     MENU_NAME: '库存查询',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                    MENU_ROUTE: '/otherOutStock',//路由地址
+                    MENU_ROUTE: 'financing/message',//路由地址
                     MENU_MODULE: '/components/organization_management/zz_evection',//组件地址
                     MENU_STATE: 0,//是否启用 0启用 1禁用
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -227,6 +227,51 @@ const store = createStore({
                 }, {
                     MENU_ID: 5.5,//菜单编号
                     MENU_NAME: '供应商分类',//菜单名称
+                    PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                    MENU_ROUTE: 'financing/message',//路由地址
+                    MENU_MODULE: '/components/financing/',//组件地址
+                    MENU_STATE: 0,//是否启用 0启用 1禁用
+                    MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                    MENU_LEAF: 1,//是否有叶子 0有 1没有
+                },{
+                    MENU_ID: 5.6,//菜单编号
+                    MENU_NAME: '其他入库单',//菜单名称
+                    PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                    MENU_ROUTE: 'financing/message',//路由地址
+                    MENU_MODULE: '/components/financing/',//组件地址
+                    MENU_STATE: 0,//是否启用 0启用 1禁用
+                    MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                    MENU_LEAF: 1,//是否有叶子 0有 1没有
+                },{
+                    MENU_ID: 5.7,//菜单编号
+                    MENU_NAME: '其他入库历史',//菜单名称
+                    PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                    MENU_ROUTE: 'financing/message',//路由地址
+                    MENU_MODULE: '/components/financing/',//组件地址
+                    MENU_STATE: 0,//是否启用 0启用 1禁用
+                    MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                    MENU_LEAF: 1,//是否有叶子 0有 1没有
+                },{
+                    MENU_ID: 5.8,//菜单编号
+                    MENU_NAME: '其他出库单',//菜单名称
+                    PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                    MENU_ROUTE: '/otherOutStock',//路由地址
+                    MENU_MODULE: '/components/financing/',//组件地址
+                    MENU_STATE: 0,//是否启用 0启用 1禁用
+                    MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                    MENU_LEAF: 1,//是否有叶子 0有 1没有
+                },{
+                    MENU_ID: 5.9,//菜单编号
+                    MENU_NAME: '其他出库历史',//菜单名称
+                    PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                    MENU_ROUTE: '/otherOutStockAll',//路由地址
+                    MENU_MODULE: '/components/financing/',//组件地址
+                    MENU_STATE: 0,//是否启用 0启用 1禁用
+                    MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                    MENU_LEAF: 1,//是否有叶子 0有 1没有
+                },{
+                    MENU_ID: 5.10,//菜单编号
+                    MENU_NAME: '其他出入库类型',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
                     MENU_ROUTE: 'financing/message',//路由地址
                     MENU_MODULE: '/components/financing/',//组件地址

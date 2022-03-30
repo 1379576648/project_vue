@@ -15,9 +15,13 @@ const routes = [
             {path:"/workbench",component:()=>import('../components/workbench_management/workbench_main.vue')},
             {path:"/user",component:()=>import('../components/sys/user.vue')},
             {path:"/role",component:()=>import('../components/sys/role.vue')},
+            //收款历史
             {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
+            //付款单
             {path:"/financing/payment",component:()=>import('../components/financing/payment.vue')},
+            //付款历史
             {path:"/financing/payment_history",component:()=>import('../components/financing/payment_history.vue')},
+            //付款详情
             {path:"/financing/payment_details",component:()=>import('../components/financing/payment_details.vue')},
             {path:"/goin",component:()=>import('../components/commodity/goin.vue')},
             {path:"/edit",component:()=>import('../components/commodity/edit.vue')},
@@ -27,6 +31,10 @@ const routes = [
     {path:"/stock",component:()=>import('../components/navigationbar.vue'),
         children:[
             {path:"/otherOutStock",component:()=>import('../components/stock/OtherOutStock.vue')},
+            {path:"/otherOutStockAll",component:()=>import('../components/stock/OtherOutStockAll.vue')},
+            {path:"/otherOutStockDetails",component:()=>import('../components/stock/OtherOutStockDetails.vue')},
+
+
             // {path:"/user",component:()=>import('../components/sys/user.vue')},
             // {path:"/role",component:()=>import('../components/sys/role.vue')},
             // {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
