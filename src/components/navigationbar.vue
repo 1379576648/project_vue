@@ -39,7 +39,6 @@ export default{
                 <el-icon>
                   <i-menu/>
                 </el-icon>
-
                 <span>{{ item.MENU_NAME }}</span>
               </template>
 
