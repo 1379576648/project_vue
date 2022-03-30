@@ -1,3 +1,6 @@
+
+<!-- 其他出库单 -->
+
 <template>
 	<!-- 外围div -->
 	<div style="background-color: white;padding: 20px;">
@@ -52,7 +55,7 @@
 			<el-table-column prop="name" label="单位" />
 			<el-table-column prop="name" label="数量" />
 			<el-table-column prop="name" label="备注" />
-			<el-table-column prop="name" label="操作" min-width="40%">
+			<el-table-column prop="name" label="操作" min-width="50%">
 				<el-button type="text">删除</el-button>
 				<el-button type="text">添加</el-button>
 			</el-table-column>
