@@ -50,6 +50,25 @@ const routes = [
 
         ]
     },
+    {
+        path:"/purchase",component:()=>import('../components/navigationbar.vue'),
+        children:[
+            {
+                path:'/returnOrder',component:()=>import('../components/purchase/return_order.vue')
+            },
+            {
+                path:'/returnHistory',component:()=>import('../components/purchase/return_history.vue')
+            },
+            {
+                path:'/purchaseHistory',component:()=>import('../components/purchase/purchase_history.vue')
+            },
+            {
+                path:'/inGoods',component:()=>import('../components/purchase/inGoods.vue')
+            }
+
+        ]
+
+    },
 
 ]
 
