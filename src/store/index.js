@@ -126,7 +126,6 @@ const store = createStore({
                     },
                 ]
             },
-
             {
                 MENU_ID: 4,//菜单编号
                 MENU_NAME: '采购管理',//菜单名称
