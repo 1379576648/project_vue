@@ -22,6 +22,10 @@ const routes = [
     {path:"/stock",component:()=>import('../components/navigationbar.vue'),
         children:[
             {path:"/otherOutStock",component:()=>import('../components/stock/OtherOutStock.vue')},
+            {path:"/otherOutStockAll",component:()=>import('../components/stock/OtherOutStockAll.vue')},
+            {path:"/otherOutStockDetails",component:()=>import('../components/stock/OtherOutStockDetails.vue')},
+
+
             // {path:"/user",component:()=>import('../components/sys/user.vue')},
             // {path:"/role",component:()=>import('../components/sys/role.vue')},
             // {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
