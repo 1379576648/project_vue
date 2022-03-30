@@ -18,6 +18,7 @@ const routes = [
             {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
             {path:"/financing/payment",component:()=>import('../components/financing/payment.vue')},
             {path:"/financing/payment_history",component:()=>import('../components/financing/payment_history.vue')},
+            {path:"/sales_management/sales_history",component:()=>import('../components/sales_management/sales_history.vue')},
         ]
     },
     {path:"/stock",component:()=>import('../components/navigationbar.vue'),
