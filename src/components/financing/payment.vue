@@ -429,7 +429,7 @@ export default defineComponent({
 }
 
 /deep/ .el-button {
-  margin-top: -1px;
+  margin-top: -4px;
 }
 
 /deep/ .ant-card-head-wrapper {
