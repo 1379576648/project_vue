@@ -88,12 +88,45 @@ const store = createStore({
                 MENU_ID: 3,//菜单编号
                 MENU_NAME: '商品管理',//菜单名称
                 PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                MENU_ROUTE: '/organization',//路由地址
-                MENU_MODULE: 'organization_management/organization_main',//组件地址
+                MENU_ROUTE: '/commodity',//路由地址
+                MENU_MODULE: 'commodity/goin',//组件地址
                 MENU_STATE: 0,//是否启用 0启用 1禁用
                 MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
-                MENU_LEAF: 1,//是否有叶子 0有 1没有
+                MENU_LEAF: 0,//是否有叶子 0有 1没有
+                son:[
+                    {
+                        MENU_ID: 3.1,//菜单编号
+                        MENU_NAME: '商品列表',//菜单名称
+                        PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                        MENU_ROUTE: 'goin',//路由地址
+                        MENU_MODULE: 'organization_management/organization_main',//组件地址
+                        MENU_STATE: 0,//是否启用 0启用 1禁用
+                        MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                        MENU_LEAF: 1,//是否有叶子 0有 1没有
+                    },
+                    {
+                        MENU_ID: 3.2,//菜单编号
+                        MENU_NAME: '添加商品',//菜单名称
+                        PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                        MENU_ROUTE: 'aaa',//路由地址
+                        MENU_MODULE: 'organization_management/organization_main',//组件地址
+                        MENU_STATE: 0,//是否启用 0启用 1禁用
+                        MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                        MENU_LEAF: 1,//是否有叶子 0有 1没有
+                    },
+                    {
+                        MENU_ID: 3.3,//菜单编号
+                        MENU_NAME: '商品分类',//菜单名称
+                        PICTURE_ADDRESS: '&#xe64c;',//图片地址
+                        MENU_ROUTE: 'bbb',//路由地址
+                        MENU_MODULE: 'organization_management/organization_main',//组件地址
+                        MENU_STATE: 0,//是否启用 0启用 1禁用
+                        MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
+                        MENU_LEAF: 1,//是否有叶子 0有 1没有
+                    },
+                ]
             },
+
             {
                 MENU_ID: 4,//菜单编号
                 MENU_NAME: '采购管理',//菜单名称

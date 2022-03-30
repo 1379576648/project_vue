@@ -17,6 +17,9 @@ const routes = [
             {path:"/role",component:()=>import('../components/sys/role.vue')},
             {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
             {path:"/financing/payment",component:()=>import('../components/financing/payment.vue')},
+            {path:"/goin",component:()=>import('../components/commodity/goin.vue')},
+            {path:"/edit",component:()=>import('../components/commodity/edit.vue')},
+            {path:"/details",component:()=>import('../components/commodity/details.vue')},
         ]
     },
     {path:"/stock",component:()=>import('../components/navigationbar.vue'),
