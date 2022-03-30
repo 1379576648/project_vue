@@ -125,7 +125,7 @@
 
 <script>
 export default {
-  name: "sales_history",
+  name: "",
   data() {
     return {
       pageInfo: {
