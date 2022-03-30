@@ -19,39 +19,39 @@
         </el-input>
         <br/>
         <br/>
-          <el-table
-              :data="tableData"
-              border
-              id="scroll3"
-              style="width: 100%;max-height:calc(100vh - 218px);"
-              :header-cell-style="{background:'#F8F8F9',color:'#606266'}"
-              :default-sort="{ prop: 'name', order: 'descending' }"
-          >
-            <el-table-column prop="name" label="序号" type="index" width="80"/>
-            <el-table-column prop="name" label="业务日期" width="160" sortable/>
-            <el-table-column prop="address" label="单据编号" width="160" sortable/>
-            <el-table-column prop="address" label="供应商名称" width="160" sortable/>
-            <el-table-column prop="address" label="结算账户" width="160" sortable/>
-            <el-table-column prop="address" label="本单付出欠款(元)" width="160" sortable/>
-            <el-table-column prop="address" label="本单优惠金额(元)" width="160" sortable/>
-            <el-table-column prop="address" label="经手人" width="160" sortable/>
-            <el-table-column prop="address" label="制单人" width="160" sortable/>
-            <el-table-column prop="address" label="制单时间" width="160" sortable/>
-            <el-table-column prop="address" label="图片附件" width="160"/>
-            <el-table-column prop="address" label="是否作废" width="160"/>
-            <el-table-column fixed="right" label="操作" width="160">
-              <template #default="scope">
-                <el-button type="text" size="small"
-                >详情
-                </el-button>
-                <el-popconfirm title="您确定要作废该单据吗？">
-                  <template #reference>
-                    <el-button type="text" size="small">作废</el-button>
-                  </template>
-                </el-popconfirm>
-              </template>
-            </el-table-column>
-          </el-table>
+        <el-table
+            :data="tableData"
+            border
+            id="scroll3"
+            style="width: 100%;max-height:calc(100vh - 218px);"
+            :header-cell-style="{background:'#F8F8F9',color:'#606266'}"
+            :default-sort="{ prop: 'name', order: 'descending' }"
+        >
+          <el-table-column prop="name" label="序号" type="index" width="80"/>
+          <el-table-column prop="name" label="业务日期" width="160" sortable/>
+          <el-table-column prop="address" label="单据编号" width="160" sortable/>
+          <el-table-column prop="address" label="供应商名称" width="160" sortable/>
+          <el-table-column prop="address" label="结算账户" width="160" sortable/>
+          <el-table-column prop="address" label="本单付出欠款(元)" width="160" sortable/>
+          <el-table-column prop="address" label="本单优惠金额(元)" width="160" sortable/>
+          <el-table-column prop="address" label="经手人" width="160" sortable/>
+          <el-table-column prop="address" label="制单人" width="160" sortable/>
+          <el-table-column prop="address" label="制单时间" width="160" sortable/>
+          <el-table-column prop="address" label="图片附件" width="160"/>
+          <el-table-column prop="address" label="是否作废" width="160"/>
+          <el-table-column fixed="right" label="操作" width="160">
+            <template #default="scope">
+              <el-button type="text" size="small" @click="goBack2()"
+              >详情
+              </el-button>
+              <el-popconfirm title="您确定要作废该单据吗？">
+                <template #reference>
+                  <el-button type="text" size="small">作废</el-button>
+                </template>
+              </el-popconfirm>
+            </template>
+          </el-table-column>
+        </el-table>
         <!-- 分页插件 -->
         <div style="margin-top: 10px;">
           <el-pagination
@@ -98,6 +98,10 @@ export default {
     goBack() {
       this.$router.push({path: '/financing/payment'})
     },
+    //跳转到付款详情
+    goBack2() {
+      this.$router.push({path: '/financing/payment_details'})
+    }
   }
 }
 </script>
