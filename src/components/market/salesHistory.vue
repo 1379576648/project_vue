@@ -1,6 +1,6 @@
 <template>
   <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick"  type="card">
-    <el-tab-pane label="已出库" name="first" :key="one">
+    <el-tab-pane label="已出库" name="first">
       <div>
         <el-button style="float:right" type="primary">添加商品</el-button>
         <div>
@@ -264,7 +264,7 @@ export default {
   name: "",
   data() {
     return {
-      one:1,
+      activeName:'first',
       pageInfo: {
         currentPage: 1,
         /* 当前的页 */
@@ -373,9 +373,6 @@ export default {
         }]
     }
   },methods:{
-    handleClick() {
-      this.one = this.one + 1;
-    }
   }
 }
 </script>
