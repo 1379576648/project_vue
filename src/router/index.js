@@ -18,6 +18,14 @@ const routes = [
             {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
         ]
     },
+    {path:"/stock",component:()=>import('../components/navigationbar.vue'),
+        children:[
+            {path:"/repertory",component:()=>import('../components/stock/repertory.vue')},
+            // {path:"/user",component:()=>import('../components/sys/user.vue')},
+            // {path:"/role",component:()=>import('../components/sys/role.vue')},
+            // {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
+        ]
+    },
 
 ]
 
