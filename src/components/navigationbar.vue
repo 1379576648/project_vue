@@ -91,7 +91,9 @@ export default{
         </div>
       </el-header>
       <el-main>
-        <router-view />
+        <div id="scroll" style="max-height:calc(100vh - 90px) ">
+          <router-view />
+        </div>
       </el-main>
     </el-container>
   </el-container>
@@ -100,6 +102,22 @@ export default{
 
 
 <style scoped>
+#scroll{
+  overflow:scroll;
+  overflow-x: hidden;
+}
+#scroll::-webkit-scrollbar{
+  width:5px;
+}
+#scroll::-webkit-scrollbar-thumb{
+  background:linear-gradient(rgb(17,157,212),rgb(17,212,105));
+  border-radius:5px;
+  transition:1s;
+}
+#scroll::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(rgb(17,212,105),rgb(17,157,212));
+}
+
 @font-face {
   font-family: 'iconfont';  /* project id 3284006 */
   src: url('');
