@@ -39,20 +39,19 @@
               style="width: 100%;max-height:calc(100vh - 218px);"
               :header-cell-style="{background:'#F8F8F9',color:'#606266'}"
           >
-            <el-table-column prop="name" label="供应商" type="index" width="235">
+            <el-table-column prop="name" label="客户" type="index" width="235">
               <el-popover placement="bottom" :width="600" trigger="click" v-show="payClick" :key="one">
                 <template #reference>
-                  <!--         <el-input v-model="payment" placeholder="请选择供应商"  @click="this.payclick=true"/>-->
                   <el-input @click="this.payClick=true"
                             style="width: 140px;"
                             v-model="payment"
-                            placeholder="请选择供应商"
+                            placeholder="请选择客户"
                             class="input-with-select">
                   </el-input>
                 </template>
                 <el-table :data="tableData2" @row-click="a">
-                  <el-table-column width="150" property="date" label="供应商编号"/>
-                  <el-table-column width="300" property="name" label="供应商名称"/>
+                  <el-table-column width="150" property="date" label="客户编号"/>
+                  <el-table-column width="300" property="name" label="客户名称"/>
                   <el-table-column width="150" property="address" label="联系电话"/>
                 </el-table>
               </el-popover>
@@ -149,11 +148,11 @@
   <div>
     <el-dialog
         v-model="become"
-        title="选择供应商"
+        title="选择客户"
         width="65%"
         :close-on-click-modal="false"
     >
-      <button type="button" class="fl ant-btn" @click="this.become2=true,this.become=false"><span>新增供应商</span></button>&nbsp;&nbsp;
+      <button type="button" class="fl ant-btn" @click="this.become2=true,this.become=false"><span>新增客户</span></button>&nbsp;&nbsp;
       <el-select v-model="payType" placeholder="全部分类" style="width: 150px;">
         <el-option label="现金" value="现金"/>
         <el-option label="微信" value="微信"/>
@@ -196,8 +195,8 @@
                 ></el-radio>
               </template>
             </el-table-column>
-            <el-table-column prop="address" label="供应商编号" width="150"/>
-            <el-table-column prop="address" label="供应商名称" width="170"/>
+            <el-table-column prop="address" label="客户编号" width="150"/>
+            <el-table-column prop="address" label="客户名称" width="170"/>
             <el-table-column prop="address" label="联系电话" width="166"/>
             <el-table-column prop="address" label="地址" width="150"/>
             <el-table-column prop="address" label="备注" width="150"/>
@@ -230,11 +229,11 @@
 
   </div>
 
-  <!--  新增供应商-->
+  <!--  新增客户-->
   <div>
     <el-dialog
         v-model="become2"
-        title="新增供应商"
+        title="新增客户"
         width="50%"
         :close-on-click-modal="false"
     >
@@ -246,23 +245,21 @@
             label-width="120px"
             class="demo-ruleForm"
         >
-          <el-form-item label="供应商编号：">
+          <el-form-item label="客户编号：">
             <el-input v-model="ruleForm.id"/>
           </el-form-item>
-          <el-form-item label="供应商名称：" prop="name" required>
+          <el-form-item label="客户名称：" prop="name" required>
             <el-input v-model="ruleForm.name" placeholder="请输入供应商名称"/>
           </el-form-item>
-          <el-form-item label="供应商分类:" required>
+          <el-form-item label="客户分类:" required>
             <el-select v-model="ruleForm.type" placeholder="全部分类">
-              <el-option label="家电" value="家电"/>
-              <el-option label="批发" value="批发"/>
+              <el-option label="一级客户" value="一级客户"/>
+              <el-option label="二级客户" value="二级客户"/>
+              <el-option label="三级客户" value="三级客户"/>
             </el-select>
           </el-form-item>
-          <el-form-item label="期初应付款：">
-            <el-input v-model="ruleForm.money"/>
-          </el-form-item>
-          <el-form-item label="期初预付款：">
-            <el-input v-model="ruleForm.money2"/>
+          <el-form-item label="填写电话：">
+            <el-input v-model="ruleForm.phone"/>
           </el-form-item>
           <el-form-item label="联系地址：">
             <el-input v-model="ruleForm.address"/>
@@ -294,8 +291,7 @@ export default defineComponent({
         id: '',
         name: '',
         type: '',
-        money: '',
-        money2: '',
+        phone:'',
         address: '',
         remark2: '',
       }),
@@ -359,7 +355,6 @@ export default defineComponent({
         ],
       }
     }
-
   },
   methods: {
     //选中名称赋值进供应商文本框

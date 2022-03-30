@@ -191,8 +191,8 @@ const store = createStore({
                     MENU_ID: 5.1,//菜单编号
                     MENU_NAME: '库存查询',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                    MENU_ROUTE: 'financing/message',//路由地址
-                    MENU_MODULE: '/components/organization_management/zz_evection',//组件地址
+                    MENU_ROUTE: 'Management',//路由地址
+                    MENU_MODULE: '/components/stock/Management',//组件地址
                     MENU_STATE: 0,//是否启用 0启用 1禁用
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
                     MENU_LEAF: 1,//是否有叶子 0有 1没有
@@ -209,8 +209,8 @@ const store = createStore({
                     MENU_ID: 5.3,//菜单编号
                     MENU_NAME: '仓库管理',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                    MENU_ROUTE: 'financing/message',//路由地址
-                    MENU_MODULE: '/components/financing/',//组件地址
+                    MENU_ROUTE: 'Warehouse',//路由地址
+                    MENU_MODULE: '/components/stock/Management',//组件地址
                     MENU_STATE: 0,//是否启用 0启用 1禁用
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
                     MENU_LEAF: 1,//是否有叶子 0有 1没有
