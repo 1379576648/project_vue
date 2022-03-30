@@ -38,6 +38,12 @@ export default {
 *{
   padding: 0;
   margin: 0;
+}
 
+@font-face {
+  font-family: 'iconfont';  /* Project id 3284006 */
+  src: url('//at.alicdn.com/t/font_3284006_jn4jq0kpfzk.woff2?t=1648601999582') format('woff2'),
+  url('//at.alicdn.com/t/font_3284006_jn4jq0kpfzk.woff?t=1648601999582') format('woff'),
+  url('//at.alicdn.com/t/font_3284006_jn4jq0kpfzk.ttf?t=1648601999582') format('truetype');
 }
 </style>
