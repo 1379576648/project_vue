@@ -12,8 +12,11 @@ const routes = [
     {path: "/",redirect:"/workbench"},
     {path:"/home",component:()=>import('../components/navigationbar.vue'),
         children:[
-        {path:"/workbench",component:()=>import('../components/workbench_management/workbench_main.vue')}
-    ]
+            {path:"/workbench",component:()=>import('../components/workbench_management/workbench_main.vue')},
+            {path:"/user",component:()=>import('../components/sys/user.vue')},
+            {path:"/role",component:()=>import('../components/sys/role.vue')},
+            {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
+        ]
     },
 
 ]
@@ -24,7 +27,7 @@ const router = createRouter({
 })
 //全局前置守卫，可用作前端权限验证的简单实现
 router.beforeEach(function (to, from, next) {
-        next()
+    next()
 
 });
 export default router

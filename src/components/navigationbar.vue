@@ -10,30 +10,12 @@ export default{
       location.reload();
     },
   },
-  mounted() {
-    const route=[]
-    const a=[]
-    this.menulist.forEach(item=>{
-
-        if (item.son){
-          route.path=item.MENU_ROUTE
-          route.component='()=>import(../'+item.MENU_MODULE+')'
-        }
-      route.path=item.MENU_ROUTE
-      route.component='()=>import(../'+item.MENU_MODULE+')'
-       a.push(route)
-    })
-
-  this.$route=a
-    console.error("===========",this.$route)
-
-  }
 }
 </script>
 
 <template>
   <el-container>
-    <el-aside width="190px" style="background-color: #001529;overflow-x: hidden">
+    <el-aside width="190px" style="background-color:#252832;overflow-x: hidden" id="container">
       <div>
         <div class="logo">
           <img src="https://jingdouyun888.com/assets/images/logo.png" style="width: 150px;margin: 10px 0;" alt="">
@@ -57,30 +39,16 @@ export default{
                 <el-icon>
                   <i-menu/>
                 </el-icon>
-
                 <span>{{ item.MENU_NAME }}</span>
               </template>
 
-              <!--二级菜单-->
-              <template v-if="item.son[0].MENU_LEAF==0" >
-                <el-sub-menu :index="subItem.MENU_ROUTE +'' " v-for="subItem in item.son"
-                             :key="subItem.MENU_ID">
-                  <template #title><span style="padding-left: 15px">{{ subItem.MENU_NAME }}</span></template>
-                  <!--三级菜单-->
-                  <el-menu-item :index="vsbItem.MENU_ROUTE +'' " v-for="vsbItem in subItem.son"
-                                :key="vsbItem.MENU_ID"
-                                style="width: 100%"
-                               >
-                    {{ vsbItem.MENU_NAME }}
-                  </el-menu-item>
-                </el-sub-menu>
-              </template>
+
               <!--二级菜单-->
               <template v-if="item.son[0].MENU_LEAF==1">
                 <el-menu-item :index="subItem.MENU_ROUTE +'' " v-for="subItem in item.son"
                               :key="subItem.MENU_ID"
                               @click="saveNavState(subItem.MENU_ROUTE)">
-                  <template #title>{{ subItem.MENU_NAME }}</template>
+                  <template #title><span style="margin-left: 30px">{{ subItem.MENU_NAME }}</span></template>
                 </el-menu-item>
               </template>
             </el-sub-menu>
@@ -103,12 +71,7 @@ export default{
     <el-container>
       <el-header style="display: flex;height: 65px;padding:0 10px">
         <div style="flex:1;">
-          <el-breadcrumb separator="/">
-            <el-breadcrumb-item class="el-breadcrumb-item" :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item class="el-breadcrumb-item"><a href="/">活动管理</a></el-breadcrumb-item>
-            <el-breadcrumb-item class="el-breadcrumb-item">活动列表</el-breadcrumb-item>
-            <el-breadcrumb-item class="el-breadcrumb-item">活动详情</el-breadcrumb-item>
-          </el-breadcrumb>
+         
         </div>
         <div style="line-height: 65px">
           <div style="display: flex;align-items: center">
@@ -164,6 +127,8 @@ export default{
 }
 
 .el-main{
+  margin: 0;
+  padding: 8px 8px 25px 8px;
   background-color: #E8E8E8;
 }
 .el-breadcrumb-item{
@@ -183,5 +148,16 @@ export default{
 .iconfontdiv:hover{
     cursor: default ;
   background-color: #F8F8F8;
+}
+#container::-webkit-scrollbar{
+width:5px;
+}
+#container::-webkit-scrollbar-thumb{
+background:linear-gradient(rgb(17,157,212),rgb(17,212,105));
+border-radius:5px;
+transition:1s;
+}
+#container::-webkit-scrollbar-thumb:hover{
+background:linear-gradient(rgb(17,212,105),rgb(17,157,212));
 }
 </style>
