@@ -225,7 +225,7 @@
       </div>
       <div style="margin-top: 10px;margin-left: 770px;">
         <el-button @click="this.become=false,this.payment = undefined,this.currentRow=undefined">取消</el-button>
-        <el-button type="primary" @click="this.become=false">确认选择</el-button>
+        <el-button type="primary" @click="this.become=false,this.currentRow=undefined">确认选择</el-button>
       </div>
     </el-dialog>
 
@@ -398,6 +398,10 @@ export default defineComponent({
   transition: all .3s;
 }
 
+/deep/ .el-radio__label {
+  display: none;
+}
+
 /deep/ .ant-card-head {
   min-height: 48px;
   margin-bottom: -1px;
@@ -415,6 +419,14 @@ export default defineComponent({
 /deep/ .ant-layout * {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+/deep/ .el-radio__input {
+  margin-left: -24px;
+}
+
+/deep/ .el-button {
+  margin-top: -1px;
 }
 
 /deep/ .ant-card-head-wrapper {
