@@ -246,7 +246,7 @@
             class="demo-ruleForm"
         >
           <el-form-item label="客户编号：">
-            <el-input v-model="ruleForm.id"/>
+            <el-input disabled v-model="ruleForm.id"/>
           </el-form-item>
           <el-form-item label="客户名称：" prop="name" required>
             <el-input v-model="ruleForm.name" placeholder="请输入供应商名称"/>
@@ -283,15 +283,18 @@
 
 <script>
 import {defineComponent, ref} from 'vue'
+import {ElMessage} from "element-plus";
 
 export default defineComponent({
   data() {
     return {
+      // 访问地址
+      url: "http://localhost:9090/",
       ruleForm: ({
         id: '',
         name: '',
         type: '',
-        phone:'',
+        phone: '',
         address: '',
         remark2: '',
       }),
@@ -357,6 +360,29 @@ export default defineComponent({
     }
   },
   methods: {
+    // 生成客户流水编号
+    obtainSerialNumber() {
+      this.axios({
+        method: 'get',
+        url: this.url + 'obtainSerialNumber',
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("生成客户流水编号");
+        console.log(response);
+        if (response.data.code === 200) {
+          if (response.data.data.state === 200) {
+            this.ruleForm.id = response.data.data.info
+          }
+        } else {
+          ElMessage({
+            message: response.data.message,
+            type: 'warning',
+          })
+        }
+      })
+    },
     //选中名称赋值进供应商文本框
     a(val) {
       this.payment = val.name;
@@ -371,7 +397,10 @@ export default defineComponent({
     goBack() {
       this.$router.push({path: '/financing/collection'})
     },
-  },
+  }, created() {
+// 生成客户流水编号
+    this.obtainSerialNumber();
+  }
 
 })
 </script>
