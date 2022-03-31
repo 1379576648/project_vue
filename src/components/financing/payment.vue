@@ -252,17 +252,20 @@
           <el-form-item label="供应商名称：" prop="name" required>
             <el-input v-model="ruleForm.name" placeholder="请输入供应商名称"/>
           </el-form-item>
-          <el-form-item label="供应商分类:" required>
-            <el-select v-model="ruleForm.type" placeholder="全部分类">
-              <el-option label="家电" value="家电"/>
-              <el-option label="批发" value="批发"/>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="期初应付款：">
-            <el-input v-model="ruleForm.money"/>
-          </el-form-item>
-          <el-form-item label="期初预付款：">
-            <el-input v-model="ruleForm.money2"/>
+<!--          <el-form-item label="供应商分类:" required>-->
+<!--            <el-select v-model="ruleForm.type" placeholder="全部分类">-->
+<!--              <el-option label="家电" value="家电"/>-->
+<!--              <el-option label="批发" value="批发"/>-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="期初应付款：">-->
+<!--            <el-input v-model="ruleForm.money"/>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="期初预付款：">-->
+<!--            <el-input v-model="ruleForm.money2"/>-->
+<!--          </el-form-item>-->
+          <el-form-item label="电话：">
+            <el-input v-model="ruleForm.phone"/>
           </el-form-item>
           <el-form-item label="联系地址：">
             <el-input v-model="ruleForm.address"/>
@@ -300,6 +303,7 @@ export default defineComponent({
         money2: '',
         address: '',
         remark2: '',
+        phone:'',
       }),
       //单选框
       currentRow: false,
