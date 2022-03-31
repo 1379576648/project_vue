@@ -154,19 +154,19 @@
         :close-on-click-modal="false"
     >
       <button type="button" class="fl ant-btn" @click="this.become2=true,this.become=false"><span>新增供应商</span></button>&nbsp;&nbsp;
-      <el-select v-model="payType" placeholder="全部分类" style="width: 150px;">
-        <el-option label="现金" value="现金"/>
-        <el-option label="微信" value="微信"/>
-        <el-option label="支付宝" value="支付宝"/>
-        <el-option label="系统账户" value="系统账户"/>
-      </el-select>&nbsp;&nbsp;
+<!--      <el-select v-model="payType" placeholder="全部分类" style="width: 150px;">-->
+<!--        <el-option label="现金" value="现金"/>-->
+<!--        <el-option label="微信" value="微信"/>-->
+<!--        <el-option label="支付宝" value="支付宝"/>-->
+<!--        <el-option label="系统账户" value="系统账户"/>-->
+<!--      </el-select>&nbsp;&nbsp;-->
       <el-input style="width: 250px;"
                 v-model="seek"
                 placeholder="编号、名称、联系信息"
                 class="input-with-select"
       >
         <template #append>
-          <el-button @click="this.payClick=false,this.become=true,selectSupplier()">
+          <el-button @click="this.payClick=false,this.become=true,selectSupplierPage()">
             <el-icon>
               <search/>
             </el-icon>
@@ -379,11 +379,7 @@ export default defineComponent({
       this.axios({
         method: 'post',
         url: this.url + 'supplier/selectSupplier',
-        data: {
-          supplierName:this.seek,
-          supplierPhone:this.seek,
-          supplierAddress:this.seek,
-        },
+        data: {},
         responseType: 'json',
         responseEncoding: 'utf-8',
       }).then((response) => {
@@ -409,6 +405,12 @@ export default defineComponent({
           currentPage: this.pageInfo.currentPage,
           //页大小
           pageSize: this.pageInfo.pagesize,
+          //供应商名称
+          supplierName:this.seek,
+          //供应商号码
+          supplierPhone:this.seek,
+          //供应商地址
+          supplierAddress:this.seek,
         },
         responseType: 'json',
         responseEncoding: 'utf-8',
