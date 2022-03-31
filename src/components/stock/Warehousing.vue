@@ -82,8 +82,23 @@
       label="操作"
       width="100">
       <template #default="scope">
-        <el-button @click="handleClick(scope.row)" type="text" size="small">详情</el-button>
-        <el-button type="text" size="small">作废</el-button>
+        <el-button type="text" size="small" @click="goBack">详情</el-button>
+        
+        <el-popover v-model:visible="visible" placement="top" :width="160">
+    <p>您确定要作废该单据吗？</p>
+    <div style="text-align: right; margin: 0">
+      <el-button size="small" type="text" @click="visible = false"
+        >取消</el-button
+      >
+      <el-button size="small" type="primary" @click="visible = false"
+        >确定</el-button
+      >
+    </div>
+    <template #reference>
+      <el-button type="text" size="small" slot="reference" @click="visible = true">作废</el-button>
+    </template>
+  </el-popover>
+        
       </template>
     </el-table-column>
   </el-table>
@@ -108,6 +123,8 @@
 export default {
   data() {
     return {
+      // 作废弹出框
+      visible: false,
       // 分页
       currentPage4: 1,
       // 表格
@@ -131,6 +148,11 @@ export default {
     };
   },
   methods: {
+    // 详情跳页面
+    //跳转到付款单
+goBack() {
+  this.$router.push({path: '/Warehousedetails'})
+},
     // 分页
     handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
