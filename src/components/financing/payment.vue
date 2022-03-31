@@ -37,7 +37,8 @@
               border
               id="scroll"
               style="width: 100%;max-height:calc(100vh - 218px);"
-              :header-cell-style="{background:'#F8F8F9',color:'#606266'}"
+              :header-cell-style="{background:'#F8F8F9',color:'#606266'}
+              "
           >
             <el-table-column prop="name" label="供应商" type="index" width="235">
               <el-popover placement="bottom" :width="600" trigger="click" v-show="payClick" :key="one">
@@ -51,7 +52,7 @@
                   </el-input>
                 </template>
                 <el-table :data="tableData2" @row-click="a">
-                  <el-table-column width="150" prop="supplierId" label="供应商编号"/>
+                  <el-table-column width="150" prop="supplierSerial" label="供应商编号"/>
                   <el-table-column width="300" property="supplierName" label="供应商名称"/>
                   <el-table-column width="150" property="supplierPhone" label="联系电话"/>
                 </el-table>
@@ -72,7 +73,10 @@
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column prop="address" label="欠款总计(元)" width="201"/>
+            <el-table-column prop="agregateTotal" label="欠款总计(元)" width="201">
+              <el-input v-model="this.tableData5.agregateTotal" disabled>
+              </el-input>
+            </el-table-column>
             <el-table-column prop="address" label="本次付款(元)" width="203">
               <template #default>
                 <el-input v-model="onePay" placeholder="请输入" style="width: 150px;"/>
@@ -84,6 +88,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="address" label="合计(元)" width="210" align="center">
+              {{ parseInt(this.onePay) + parseInt(this.salePay)}}
             </el-table-column>
           </el-table>
         </div>
@@ -95,47 +100,47 @@
       <el-input v-model="remark" type="textarea" placeholder="请输入备注信息"/>
       <br/>
       <br/>
-      附件上传：
-      <el-upload action="#" list-type="picture-card" :auto-upload="false">
-        <el-icon>
-          <Plus/>
-        </el-icon>
+<!--      附件上传：-->
+<!--      <el-upload action="#" list-type="picture-card" :auto-upload="false">-->
+<!--        <el-icon>-->
+<!--          <Plus/>-->
+<!--        </el-icon>-->
 
-        <template #file="{ file }">
-          <div>
-            <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
-            <span class="el-upload-list__item-actions">
-          <span
-              class="el-upload-list__item-preview"
-              @click="handlePictureCardPreview(file)"
-          >
-            <el-icon><zoom-in/></el-icon>
-          </span>
-          <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleDownload(file)"
-          >
-            <el-icon><Download/></el-icon>
-          </span>
-          <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleRemove(file)"
-          >
-            <el-icon><Delete/></el-icon>
-          </span>
-        </span>
-          </div>
-        </template>
-      </el-upload>
+<!--        <template #file="{ file }">-->
+<!--          <div>-->
+<!--            <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>-->
+<!--            <span class="el-upload-list__item-actions">-->
+<!--          <span-->
+<!--              class="el-upload-list__item-preview"-->
+<!--              @click="handlePictureCardPreview(file)"-->
+<!--          >-->
+<!--            <el-icon><zoom-in/></el-icon>-->
+<!--          </span>-->
+<!--          <span-->
+<!--              v-if="!disabled"-->
+<!--              class="el-upload-list__item-delete"-->
+<!--              @click="handleDownload(file)"-->
+<!--          >-->
+<!--            <el-icon><Download/></el-icon>-->
+<!--          </span>-->
+<!--          <span-->
+<!--              v-if="!disabled"-->
+<!--              class="el-upload-list__item-delete"-->
+<!--              @click="handleRemove(file)"-->
+<!--          >-->
+<!--            <el-icon><Delete/></el-icon>-->
+<!--          </span>-->
+<!--        </span>-->
+<!--          </div>-->
+<!--        </template>-->
+<!--      </el-upload>-->
 
-      <el-dialog v-model="dialogVisible">
-        <img width="50%" :src="dialogImageUrl" alt=""/>
-      </el-dialog>
-      <div class="text">
-        仅支持jpg/jpeg/png格式，最多5张图片
-      </div>
+<!--      <el-dialog v-model="dialogVisible">-->
+<!--        <img width="50%" :src="dialogImageUrl" alt=""/>-->
+<!--      </el-dialog>-->
+<!--      <div class="text">-->
+<!--        仅支持jpg/jpeg/png格式，最多5张图片-->
+<!--      </div>-->
     </div>
     <div class="ant-card-body2" style="margin-top: 70px;padding: 10px;background: white">
       <div class="ant-button">
@@ -191,12 +196,12 @@
                 <el-radio
                     :label="scope.$index"
                     v-model="currentRow"
-                    @click="b(scope.row)"
+                    @click="a(scope.row)"
                     style="color: #fff; padding-left: 10px; margin-right: -25px"
                 ></el-radio>
               </template>
             </el-table-column>
-            <el-table-column prop="supplierId" label="供应商编号" width="150"/>
+            <el-table-column prop="supplierSerial" label="供应商编号" width="150"/>
             <el-table-column prop="supplierName" label="供应商名称" width="170"/>
             <el-table-column prop="supplierPhone" label="联系电话" width="166"/>
             <el-table-column prop="supplierAddress" label="地址" width="150"/>
@@ -274,7 +279,7 @@
             <el-input v-model="ruleForm.remark2" type="textarea"/>
           </el-form-item>
           <el-form-item>
-            <el-button @click="this.become2=false,this.become=true">取消并返回</el-button>
+            <el-button @click="this.become2=false,this.become=true,rest()">取消并返回</el-button>
             <el-button type="primary" @click="this.become2=false,this.become=true,insertSupplier()"
             >保存
             </el-button
@@ -325,6 +330,7 @@ export default defineComponent({
       //表格
       tableData: [{}],
       tableData3:[],
+      tableData5: [],
       //表格
       //供应商
       payment: '',
@@ -360,15 +366,19 @@ export default defineComponent({
 
   },
   methods: {
+    //清空
+    rest(){
+      this.ruleForm.name="";
+      this.ruleForm.phone="";
+      this.ruleForm.remark2="";
+      this.ruleForm.address="";
+    },
     //选中名称赋值进供应商文本框
     a(val) {
       this.payment = val.supplierName;
       this.payClick = false;
       this.one = this.one + 1;
-    },
-    //单选按钮选中供应商名称进文本框
-    b(val) {
-      this.payment = val.supplierName;
+      this.selectSupplierAll(this.payment);
     },
     //跳转到付款历史
     goBack() {
@@ -434,6 +444,8 @@ export default defineComponent({
         method: 'post',
         url: this.url + 'supplier/insertSupplier',
         data: {
+          //供应商编号
+          supplierSerial:this.ruleForm.id,
           //供应商名称
           supplierName:this.ruleForm.name,
           //电话
@@ -457,6 +469,9 @@ export default defineComponent({
                 message: '添加成功',
                 type: 'success',
               })
+              this.selectSupplier();
+              this.selectSupplierPage();
+              this.ruleForm={}
             } else {
               ElMessage({
                 type: 'warning',
@@ -479,12 +494,63 @@ export default defineComponent({
         }
       })
     },
+    // 生成供应商流水编号
+    obtainSupplierNumber() {
+      this.axios({
+        method: 'get',
+        url: this.url + 'obtainSupplierNumber',
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("生成供应商流水编号");
+        console.log(response);
+        if (response.data.code === 200) {
+          if (response.data.data.state === 200) {
+            this.ruleForm.id = response.data.data.info
+          }
+        } else {
+          ElMessage({
+            message: response.data.message,
+            type: 'warning',
+          })
+        }
+      })
+    },
+    //查询供应商欠款信息
+    selectSupplierAll() {
+      this.axios({
+        method: 'post',
+        url: this.url + 'supplier/selectSupplierAll',
+        data: {
+          supplierName:this.payment,
+        },
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("查询所有供应商欠款信息");
+        console.log(response);
+        if (response.data.state === 200 && response.data.msg === "查询成功") {
+              this.tableData5 = response.data.info[0];
+              if(response.data.info.length==0){
+                this.tableData5=[];
+              }
+        } else {
+          ElMessage({
+            message: response.data.msg,
+            type: 'warning',
+          })
+        }
+      })
+    },
   },
   mounted() {
     //查询供应商
     this.selectSupplier();
     //分页查询供应商
     this.selectSupplierPage();
+    //生成供应商编号
+    this.obtainSupplierNumber();
   }
 
 })
