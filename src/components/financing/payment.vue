@@ -51,9 +51,9 @@
                   </el-input>
                 </template>
                 <el-table :data="tableData2" @row-click="a">
-                  <el-table-column width="150" property="date" label="供应商编号"/>
-                  <el-table-column width="300" property="name" label="供应商名称"/>
-                  <el-table-column width="150" property="address" label="联系电话"/>
+                  <el-table-column width="150" prop="supplierId" label="供应商编号"/>
+                  <el-table-column width="300" property="supplierName" label="供应商名称"/>
+                  <el-table-column width="150" property="supplierPhone" label="联系电话"/>
                 </el-table>
               </el-popover>
               <el-button @click="this.payClick=false,this.become=true">
@@ -154,19 +154,19 @@
         :close-on-click-modal="false"
     >
       <button type="button" class="fl ant-btn" @click="this.become2=true,this.become=false"><span>新增供应商</span></button>&nbsp;&nbsp;
-      <el-select v-model="payType" placeholder="全部分类" style="width: 150px;">
-        <el-option label="现金" value="现金"/>
-        <el-option label="微信" value="微信"/>
-        <el-option label="支付宝" value="支付宝"/>
-        <el-option label="系统账户" value="系统账户"/>
-      </el-select>&nbsp;&nbsp;
+<!--      <el-select v-model="payType" placeholder="全部分类" style="width: 150px;">-->
+<!--        <el-option label="现金" value="现金"/>-->
+<!--        <el-option label="微信" value="微信"/>-->
+<!--        <el-option label="支付宝" value="支付宝"/>-->
+<!--        <el-option label="系统账户" value="系统账户"/>-->
+<!--      </el-select>&nbsp;&nbsp;-->
       <el-input style="width: 250px;"
                 v-model="seek"
                 placeholder="编号、名称、联系信息"
                 class="input-with-select"
       >
         <template #append>
-          <el-button @click="this.payClick=false,this.become=true">
+          <el-button @click="this.payClick=false,this.become=true,selectSupplierPage()">
             <el-icon>
               <search/>
             </el-icon>
@@ -196,11 +196,11 @@
                 ></el-radio>
               </template>
             </el-table-column>
-            <el-table-column prop="address" label="供应商编号" width="150"/>
-            <el-table-column prop="address" label="供应商名称" width="170"/>
-            <el-table-column prop="address" label="联系电话" width="166"/>
-            <el-table-column prop="address" label="地址" width="150"/>
-            <el-table-column prop="address" label="备注" width="150"/>
+            <el-table-column prop="supplierId" label="供应商编号" width="150"/>
+            <el-table-column prop="supplierName" label="供应商名称" width="170"/>
+            <el-table-column prop="supplierPhone" label="联系电话" width="166"/>
+            <el-table-column prop="supplierAddress" label="地址" width="150"/>
+            <el-table-column prop="supplierRemark" label="备注" width="150"/>
           </el-table>
         </div>
       </div>
@@ -216,8 +216,8 @@
             :pager-count="5"
             prev-text="上一页"
             next-text="下一页"
-            @size-change=""
-            @current-change=""
+            @size-change="selectSupplierPage()"
+            @current-change="selectSupplierPage()"
             background
         >
         </el-pagination>
@@ -252,17 +252,20 @@
           <el-form-item label="供应商名称：" prop="name" required>
             <el-input v-model="ruleForm.name" placeholder="请输入供应商名称"/>
           </el-form-item>
-          <el-form-item label="供应商分类:" required>
-            <el-select v-model="ruleForm.type" placeholder="全部分类">
-              <el-option label="家电" value="家电"/>
-              <el-option label="批发" value="批发"/>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="期初应付款：">
-            <el-input v-model="ruleForm.money"/>
-          </el-form-item>
-          <el-form-item label="期初预付款：">
-            <el-input v-model="ruleForm.money2"/>
+<!--          <el-form-item label="供应商分类:" required>-->
+<!--            <el-select v-model="ruleForm.type" placeholder="全部分类">-->
+<!--              <el-option label="家电" value="家电"/>-->
+<!--              <el-option label="批发" value="批发"/>-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="期初应付款：">-->
+<!--            <el-input v-model="ruleForm.money"/>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="期初预付款：">-->
+<!--            <el-input v-model="ruleForm.money2"/>-->
+<!--          </el-form-item>-->
+          <el-form-item label="电话：">
+            <el-input v-model="ruleForm.phone"/>
           </el-form-item>
           <el-form-item label="联系地址：">
             <el-input v-model="ruleForm.address"/>
@@ -272,7 +275,7 @@
           </el-form-item>
           <el-form-item>
             <el-button @click="this.become2=false,this.become=true">取消并返回</el-button>
-            <el-button type="primary" @click="this.become2=false,this.become=true"
+            <el-button type="primary" @click="this.become2=false,this.become=true,insertSupplier()"
             >保存
             </el-button
             >
@@ -286,10 +289,12 @@
 
 <script>
 import {defineComponent, ref} from 'vue'
-
+import {ElMessage,ElNotification} from "element-plus";
 export default defineComponent({
   data() {
     return {
+      // 访问地址
+      url: "http://localhost:9090/",
       ruleForm: ({
         id: '',
         name: '',
@@ -298,6 +303,7 @@ export default defineComponent({
         money2: '',
         address: '',
         remark2: '',
+        phone:'',
       }),
       //单选框
       currentRow: false,
@@ -315,19 +321,11 @@ export default defineComponent({
       //业务日期
       time: '',
       //下拉表格
-      tableData2: [{
-        name: '111',
-      }, {
-        name: '222',
-      }],
+      tableData2: [],
       //表格
       tableData: [{}],
+      tableData3:[],
       //表格
-      tableData3: [{
-        address: '111',
-      }, {
-        address: '222',
-      }],
       //供应商
       payment: '',
       //供应商2
@@ -364,19 +362,130 @@ export default defineComponent({
   methods: {
     //选中名称赋值进供应商文本框
     a(val) {
-      this.payment = val.name;
+      this.payment = val.supplierName;
       this.payClick = false;
       this.one = this.one + 1;
     },
     //单选按钮选中供应商名称进文本框
     b(val) {
-      this.payment = val.address;
+      this.payment = val.supplierName;
     },
     //跳转到付款历史
     goBack() {
       this.$router.push({path: '/financing/payment_history'})
     },
+    //查询供应商
+    selectSupplier() {
+      this.axios({
+        method: 'post',
+        url: this.url + 'supplier/selectSupplier',
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("查询所有供应商");
+        console.log(response);
+        if (response.data.state === 200 && response.data.msg === "查询成功") {
+          this.tableData2 = response.data.info;
+        } else {
+          ElMessage({
+            message: response.data.msg,
+            type: 'warning',
+          })
+        }
+      })
+    },
+    //分页查询供应商
+    selectSupplierPage() {
+      this.axios({
+        method: 'post',
+        url: this.url + 'supplier/selectSupplierPage',
+        data: {
+          //当前页
+          currentPage: this.pageInfo.currentPage,
+          //页大小
+          pageSize: this.pageInfo.pagesize,
+          //供应商名称
+          supplierName:this.seek,
+          //供应商号码
+          supplierPhone:this.seek,
+          //供应商地址
+          supplierAddress:this.seek,
+        },
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("分页查询所有供应商");
+        console.log(response);
+        if (response.data.state === 200 && response.data.msg === "查询成功") {
+          this.tableData3 = response.data.info.records
+          this.pageInfo.total = response.data.info.total
+        } else {
+          ElMessage({
+            message: response.data.msg,
+            type: 'warning',
+          })
+        }
+      })
+    },
+    //添加供应商
+    insertSupplier() {
+      this.axios({
+        method: 'post',
+        url: this.url + 'supplier/insertSupplier',
+        data: {
+          //供应商名称
+          supplierName:this.ruleForm.name,
+          //电话
+          supplierPhone:this.ruleForm.phone,
+          //地址
+          supplierAddress:this.ruleForm.address,
+          //备注
+          supplierRemark:this.ruleForm.remark2,
+        },
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        if (response.data.code == 200) {
+          if (response.data.data) {
+            //如果服务是正常的
+            if (response.data.data.state == 200) {
+              //如果是成功
+              this.selectSupplierPage();
+              ElNotification({
+                title: '提示',
+                message: '添加成功',
+                type: 'success',
+              })
+            } else {
+              ElMessage({
+                type: 'warning',
+                message: response.data.data.info,
+              })
+            }
+          }else {
+            ElNotification.error({
+              title: '提示',
+              message: response.data.data.info,
+              offset: 100,
+            })
+          }
+        } else {
+          ElNotification.error({
+            title: '提示',
+            message: response.data.message,
+            offset: 100,
+          })
+        }
+      })
+    },
   },
+  mounted() {
+    //查询供应商
+    this.selectSupplier();
+    //分页查询供应商
+    this.selectSupplierPage();
+  }
 
 })
 </script>

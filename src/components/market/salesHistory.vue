@@ -1,5 +1,5 @@
 <template>
-  <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick"  type="card">
+  <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick"  type="card" >
     <el-tab-pane label="已出库" name="first">
       <div>
         <el-button style="float:right" type="primary">添加商品</el-button>

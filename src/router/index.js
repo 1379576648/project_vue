@@ -32,8 +32,15 @@ const routes = [
             {path:"/details",component:()=>import('../components/commodity/details.vue')},
         ]
     },
+
     {path:"/stock",component:()=>import('../components/navigationbar.vue'),
         children:[
+            {path: "/godownEntry", component: () => import('../components/stock/godownEntry.vue')},
+            {
+                path:"/earlyWarning",
+                component:()=>import("../components/stock/earlyWarning.vue"),
+
+            },
             {path:"/otherOutStock",component:()=>import('../components/stock/OtherOutStock.vue')},
             {path:"/otherOutStockAll",component:()=>import('../components/stock/OtherOutStockAll.vue')},
             {path:"/otherOutStockDetails",component:()=>import('../components/stock/OtherOutStockDetails.vue')},
