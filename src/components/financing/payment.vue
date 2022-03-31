@@ -275,7 +275,7 @@
           </el-form-item>
           <el-form-item>
             <el-button @click="this.become2=false,this.become=true">取消并返回</el-button>
-            <el-button type="primary" @click="this.become2=false,this.become=true"
+            <el-button type="primary" @click="this.become2=false,this.become=true,insertSupplier()"
             >保存
             </el-button
             >
@@ -289,7 +289,7 @@
 
 <script>
 import {defineComponent, ref} from 'vue'
-import {ElMessage} from "element-plus";
+import {ElMessage,ElNotification} from "element-plus";
 export default defineComponent({
   data() {
     return {
@@ -424,6 +424,57 @@ export default defineComponent({
           ElMessage({
             message: response.data.msg,
             type: 'warning',
+          })
+        }
+      })
+    },
+    //添加供应商
+    insertSupplier() {
+      this.axios({
+        method: 'post',
+        url: this.url + 'supplier/insertSupplier',
+        data: {
+          //供应商名称
+          supplierName:this.ruleForm.name,
+          //电话
+          supplierPhone:this.ruleForm.phone,
+          //地址
+          supplierAddress:this.ruleForm.address,
+          //备注
+          supplierRemark:this.ruleForm.remark2,
+        },
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        if (response.data.code == 200) {
+          if (response.data.data) {
+            //如果服务是正常的
+            if (response.data.data.state == 200) {
+              //如果是成功
+              this.selectSupplierPage();
+              ElNotification({
+                title: '提示',
+                message: '添加成功',
+                type: 'success',
+              })
+            } else {
+              ElMessage({
+                type: 'warning',
+                message: response.data.data.info,
+              })
+            }
+          }else {
+            ElNotification.error({
+              title: '提示',
+              message: response.data.data.info,
+              offset: 100,
+            })
+          }
+        } else {
+          ElNotification.error({
+            title: '提示',
+            message: response.data.message,
+            offset: 100,
           })
         }
       })
