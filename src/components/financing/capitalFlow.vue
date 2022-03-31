@@ -68,18 +68,23 @@
       </el-row>
       <br>
       <el-row :gutter="24">
-          <el-table :data="tableData" border show-summary sum-text="合计" width="100%" class="table">
-               <el-table-column type="index" label="序号" width="180" />
-               <el-table-column prop="name" label="业务日期" />
-               <el-table-column prop="amount1" label="单据编号" />
-               <el-table-column prop="amount2" label="业务名称" />
-               <el-table-column prop="amount3" label="往来单位" />
-               <el-table-column prop="" label="结算账户"></el-table-column>
-               <el-table-column prop="" label="收支类别"></el-table-column>
-               <el-table-column prop="" label="收入金额"></el-table-column>
-               <el-table-column prop="" label="支出金额"></el-table-column>
-               <el-table-column prop="" label="当前余额"></el-table-column>
-               <el-table-column prop="" label="经手人"></el-table-column>
+          <el-table :data="tableData" border show-summary sum-text="合计" :summary-method="getSummaries" width="100%" class="table">
+               <el-table-column type="index" label="序号" width="80" />
+               <el-table-column prop="operationTime" label="业务日期" />
+               <el-table-column prop="billId" label="单据编号" />
+               <el-table-column prop="businessName" label="业务名称" />
+               <el-table-column prop="correspondentUnit" label="往来单位" />
+               <el-table-column prop="settlementMethod" label="结算账户"></el-table-column>
+               <el-table-column label="收支类别">
+                   <template #default="scope">
+                       <p v-if="scope.row.type=='收入'" style="width:50px;height:30px;background-color:rgba(230,255,251,0.5);border:1px solid rgb(87,205,205);color:rgb(87,205,205);text-align:center;line-height:30px;">{{scope.row.type}}</p>
+                       <p v-if="scope.row.type=='支出'" style="width:50px;height:30px;background-color:rgba(255,241,240,0.5);border:1px solid rgb(245,67,76);color:rgb(245,67,76);text-align:center;line-height:30px;">{{scope.row.type}}</p>
+                   </template>
+               </el-table-column>
+               <el-table-column prop="revenueAmount" label="收入金额"></el-table-column>
+               <el-table-column prop="expenditureAmount" label="支出金额"></el-table-column>
+               <el-table-column prop="currentBalance" label="当前余额"></el-table-column>
+               <el-table-column prop="staffId" label="经手人"></el-table-column>
           </el-table>
       </el-row>
       <el-row :gutter="24">
@@ -119,65 +124,76 @@ export default {
         pageInfo:{
             page:1,
             size:10,
-            total:5,
-            like:""
+            total:5
         },
-        tableData:[
-            {
-                id: '12987122',
-                name: 'Tom',
-                amount1: '234',
-                amount2: '3.2',
-                amount3: 10
-            },
-            {
-                id: '12987123',
-                name: 'Tom',
-                amount1: '165',
-                amount2: '4.43',
-                amount3: 12
-            },
-            {
-                id: '12987124',
-                name: 'Tom',
-                amount1: '324',
-                amount2: '1.9',
-                amount3: 9
-            },
-            {
-                id: '12987125',
-                name: 'Tom',
-                amount1: '621',
-                amount2: '2.2',
-                amount3: 17
-            },
-            {
-                id: '12987126',
-                name: 'Tom',
-                amount1: '539',
-                amount2: '4.1',
-                amount3: 15
-            }
-        ]
+        tableData:[]
     };
   },
   methods: {
+      //表尾合计列统计规则方法
+      getSummaries(param) {
+        const { columns, data } = param;
+        const sums = [];
+        columns.forEach((column, index) => {
+          if (index === 0) {
+            sums[index] = '总价';
+            return;
+          }
+
+          if(index === 9){
+            sums[index] = '—';
+            return;
+          }
+          const values = data.map(item => Number(item[column.property]));
+          if (!values.every(value => isNaN(value))) {
+            sums[index] = values.reduce((prev, curr) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return prev + curr;
+              } else {
+                return prev;
+              }
+            }, 0);
+            sums[index] = '￥'+sums[index];
+          } else {
+            sums[index] = '—';
+          }
+        });
+
+        return sums;
+      },
+      //查询方法
       selectAll(){
           this.axios.get("http://localhost:9090/fund/selectFundAll",{
               params:{
                   "page":this.pageInfo.page,
-                  "size":this.pageInfo.size
+                  "size":this.pageInfo.size,
+                  "like":this.likeinput
               }
           })
           .then(res =>{
               console.log(res.data);
+              this.tableData=res.data.data.records;
+              this.pageInfo.total=res.data.data.total;
           })
           .catch(err =>{
               console.log(err);
           })
-      }
+      },
+      //分页每页多少条方法
+      handleSizeChange(size){
+          this.pageInfo.size=size;
+          this.selectAll();
+      },
+      //分页切换页数方法
+      handleCurrentChange(page){
+          this.pageInfo.page=page;
+          this.selectAll();
+      },
   },
-  created() {},
+  created() {
+      this.selectAll();
+  },
   mounted() {}
 };
 </script>
