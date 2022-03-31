@@ -50,9 +50,9 @@
                   </el-input>
                 </template>
                 <el-table :data="tableData2" @row-click="a">
-                  <el-table-column width="150" property="date" label="客户编号"/>
-                  <el-table-column width="300" property="name" label="客户名称"/>
-                  <el-table-column width="150" property="address" label="联系电话"/>
+                  <el-table-column width="150" property="customerSerial" label="客户编号"/>
+                  <el-table-column width="300" property="customerName" label="客户名称"/>
+                  <el-table-column width="150" property="customerPhone" label="联系电话"/>
                 </el-table>
               </el-popover>
               <el-button @click="this.payClick=false,this.become=true">
@@ -153,12 +153,6 @@
         :close-on-click-modal="false"
     >
       <button type="button" class="fl ant-btn" @click="this.become2=true,this.become=false"><span>新增客户</span></button>&nbsp;&nbsp;
-      <el-select v-model="payType" placeholder="全部分类" style="width: 150px;">
-        <el-option label="现金" value="现金"/>
-        <el-option label="微信" value="微信"/>
-        <el-option label="支付宝" value="支付宝"/>
-        <el-option label="系统账户" value="系统账户"/>
-      </el-select>&nbsp;&nbsp;
       <el-input style="width: 250px;"
                 v-model="seek"
                 placeholder="编号、名称、联系信息"
@@ -195,35 +189,35 @@
                 ></el-radio>
               </template>
             </el-table-column>
-            <el-table-column prop="address" label="客户编号" width="150"/>
-            <el-table-column prop="address" label="客户名称" width="170"/>
-            <el-table-column prop="address" label="联系电话" width="166"/>
-            <el-table-column prop="address" label="地址" width="150"/>
-            <el-table-column prop="address" label="备注" width="150"/>
+            <el-table-column prop="customerSerial" label="客户编号" width="150"/>
+            <el-table-column prop="customerName" label="客户名称" width="170"/>
+            <el-table-column prop="customerPhone" label="联系电话" width="166"/>
+            <el-table-column prop="customerAddress" label="地址" width="150"/>
+            <el-table-column prop="customerRemarks" label="备注" width="150"/>
           </el-table>
         </div>
       </div>
       <!-- 分页插件 -->
-      <div style="margin-top: 10px;">
+      <div class="demo-pagination-block">
         <el-pagination
             v-model:currentPage="pageInfo.currentPage"
-            :page-sizes="[4, 5, 10, 50]"
-            v-model:page-size="pageInfo.pagesize"
-            :default-page-size="pageInfo.pagesize"
+            :page-sizes="[1, 3, 5, 7]"
+            v-model:page-size="pageInfo.pageSize"
+            :default-page-size="pageInfo.pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="pageInfo.total"
             :pager-count="5"
-            prev-text="上一页"
-            next-text="下一页"
-            @size-change=""
-            @current-change=""
             background
-        >
+            next-text="下一页"
+            prev-text="上一页"
+            @size-change="queryAllCustomer()"
+            @current-change="queryAllCustomer()"
+            @prev-click="queryAllCustomer()"
+            @next-click="queryAllCustomer()">
+          prev-text="上一页"
+          next-text="下一页"
+          >
         </el-pagination>
-      </div>
-      <div style="margin-top: 10px;margin-left: 770px;">
-        <el-button @click="this.become=false,this.payment = undefined,this.currentRow=undefined">取消</el-button>
-        <el-button type="primary" @click="this.become=false,this.currentRow=undefined">确认选择</el-button>
       </div>
     </el-dialog>
 
@@ -239,37 +233,31 @@
     >
       <div>
         <el-form
-            ref="ruleFormRef"
+            ref="ruleForm"
             :model="ruleForm"
             :rules="rules"
             label-width="120px"
             class="demo-ruleForm"
         >
-          <el-form-item label="客户编号：">
+          <el-form-item label="客户编号：" prop="id">
             <el-input disabled v-model="ruleForm.id"/>
           </el-form-item>
           <el-form-item label="客户名称：" prop="name" required>
-            <el-input v-model="ruleForm.name" placeholder="请输入供应商名称"/>
+            <el-input v-model="ruleForm.name" placeholder="请输入客户名称"/>
           </el-form-item>
-          <el-form-item label="客户分类:" required>
-            <el-select v-model="ruleForm.type" placeholder="全部分类">
-              <el-option label="一级客户" value="一级客户"/>
-              <el-option label="二级客户" value="二级客户"/>
-              <el-option label="三级客户" value="三级客户"/>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="填写电话：">
+          <el-form-item label="填写电话：" prop="phone">
             <el-input v-model="ruleForm.phone"/>
           </el-form-item>
-          <el-form-item label="联系地址：">
+          <el-form-item label="联系地址：" prop="address">
             <el-input v-model="ruleForm.address"/>
           </el-form-item>
-          <el-form-item label="备注">
+          <el-form-item label="备注" prop="remark2">
             <el-input v-model="ruleForm.remark2" type="textarea"/>
           </el-form-item>
           <el-form-item>
-            <el-button @click="this.become2=false,this.become=true">取消并返回</el-button>
-            <el-button type="primary" @click="this.become2=false,this.become=true"
+            <el-button @click=" resetForm(),this.become2=false,this.become=true">取消并返回</el-button>
+
+            <el-button type="primary" @click="addCustomer()"
             >保存
             </el-button
             >
@@ -314,19 +302,11 @@ export default defineComponent({
       //业务日期
       time: '',
       //下拉表格
-      tableData2: [{
-        name: '111',
-      }, {
-        name: '222',
-      }],
+      tableData2: [],
       //表格
       tableData: [{}],
       //表格
-      tableData3: [{
-        address: '111',
-      }, {
-        address: '222',
-      }],
+      tableData3: [],
       //供应商
       payment: '',
       //供应商2
@@ -344,7 +324,7 @@ export default defineComponent({
       pageInfo: {
         // 分页参数
         currentPage: 1, //当前页
-        pagesize: 5, // 页大小
+        pageSize: 3, // 页大小
         total: 0, // 总页数
       },
       //验证
@@ -352,7 +332,7 @@ export default defineComponent({
         name: [
           {
             required: true,
-            message: '请输入供应商名称',
+            message: '请输入客户名称',
             trigger: 'blur'
           },
         ],
@@ -383,6 +363,90 @@ export default defineComponent({
         }
       })
     },
+    // 添加客户
+    addCustomer() {
+      if (this.ruleForm.name.length === 0) {
+        ElMessage({
+          message: "请输入用户名称",
+          type: 'warning',
+        })
+      } else if (this.ruleForm.phone === 0) {
+        ElMessage({
+          message: "请输入用户联系电话",
+          type: 'warning',
+        })
+      } else if (this.ruleForm.address === 0) {
+        ElMessage({
+          message: "请输入用户联系地址",
+          type: 'warning',
+        })
+      } else {
+        this.axios({
+          method: 'post',
+          url: this.url + 'customer/addCustomer',
+          data: {
+            'customerSerial': this.ruleForm.id,
+            'customerName': this.ruleForm.name,
+            'customerAddress': this.ruleForm.address,
+            'customerPhone': this.ruleForm.phone,
+            'customerRemarks': this.ruleForm.remark2,
+          },
+          responseType: 'json',
+          responseEncoding: 'utf-8',
+        }).then((response) => {
+          console.log("添加客户");
+          console.log(response);
+          if (response.data.code === 200) {
+            if (response.data.data.state === 200) {
+              ElMessage({
+                message: "保存成功",
+                type: 'success',
+              })
+              this.become2 = false;
+              this.become = true
+              // 清空表单
+              this.resetForm();
+              this.obtainSerialNumber();
+            }
+          } else {
+            ElMessage({
+              message: response.data.message,
+              type: 'warning',
+            })
+          }
+        })
+      }
+    },
+    // 查询所有的客户
+    queryAllCustomer() {
+      this.axios({
+        method: 'get',
+        url: this.url + 'customer/queryAllCustomer/' + this.pageInfo.currentPage + '/' + this.pageInfo.pageSize,
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("查询所有的客户");
+        console.log(response);
+        if (response.data.code === 200) {
+          if (response.data.data.state === 200) {
+            this.tableData2 = response.data.data.info.records
+            this.tableData3 = response.data.data.info.records
+            this.pageInfo.pageSize = response.data.data.info.size;
+            this.pageInfo.total = response.data.data.info.total;
+          }
+        } else {
+          ElMessage({
+            message: response.data.message,
+            type: 'warning',
+          })
+        }
+      })
+    },
+    // 清空表单
+    resetForm() {
+      this.$refs.ruleForm.resetFields()
+    },
     //选中名称赋值进供应商文本框
     a(val) {
       this.payment = val.name;
@@ -398,8 +462,10 @@ export default defineComponent({
       this.$router.push({path: '/financing/collection'})
     },
   }, created() {
-// 生成客户流水编号
+    // 生成客户流水编号
     this.obtainSerialNumber();
+    //  查询所有客户
+    this.queryAllCustomer();
   }
 
 })
