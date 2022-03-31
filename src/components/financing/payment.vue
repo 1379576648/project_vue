@@ -166,7 +166,7 @@
                 class="input-with-select"
       >
         <template #append>
-          <el-button @click="this.payClick=false,this.become=true">
+          <el-button @click="this.payClick=false,this.become=true,selectSupplier()">
             <el-icon>
               <search/>
             </el-icon>
@@ -178,7 +178,7 @@
       <div>
         <div style="height:calc(100vh - 218px);border:1px solid #e8e8e8;border-top:none">
           <el-table
-              :data="tableData2"
+              :data="tableData3"
               border
               id="scroll3"
               style="width: 100%;max-height:calc(100vh - 218px);"
@@ -216,8 +216,8 @@
             :pager-count="5"
             prev-text="上一页"
             next-text="下一页"
-            @size-change=""
-            @current-change=""
+            @size-change="selectSupplierPage()"
+            @current-change="selectSupplierPage()"
             background
         >
         </el-pagination>
@@ -324,6 +324,7 @@ export default defineComponent({
       tableData2: [],
       //表格
       tableData: [{}],
+      tableData3:[],
       //表格
       //供应商
       payment: '',
@@ -378,7 +379,11 @@ export default defineComponent({
       this.axios({
         method: 'post',
         url: this.url + 'supplier/selectSupplier',
-        data: {},
+        data: {
+          supplierName:this.seek,
+          supplierPhone:this.seek,
+          supplierAddress:this.seek,
+        },
         responseType: 'json',
         responseEncoding: 'utf-8',
       }).then((response) => {
@@ -394,10 +399,39 @@ export default defineComponent({
         }
       })
     },
+    //分页查询供应商
+    selectSupplierPage() {
+      this.axios({
+        method: 'post',
+        url: this.url + 'supplier/selectSupplierPage',
+        data: {
+          //当前页
+          currentPage: this.pageInfo.currentPage,
+          //页大小
+          pageSize: this.pageInfo.pagesize,
+        },
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("分页查询所有供应商");
+        console.log(response);
+        if (response.data.state === 200 && response.data.msg === "查询成功") {
+          this.tableData3 = response.data.info.records
+          this.pageInfo.total = response.data.info.total
+        } else {
+          ElMessage({
+            message: response.data.msg,
+            type: 'warning',
+          })
+        }
+      })
+    },
   },
   mounted() {
     //查询供应商
     this.selectSupplier();
+    //分页查询供应商
+    this.selectSupplierPage();
   }
 
 })
