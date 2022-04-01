@@ -32,6 +32,7 @@ const routes = [
             {path:"/details",component:()=>import('../components/commodity/details.vue')},
 			 {path:"/classification",component:()=>import('../components/commodity/classification.vue')},
 			 {path:"/Purchasedetails",component:()=>import('../components/commodity/Purchasedetails.vue')},
+            {path:"/addcommodity",component:()=>import('../components/commodity/addcommodity.vue')},
         ]
     },
 
