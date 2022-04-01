@@ -108,9 +108,13 @@
 </template>
 
 <script>
+import {ElMessage} from "element-plus";
+
 export default {
   data() {
     return {
+      // 访问地址
+      url: "http://localhost:9090/",
       //表格数据
       tableData: [],
     }
@@ -120,7 +124,9 @@ export default {
     goBack() {
       this.$router.push({path: '/financing/collection'})
     },
-  }
+
+  }, created() {
+  },
 }
 </script>
 
