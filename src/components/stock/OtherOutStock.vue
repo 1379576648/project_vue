@@ -123,8 +123,8 @@
 
 
 	</div>
-	<br />
-	<div  style="background-color: white;padding: 20px;">
+
+	<div  style="background-color: white;padding: 20px;margin-top: 12px">
 		备注；<br /><br />
 		<el-input :rows="2" type="textarea" placeholder="请输入备注信息" />
 	</div>
