@@ -10,25 +10,25 @@
     <br>
     <div>
       仓库：
-      <el-select v-model="value" placeholder="请选择">
+      <el-select v-model="this.add.stockId" placeholder="请选择">
         <el-option
             style="width: 200px"
-            v-for="item in payments"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="item in stock"
+            :key="item.stockId"
+            :label="item.stockName"
+            :value="item.stockId">
         </el-option>
       </el-select>
       &nbsp;
       入库类型：
-      <el-select v-model="value" placeholder="请选择">
+      <el-select v-model="this.add.outinstocktypeId" placeholder="请选择">
         <el-option
 
             style="width: 200px"
-            v-for="item in payments"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="item in outinstocktype"
+            :key="item.outinstocktypeId"
+            :label="item.outinstocktypeName"
+            :value="item.outinstocktypeId">
         </el-option>
       </el-select>
 
@@ -142,11 +142,11 @@
         :cell-style="{ textAlign: 'center' }"
     >
       <el-table-column type="selection" width="55" />
-      <el-table-column type="index"  width="55" label="序号"/>
-      <el-table-column prop="address" label="商品编号" width="175" />
+      <el-table-column type="index"  width="55" label="序号" />
+      <el-table-column prop="address" label="商品编号" width="175" sortable />
       <el-table-column property="name" label="规格/属性"  />
       <el-table-column property="name" label="单位"  />
-      <el-table-column property="name" label="条形码"  />
+
       <el-table-column property="name" label="参考进货价"  />
       <el-table-column property="name" label="实际库存"  />
     </el-table>
@@ -198,30 +198,30 @@
     <hr style="margin-top: -30px;margin-bottom:20px;color:  #FFFFFF">
 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
 
-    <el-form-item style="margin-left: 20px" label="编号："  prop="number">
-      <el-input style="width: 300px" v-model="ruleForm.number"></el-input>
-    </el-form-item>
 
-    <el-form-item style="margin-left: 578px;margin-top: -47px;"   label="名称：" prop="name">
+    <el-form-item style="margin-left: 20px;"   label="名称：" prop="name">
       <el-input style="width: 300px" v-model="ruleForm.name" placeholder="例如：夹克"></el-input>
     </el-form-item>
 
-  <el-form-item style="margin-left: 20px" label="分类：" prop="classifys">
+
+
+  <el-form-item style="margin-left: 578px;margin-top:-50px;" label="分类：" prop="classifys">
     <el-select v-model="ruleForm.classifys" placeholder="请选择分类">
-      <el-option
-          style="width: 200px"
-          v-for="item in classifys"
-          :key="item.value4"
-          :label="item.label"
-          :value="item.value4">
-      </el-option>
+      <el-option hidden></el-option>
+      <el-tree
+          :data="a"
+          @node-click="handleNodeClik"
+          :props="defaultProps"
+          default-expand-all
+          :filter-node-method="filterNode"
+          highlight-current
+          ref="tree">
+      </el-tree>
     </el-select>
   </el-form-item>
 
-  <el-form-item style="margin-left: 578px;margin-top: -47px;" label="条形码：" prop="barcode">
-    <el-input style="width: 240px" placeholder="例如：772462862882" v-model="ruleForm.barcode"></el-input>
-    <el-button @click="generate()">生成</el-button>
-  </el-form-item>
+
+
 
   <el-form-item style="margin-left: 20px" label="单位：" prop="unit">
     <el-select v-model="ruleForm.unit" placeholder="请选择单位">
@@ -235,7 +235,7 @@
     </el-select>
   </el-form-item>
 
-  <el-form-item style="margin-left: 578px;margin-top: -47px;" label="规格/属性：">
+  <el-form-item style="margin-left: 578px;margin-top:-47px;" label="规格/属性：">
     <el-input style="width: 300px" v-model="ruleForm.property" placeholder="例如：红色"></el-input>
   </el-form-item>
 
@@ -322,6 +322,13 @@ const shortcuts = [
 export default {
 data(){
   return{
+   //树形控件
+    a:[],
+    defaultProps:{
+      children:'categorys',
+      label:'categoryName'
+    },
+
     //单位
     unit:[{
       value4: '克',
@@ -342,10 +349,8 @@ data(){
 
 
       ruleForm: {
-        number:'',
         name: '',
         classifys:'',
-        barcode:'',
         unit:'',
         property:'',
         retailPrice:'',
@@ -356,10 +361,7 @@ data(){
       },
     //表单验证
     rules:{
-      number: [
-        { required: true, message: '请输入编号', trigger: 'blur' },
-        { min: 1, max: 14, message: '长度在14个字符', trigger: 'blur' }
-      ],
+
       name:[
         { required: true, message: '请输入名称', trigger: 'blur' },
         { min: 1, max: 30, message: '长度在 3 到 5 个字符', trigger: 'blur' }
@@ -449,6 +451,7 @@ data(){
       value: '数学',
       label: '数学'
     }],
+
     value1:'',
     payments: [{
       value: '语文',
@@ -458,34 +461,76 @@ data(){
       label: '数学'
     }],
     value:'',
+    //出库数据
+    outinstocktype:[],
+    //库存
+    stock:[],
+
+    //添加其他入库单
+    add:{
+      stockId:'',
+      outinstocktypeId:'',
+    },
 
     multipleSelection:''
   }
 },
-
-
+  created() {
+  this.axios.get("http://localhost:9090/category/find")
+      .then(res=>{
+       this.a=res.data.data
+      })
+  this.form ()
+  this.inventory()
+  },
   methods:{
-    //生成密码
-    generate(){
-      //随机参数
-      let identifyCodes= '0123456789';
-      //初始化密码
-      this.ruleForm.barcode='';
-      for (let i = 0; i < 13; i++) {
-        this.ruleForm.barcode += identifyCodes[
-            this.randomNum(0, identifyCodes.length)]
-      }
-      console.log(this.ruleForm.barcode);
+    // //生成密码
+    // generate(){
+    //   //随机参数
+    //   let identifyCodes= '0123456789';
+    //   //初始化密码
+    //   this.ruleForm.barcode='';
+    //   for (let i = 0; i < 13; i++) {
+    //     this.ruleForm.barcode += identifyCodes[
+    //         this.randomNum(0, identifyCodes.length)]
+    //   }
+    //   console.log(this.ruleForm.barcode);
+    // },
+    // randomNum(min, max) {
+    //   return Math.floor(Math.random() * (max - min) + min);
+    // },
+
+
+
+    //查询出库类型表数据
+    form (){
+      this.axios({
+        method:'get',
+        url:'http://localhost:9090/outinstocktype/selectOutinstocktypes',
+        responseType:'json',
+        responseEncoding:'utf-8',
+      }).then(response=>{
+        this.outinstocktype=response.data.data
+      })
     },
-    randomNum(min, max) {
-      return Math.floor(Math.random() * (max - min) + min);
+
+
+    //查询全部库存
+    inventory(){
+      this.axios({
+        method:'get',
+        url:'http://localhost:9090/stock/selectStocks',
+        responseType:'json',
+        responseEncoding:'utf-8',
+      }).then(response=>{
+        this.stock=response.data.data
+      })
     },
 
   //表单验证
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-        //,added = false,dialogVisible=true
           this.added = false
           this.dialogVisible=true
           this.$refs[formName].resetFields();

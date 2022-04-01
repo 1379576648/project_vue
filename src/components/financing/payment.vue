@@ -10,7 +10,7 @@
             <el-button @click="goBack()" style="margin-left: 1100px;margin-bottom: 5px;">付款历史</el-button>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">单据编号：</span>
-          <span busitype="104">FK202203290001</span></span><!----></span></span>
+          <span busitype="104">{{this.fk}}</span></span><!----></span></span>
           </div>
         </div>
       </div>
@@ -19,8 +19,13 @@
       <div class="ant-row">
         经手人：
         <el-select v-model="region" placeholder="请选择" style="width: 110px">
-          <el-option label="管理员" value="管理员"/>
-          <el-option label="123" value="123"/>
+          <el-option
+              v-for="item in staffName"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          >
+          </el-option>
         </el-select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         业务日期：
         <el-date-picker style="width: 190px;"
@@ -145,7 +150,7 @@
     <div class="ant-card-body2" style="margin-top: 70px;padding: 10px;background: white">
       <div class="ant-button">
         <el-button>取消</el-button>
-        <el-button type="primary">保存</el-button>
+        <el-button type="primary" @click="insertCope()">保存</el-button>
       </div>
     </div>
 
@@ -330,6 +335,7 @@ export default defineComponent({
       //表格
       tableData: [{}],
       tableData3:[],
+      //欠款信息
       tableData5: [],
       //表格
       //供应商
@@ -344,6 +350,8 @@ export default defineComponent({
       salePay: '',
       //备注
       remark: '',
+      //付款流水号
+      fk:'',
       //图片
       dialogVisible: false,
       pageInfo: {
@@ -352,6 +360,7 @@ export default defineComponent({
         pagesize: 5, // 页大小
         total: 0, // 总页数
       },
+      staffName:[],
       //验证
       rules: {
         name: [
@@ -543,6 +552,127 @@ export default defineComponent({
         }
       })
     },
+    // 查询所有用户名称
+    selectStaff() {
+      this.axios({
+        method: 'post',
+        url: this.url + 'staff/selectStaff',
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("查询所有用户名称");
+        console.log(response);
+        if (response.data.state === 200 && response.data.msg === "查询成功") {
+          for (let i = 0; i < response.data.info.length; i++) {
+            this.staffName.push({
+              value: response.data.info[i].staffId,
+              label: response.data.info[i].staffName
+            })
+          }
+        } else {
+          ElMessage({
+            message: response.data.msg,
+            type: 'warning',
+          })
+        }
+      })
+    },
+    // 生成付款流水编号
+    obtainCopeNumber() {
+      this.axios({
+        method: 'get',
+        url: this.url + 'obtainCopeNumber',
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("生成付款流水编号");
+        console.log(response);
+        if (response.data.code === 200) {
+          if (response.data.data.state === 200) {
+            this.fk = response.data.data.info
+          }
+        } else {
+          ElMessage({
+            message: response.data.message,
+            type: 'warning',
+          })
+        }
+      })
+    },
+    //添加应付欠款
+    insertCope() {
+      this.axios({
+        method: 'post',
+        url: this.url + 'cope/insertCope',
+        data: {
+          //付款编号
+          copeSerial:this.fk,
+          //供应商名称
+          supplierId:this.tableData5.supplierId,
+          //应付金额
+          copeMoney:this.onePay,
+          //实付金额
+          copeReceipts:this.onePay,
+          //优惠金额
+          coupon:this.salePay,
+          //总计
+          agregate:this.tableData5.agregateTotal,
+          //业务日期
+          paymenttabTime:this.time,
+          //应付欠款编号
+          copeId:this.tableData5.copeId,
+          //金额
+          money:this.tableData5.agregate,
+          //用户编号
+          staffId:this.region,
+          //结算金额
+          settlement:this.payType,
+          //备注
+          remarks:this.remark,
+        },
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        if (response.data.code == 200) {
+          if (response.data.data) {
+            //如果服务是正常的
+            if (response.data.data.state == 200) {
+              //如果是成功
+              this.selectSupplierPage();
+              ElNotification({
+                title: '提示',
+                message: '添加成功',
+                type: 'success',
+              })
+              this.obtainCopeNumber();
+              this.payment="";
+              this.tableData5.agregateTotal="";
+              this.onePay="";
+              this.salePay="";
+            } else {
+              ElMessage({
+                type: 'warning',
+                message: response.data.data.info,
+              })
+            }
+          }else {
+            ElNotification.error({
+              title: '提示',
+              message: response.data.data.info,
+              offset: 100,
+            })
+          }
+        } else {
+          ElNotification.error({
+            title: '提示',
+            message: response.data.message,
+            offset: 100,
+          })
+        }
+      })
+    },
   },
   mounted() {
     //查询供应商
@@ -551,6 +681,10 @@ export default defineComponent({
     this.selectSupplierPage();
     //生成供应商编号
     this.obtainSupplierNumber();
+    //查询所有用户名称
+    this.selectStaff();
+    //生成付款流水号
+    this.obtainCopeNumber();
   }
 
 })
