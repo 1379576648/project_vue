@@ -58,6 +58,7 @@ const routes = [
 
         ]
     },
+    //采购
     {
         path:"/purchase",component:()=>import('../components/navigationbar.vue'),
         children:[
@@ -71,7 +72,10 @@ const routes = [
                 path:'/purchaseHistory',component:()=>import('../components/purchase/purchase_history.vue')
             },
             {
-                path:'/inGoods',component:()=>import('../components/purchase/inGoods.vue')
+                path:'/inGoods',component:()=>import('../components/purchase/inGoods.vue'),
+            },
+            {
+                path:'/returnDetails',component:()=>import('../components/purchase/return_details.vue')
             }
 
         ]
