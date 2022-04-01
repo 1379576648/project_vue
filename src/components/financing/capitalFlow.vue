@@ -204,7 +204,7 @@ export default {
 <style>
 .max{
     width:100%;
-    height: 100%;
+    height: 90vh;
     background-color: white;
     overflow-x: hidden;
 }
@@ -212,7 +212,7 @@ export default {
     margin-left: 10px;
 }
 .table{
-    height: 750px;
+    height: 78vh;
     margin-left: 10px;
 }
 </style>

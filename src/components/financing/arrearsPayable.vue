@@ -52,7 +52,7 @@ export default {
 <style>
 .max{
     width:100%;
-    height: 100%;
+    height: 90vh;
     overflow-x: hidden;
 }
 .maxOne{

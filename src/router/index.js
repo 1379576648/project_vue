@@ -29,6 +29,8 @@ const routes = [
             {path:"/financing/payment_details",component:()=>import('../components/financing/payment_details.vue')},
             //资金流水
             {path:"/capitalFlow",component:()=>import('../components/financing/capitalFlow.vue')},
+            //应付欠款
+            {path:"/arrearsPayable",component:()=>import('../components/financing/arrearsPayable.vue')},
             {path:"/goin",component:()=>import('../components/commodity/goin.vue')},
             {path:"/edit",component:()=>import('../components/commodity/edit.vue')},
             {path:"/details",component:()=>import('../components/commodity/details.vue')},
