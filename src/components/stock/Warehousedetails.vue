@@ -8,24 +8,24 @@
             <span class="font-size-24 font-bold-700">其他入库单详情</span>
             </div>
         <span class="font-size-14" style="float:right;margin-top:-2%;margin-right: 2%;"><span class="font-color-45" style="color: rgba(0,0,0,.85);">单据编号：</span>
-          <span busitype="104">FK202203290001</span></span><!---->
+          <span busitype="104">{{tableData[0].billId}}</span></span>
           <br/>
           <!-- 虚线 -->
           <div style="height:0px;border-top:1px black dashed;" />
           <br/>
           <!-- 入库仓库 -->
         <span class="font-size-14"><span class="font-color-45" style="color: rgba(0,0,0,.85);margin-left:1%;">入库仓库：</span>
-          <span busitype="104" style="color: rgba(0,0,0,.65);font-size: 14px;">哈哈哈哈</span></span>
+          <span busitype="104" style="color: rgba(0,0,0,.65);font-size: 14px;">{{tableData[0].stockName}}</span>&nbsp;</span>
           <!-- 入库类型 -->
             <span class="font-size-14"><span class="font-color-45" style="color: rgba(0,0,0,.85);">入库类型：</span>
-          <span busitype="104" style="color: rgba(0,0,0,.65);font-size: 14px;">哈哈哈哈</span></span>
+          <span busitype="104" style="color: rgba(0,0,0,.65);font-size: 14px;">{{tableData[0].outInStockTypeName}}</span></span>
          <!-- 经手人 -->
         <span class="font-size-14" style="margin-left:53%;"><span class="font-color-45" style="color: rgba(0,0,0,.65);font-size: 14px;">经手人：</span>
-          <span busitype="104" style="color: rgba(0,0,0,.65);font-size: 14px;">张三</span></span>
+          <span busitype="104" style="color: rgba(0,0,0,.65);font-size: 14px;">{{tableData[0].staffName}}</span></span>
           &nbsp;&nbsp;<span>|</span>&nbsp;&nbsp;
           <!-- 业务日期 -->
         <span class="font-size-14"><span class="font-color-45" style="color: rgba(0,0,0,.65);font-size: 14px;">业务日期：</span>
-          <span busitype="104" style="color: rgba(0,0,0,.65);font-size: 14px;">2022-3-20 12:00:00</span></span>
+          <span busitype="104" style="color: rgba(0,0,0,.65);font-size: 14px;">{{tableData[0].time}}</span></span>
           
           <div style="padding: 15px">
             <div>
@@ -36,71 +36,29 @@
                   style="width: 100%;max-height:calc(100vh - 218px);"
                   :header-cell-style="{background:'#F8F8F9',color:'#606266'}"
               >
-                <el-table-column prop="name" label="序号"/>
-                <el-table-column prop="address" label="商品名称"/>
-                <el-table-column prop="address" label="规格/属性"/>
-                <el-table-column prop="address" label="单位"/>
-                <el-table-column prop="price" label="单价(元)"/>
-                <el-table-column prop="number" label="数量"/>
-                <el-table-column prop="address" label="商品金额(元)"/>
-                <el-table-column prop="address" label="备注"/>
+                <el-table-column prop="commodityName" label="商品名称"/>
+                <el-table-column prop="commoditySpecifications" label="规格/属性"/>
+                <el-table-column prop="commodityCompany" label="单位"/>
+                <el-table-column prop="otherInStockDetailsPrice" label="单价(元)"/>
+                <el-table-column prop="otherInStockDetailsNumber" label="数量"/>
+                <el-table-column prop="otherInStockDetailsTotal" label="商品金额(元)"/>
+                <el-table-column prop="remark" label="备注"/>
               </el-table>
               <br/>
-              入库总额：650.0元
+              入库总额：{{tableData[0].otherInStockDetailsTotal}}元
               <br/>
               <br/>
-              制单人：管理员
-              <span style="margin-left:13%;">制单日期：</span>
+              
             </div>
           </div>
         </div>
       </div>
     </div>
     <div class="ant-card-body2" style="margin-top: 20px;padding: 10px;background: white">
-      备注：
+      备注：{{tableData[0].remark}}
       <br/>
       <br/>
-      附件上传：
-      <el-upload action="#" list-type="picture-card" :auto-upload="false">
-        <el-icon>
-          <Plus/>
-        </el-icon>
-
-        <template #file="{ file }">
-          <div>
-            <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
-            <span class="el-upload-list__item-actions">
-          <span
-              class="el-upload-list__item-preview"
-              @click="handlePictureCardPreview(file)"
-          >
-            <el-icon><zoom-in/></el-icon>
-          </span>
-          <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleDownload(file)"
-          >
-            <el-icon><Download/></el-icon>
-          </span>
-          <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleRemove(file)"
-          >
-            <el-icon><Delete/></el-icon>
-          </span>
-        </span>
-          </div>
-        </template>
-      </el-upload>
-
-      <el-dialog v-model="dialogVisible">
-        <img width="50%" :src="dialogImageUrl" alt=""/>
-      </el-dialog>
-      <div class="text">
-        仅支持jpg/jpeg/png格式，最多5张图片
-      </div>
+     
     </div>
     <div class="ant-card-body2" style="margin-top: 20px;padding: 10px;background: white">
       <div class="ant-button">
@@ -114,15 +72,35 @@
 export default {
   data() {
     return {
+      // id
+      otherInStockDetailsId:'',
       //表格数据
       tableData: [],
     }
   },
   methods: {
+    // 查询
+    selectDetail(){
+      this.otherInStockDetailsId=sessionStorage.getItem("otherInStockDetailsId");
+      console.log(this.otherInStockDetailsId);
+      this.axios.get("http://localhost:9090/otherinstockdetails/selectDetail",{
+        params:{
+          id:this.otherInStockDetailsId
+        }
+      }).then((response) =>{
+        console.log(response.data);
+        this.tableData=response.data;
+      })
+    },
     //跳转到付款历史
     goBack() {
       this.$router.push({path: '/Warehousing'})
     },
+  },
+  created(){
+    // 查询方法
+    this.selectDetail();
+    this.otherInStockDetailsId=sessionStorage.getItem("otherInStockDetailsId");
   }
 }
 </script>

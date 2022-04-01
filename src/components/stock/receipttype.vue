@@ -1,4 +1,5 @@
 <template>
+<!-- 其他出入库类型页面 -->
   <div style="background-color:white;padding:1%;overflow-x:hidden;overflow-y:hidden;">
        <el-tabs v-model="activeName" @tab-click="handleClick">
            <!-- 其他入库 -->
