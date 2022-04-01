@@ -5,15 +5,11 @@
       <div class="ant-card-head-wrapper">
         <div class="ant-card-head-title">
           <div class="ant-col ant-col-8" align="middle">
-            <span class="font-size-24 font-bold-700">付款单详情</span>
+            <span class="font-size-24 font-bold-700">收款单详情</span>
           </div>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">单据编号：</span>
           <span busitype="104">FK202203290001</span></span><!----></span></span>
-          </div>
-          <div class="ant-col ant-col-8" align="right"><span><span>
-        <span class="font-size-14"><span class="font-color-45">供应商名称：</span>
-          <span busitype="104">哈哈哈哈哈哈哈</span></span><!----></span></span>
           </div>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">经手人：</span>
@@ -22,6 +18,10 @@
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">业务日期：</span>
           <span busitype="104">2022-3-20</span></span><!----></span></span>
+          </div>
+          <div class="ant-col ant-col-8" align="right"><span><span>
+        <span class="font-size-14"><span class="font-color-45">客户名称：</span>
+          <span busitype="104">小明</span></span><!----></span></span>
           </div>
           <br/>
           <br/>
@@ -37,7 +37,7 @@
               >
                 <el-table-column prop="name" label="序号" type="index" width="80"/>
                 <el-table-column prop="address" label="结算账户" width="290"/>
-                <el-table-column prop="address" label="本单付出欠款(元)" width="296"/>
+                <el-table-column prop="address" label="本单收回欠款(元)" width="296"/>
                 <el-table-column prop="address" label="本单优惠金额(元)" width="300"/>
                 <el-table-column prop="address" label="合计(元)" width="300"/>
               </el-table>
@@ -108,19 +108,25 @@
 </template>
 
 <script>
+import {ElMessage} from "element-plus";
+
 export default {
   data() {
     return {
+      // 访问地址
+      url: "http://localhost:9090/",
       //表格数据
       tableData: [],
     }
   },
   methods: {
-    //跳转到付款历史
+    //跳转到收款历史
     goBack() {
-      this.$router.push({path: '/financing/payment_history'})
+      this.$router.push({path: '/financing/collection'})
     },
-  }
+
+  }, created() {
+  },
 }
 </script>
 
