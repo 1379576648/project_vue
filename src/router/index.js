@@ -30,6 +30,8 @@ const routes = [
             {path:"/goin",component:()=>import('../components/commodity/goin.vue')},
             {path:"/edit",component:()=>import('../components/commodity/edit.vue')},
             {path:"/details",component:()=>import('../components/commodity/details.vue')},
+			 {path:"/classification",component:()=>import('../components/commodity/classification.vue')},
+			 {path:"/Purchasedetails",component:()=>import('../components/commodity/Purchasedetails.vue')},
             {path:"/addcommodity",component:()=>import('../components/commodity/addcommodity.vue')},
         ]
     },
