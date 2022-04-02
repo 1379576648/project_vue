@@ -13,7 +13,7 @@
         color="#2F54EB"
         style="float: right; margin: 12px 0"
         type="primary"
-        @click="this.drawer=true"
+        @click="this.drawer=true,findmenu()"
         >新增账号</el-button
       >
     </div>
@@ -31,15 +31,48 @@
           :default-sort="{ prop: 'name', order: 'descending' }"
         >
           <el-table-column label="序号" type="index" width="80" />
-          <el-table-column prop="name" label="角色名称" width="140" sortable />
-          <el-table-column prop="address" label="角色描述" />
+          <el-table-column prop="staffName" label="账号名称" width="140" sortable />
+          <el-table-column prop="staffState" label="账户状态" width="140">
+            <template #default="scope">
+                  <el-tag v-if="scope.row.staffState == 0" size="small" type="success"
+            >已启用</el-tag
+          >
+          <el-tag
+            v-else-if="scope.row.staffState == 1"
+            size="small"
+            type="danger"
+            >已禁用</el-tag
+          >
+            </template>
+          </el-table-column>
+          <el-table-column label="账户角色">
+            <template #default="scope">
+            <el-tag
+            style="margin-right: 5px"
+            size="default"
+            type="info"
+            v-for="item in scope.row.roles"
+            :key="item"
+            >{{ item.roleName }}</el-tag
+          >
+            </template>
+          </el-table-column>
+
           <el-table-column label="操作" width="180" align="center">
             <template #default="scope">
-              <el-button type="text" size="small" @click="resetdialogVisible=true" v-if="scope.row.date=='2016-05-03'">重置密码</el-button>
-              <el-divider direction="vertical"  v-if="scope.row.date=='2016-05-03'"/>
-              <el-button type="text" size="small" @click="this.drawer=true,this.Tips='编辑角色'" v-if="scope.row.date=='2016-05-03'">编辑</el-button>
-              <el-divider direction="vertical" v-if="scope.row.date=='2016-05-03'"/>
-              <el-button type="text" size="small">停用</el-button>
+              <el-button type="text" size="small" @click="resetpassword(scope.row.staffId)" v-if="scope.row.staffName!=='admin'">重置密码</el-button>
+              <el-divider direction="vertical"  v-if="scope.row.staffName!=='admin'"/>
+              <el-button type="text" size="small" @click="edit(scope.row.staffId)">编辑</el-button>
+              <el-divider direction="vertical" v-if="scope.row.staffName!=='admin'"/>
+                <el-popconfirm
+            title="确定停用该账户吗？"
+            @confirm="Deactivate(scope.row)"
+          >
+            <template #reference>
+              <el-button size="mini" v-if="scope.row.staffName!=='admin'" type="text">{{scope.row.staffState==0?'停用':'启用'}}</el-button>
+            </template>
+          </el-popconfirm>
+
             </template>
           </el-table-column>
         </el-table>
@@ -48,14 +81,14 @@
                 <!-- <el-pagination background layout="prev, pager, next" :total="1000" /> -->
               <el-pagination
               style="float: right;"
-      v-model:currentPage="currentPage4"
-      v-model:page-size="pageSize4"
-      :page-sizes="[10, 20, 30, 40]"
+      v-model:currentPage="paging.currentPage"
+      v-model:page-size="paging.pageSize"
+      :page-sizes="[10,20,30,40]"
       :small="small"
       :disabled="disabled"
       :background="background"
       layout=" prev, pager, next,sizes, jumper, total"
-      :total="400"
+      :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
@@ -68,32 +101,37 @@
      <el-form
     ref="roleFormRef"
     label-position="left"
-    :model="roleForm"
+    :model="userForm"
     label-width="100px"
     :size="formSize"
   >
-    <el-form-item label="账号名称：" prop="name" :rules="[
+    <el-form-item label="账号名称："  prop="staffName" :rules="[
       { required: true, message: '请输入账号名称', trigger: 'blur' }]">
-      <el-input v-model="roleForm.name" placeholder="请输入角色名称" style="width:273px;"  />
+      <el-input v-model="userForm.staffName" :disabled="disabled" placeholder="请输入角色名称" style="width:273px;"  />
     </el-form-item>
 
-    <el-form-item label="账号密码：" prop="name" :rules="[
+    <el-form-item label="账号密码：" prop="staffPass" :rules="[
       { required: true, message: '请输入账号密码', trigger: 'blur' }]">
-      <el-input v-model="roleForm.name" placeholder="账号密码" style="width:273px;"  />
+      <el-input v-model="userForm.staffPass" placeholder="账号密码" show-password style="width:273px;"  />
     </el-form-item>
 
-    <el-form-item label="角色权限：" prop="name" :rules="[
+    <el-form-item label="角色权限：" :rules="[
       { required: true, message: '请选择至少一个角色', trigger: 'blur' }]">
-      
-     <el-checkbox v-model="checked1" label="Option 1" size="large" />
-     <br />
-    <el-checkbox v-model="checked2" label="Option 2" size="large" />
+           <el-tree
+                  :data="roleTreeData"
+                  show-checkbox
+                  ref="roleTree"
+                  node-key="roleId"
+                  :default-expand-all=true
+                  style="width:120px"
+                  :props="{label:'roleName'}">
+            </el-tree>
 
     </el-form-item>
 
       <el-form-item style="margin-left:140px">
-     <el-button @click="resetForm('roleFormRef')">取消</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
+     <el-button @click="resetForm('roleFormRef'),drawer = false">取消</el-button>
+        <el-button type="primary" @click="drawer = false,submitRoleForm(roleFormRef)"
           >保存</el-button
         >
   </el-form-item>
@@ -126,92 +164,124 @@
 export default {
   data() {
     return {
+      disabled:false,
       tips:'新增账户',
       resetdialogVisible:false,
       drawer:false,
-      roleForm:[],
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-02",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-04",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-01",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },{
-          date: "2016-05-03",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-02",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-04",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-01",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },{
-          date: "2016-05-03",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-02",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-04",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-01",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },{
-          date: "2016-05-03",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-02",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-      ],
+      total:0,
+      paging:{
+        currentPage:1,
+        pageSize:20,
+        search:''
+      },
+      userForm:{},
+      tableData: [],
+     roleTreeData:[],
+     ids:[]
     };
   },
   methods: {
-    handleClose(done) {
-            this.$refs['roleFormRef'].resetFields();
-            done();
-      },
      resetForm(formName) {
        this.dialogVisible=false
         this.$refs[formName].resetFields();
+        this.$refs.roleTree.setCheckedKeys([])
+      },
+// =======================================================================================
+      load(){
+        this.axios.post("http://localhost:9090/account/paging",this.paging)
+        .then(res=>{
+          this.tableData=res.data.data.records
+          this.total=res.data.data.total
+        })
+      },
+      // 选择几条每页
+      handleSizeChange(size){
+        this.paging.pageSize=size
+        this.load()
+      },
+       // 选择第几页
+      handleCurrentChange(page){
+        this.paging.currentPage=page
+        this.load()
+      },
+
+       //查询全部权限
+    findmenu(){
+      const paging={
+         currentPage:1,
+        pageSize:99999,
+        search:''
       }
+      this.axios.post("http://localhost:9090/role/paging",paging).then(res=>{
+        this.roleTreeData=res.data.data.records
+      })
+    },
+    // 编辑账户
+    edit(staffId){
+      this.drawer=true
+      this.tips='编辑账户'
+      this.axios.get("http://localhost:9090/account/findByStaffIdLoad/"+staffId)
+      .then(res=>{
+        if(res.data.data.staff.staffName=='admin'){
+          this.disabled=true
+        }
+        this.userForm=res.data.data.staff
+        this.findmenu()
+        var roleIds=[]
+        res.data.data.roleIds.forEach(item=>{
+          roleIds.push(item.roleId)
+        })
+        this.$refs.roleTree.setCheckedKeys(roleIds);
+      })
+    },
+     // 分配角色
+    submitRoleForm(formName) {
+            var roleIds = []
+            roleIds = this.$refs.roleTree.getCheckedKeys()
+            const user={
+              staffId:this.userForm.staffId,
+              staffName:this.userForm.staffName,
+              staffPass:this.userForm.staffPass,
+              staffState:this.userForm.staffState,
+              deleted:this.userForm.deleted
+              }
+            this.axios.post("http://localhost:9090/account/perm",{staff:user,roleIds:roleIds}).then(res => {
+               if(res.data.code="200"){
+                 this.$message.success(res.data.msg)
+                 this.roleDialogFormVisible = false
+                 this.load()
+               }else{
+                 this.$message.error(res.data.msg)
+               }
+               
+            })
+         },
+    //禁用启用
+    Deactivate(row){
+      const user={
+        staffId:row.staffId,
+        staffName:row.staffName,
+        staffPass:row.staffPass,
+        staffState:row.staffState==0?1:0,
+        deleted:row.deleted
+      }
+      this.axios.post("http://localhost:9090/account/deactivate",user)
+      .then(res=>{
+        this.$message.success(res.data.data)
+        this.load()
+      })
+    },     
+  // 重置密码
+  resetpassword(id){
+    this.axios.get("http://localhost:9090/account/resetpassword/"+id)
+    .then(res=>{
+      this.$messageBox.alert(res.data.data)
+    })
+  }
   },
-  created() {},
+  created() {
+    this.load()
+  },
   mounted() {},
 };
 </script>
@@ -229,7 +299,13 @@ export default {
     border: 1px solid #E8E8E8;
 }
 
-
+.role{
+  display: inline-block;
+  text-align: center;
+  width: 50px;
+  background: chartreuse;
+  margin: 0 10px;
+}
 
 
 

@@ -3,17 +3,8 @@ export default{
   data(){
     return{
       menulist:this.$store.state.menu,
-      user:this.$store.state.user,
-      isCollapse:false
+      user:this.$store.state.user
     }
-  },
-  computed: {
-    noChildern() {
-      return this.$store.state.menu.filter((item) => item.powers<1);
-    },
-    hasChildern() {
-      return this.$store.state.menu.filter((item) => item.powers);
-    },
   },
   methods:{
     a(){
@@ -30,54 +21,52 @@ export default{
         <div class="logo">
           <img src="https://jingdouyun888.com/assets/images/logo.png" style="width: 150px;margin: 10px 0;" alt="">
         </div>
-      <el-menu
-      :default-active="$route.path"
-      text-color="white"
-      class="el-menu-vertical-demo"
-      :collapse="isCollapse"
-      background-color="#272a36"
-      style="height: calc(100vh - 65px);border-right: none"
-      :unique-opened="true"
-      router
-    >
-      <el-menu-item
-        v-for="mune in noChildern"
-        :key="mune"
-        :index="mune.powerUrl"
-      >
-        <!-- <template #title> -->
-        <el-icon><img :src="mune.navigationIcon" alt="" /></el-icon>
-        <span>{{ mune.powerName }}</span>
-        <!-- </template> -->
-      </el-menu-item>
+        <el-menu
+            :default-active="$route.path"
+            text-color="white"
+            class="el-menu-vertical-demo"
+            :collapse="isCollapse"
+            background-color="#272a36"
+            style="height: calc(100vh - 65px);border-right: none"
+            :unique-opened="true"
+            router
+        >
+          <template v-for="(item,i) in menulist">
+            <!-- 判断一级导航是否有叶子: 有-->
+            <el-sub-menu :index="item.MENU_ROUTE +''" :key="item.MENU_ID" v-if="item.MENU_LEAF==0">
+              <!--一级菜单模板区域-->
+              <template #title>
+                <!--图标-->
+                <el-icon>
+                  <i-menu/>
+                </el-icon>
 
-      <el-sub-menu
-        v-for="mune in hasChildern"
-        :key="mune"
-        :index="mune.powerUrl"
-        v-show="mune.powers.length>0"
-      >
-        <template #title >
-          <el-icon><img :src="mune.navigationIcon" alt="" /></el-icon>
-          <span>{{ mune.powerName }}</span>
-          <!-- {{ mune.children }} -->
-        </template>
-        <el-menu-item-group>
-          <el-menu-item
-            v-for="childern in mune.powers"
-            :key="childern"
-            :index="childern.powerUrl"
-          >
-            <el-icon
-              ><img
-                :src="childern.navigationIcon"
+                <span>{{ item.MENU_NAME }}</span>
+              </template>
 
-            /></el-icon>
-            <span>{{ childern.powerName }}</span>
-          </el-menu-item>
-        </el-menu-item-group>
-      </el-sub-menu>
-    </el-menu>
+
+              <!--二级菜单-->
+              <template v-if="item.son[0].MENU_LEAF==1">
+                <el-menu-item :index="subItem.MENU_ROUTE +'' " v-for="subItem in item.son"
+                              :key="subItem.MENU_ID"
+                              @click="saveNavState(subItem.MENU_ROUTE)">
+                  <template #title><span style="margin-left: 30px">{{ subItem.MENU_NAME }}</span></template>
+                </el-menu-item>
+              </template>
+            </el-sub-menu>
+
+
+            <!-- 判断一级导航是否有叶子: 无-->
+            <el-menu-item :index="item.MENU_ROUTE +'' " :key="item.MENU_ID" v-if="item.MENU_LEAF==1"
+                          @click="saveNavState(item.MENU_ROUTE)">
+              <!--一级菜单模板区域-->
+              <el-icon><i-fold /></el-icon>
+              <template #title>
+                <span>{{ item.MENU_NAME }}</span>
+              </template>
+            </el-menu-item>
+          </template>
+        </el-menu>
       </div>
     </el-aside>
 
@@ -112,22 +101,6 @@ export default{
 
 
 <style scoped>
-#scroll{
-  overflow:scroll;
-  overflow-x: hidden;
-}
-#scroll::-webkit-scrollbar{
-  width:5px;
-}
-#scroll::-webkit-scrollbar-thumb{
-  background:linear-gradient(rgb(17,157,212),rgb(17,212,105));
-  border-radius:5px;
-  transition:1s;
-}
-#scroll::-webkit-scrollbar-thumb:hover{
-  background:linear-gradient(rgb(17,212,105),rgb(17,157,212));
-}
-
 @font-face {
   font-family: 'iconfont';  /* project id 3284006 */
   src: url('');
