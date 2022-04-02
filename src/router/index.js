@@ -30,6 +30,9 @@ const routes = [
             {path:"/goin",component:()=>import('../components/commodity/goin.vue')},
             {path:"/edit",component:()=>import('../components/commodity/edit.vue')},
             {path:"/details",component:()=>import('../components/commodity/details.vue')},
+			 {path:"/classification",component:()=>import('../components/commodity/classification.vue')},
+			 {path:"/Purchasedetails",component:()=>import('../components/commodity/Purchasedetails.vue')},
+            {path:"/addcommodity",component:()=>import('../components/commodity/addcommodity.vue')},
         ]
     },
 
@@ -72,6 +75,7 @@ const routes = [
 
         ]
     },
+    //采购
     {
         path:"/purchase",component:()=>import('../components/navigationbar.vue'),
         children:[
@@ -85,7 +89,10 @@ const routes = [
                 path:'/purchaseHistory',component:()=>import('../components/purchase/purchase_history.vue')
             },
             {
-                path:'/inGoods',component:()=>import('../components/purchase/inGoods.vue')
+                path:'/inGoods',component:()=>import('../components/purchase/inGoods.vue'),
+            },
+            {
+                path:'/returnDetails',component:()=>import('../components/purchase/return_details.vue')
             }
 
         ]
