@@ -4,7 +4,7 @@
       <el-row :gutter="24">
           <div style="width:100%;">
               <div style="width:50%;float:right;text-align:right;padding-right:1%">
-                <el-input v-model="likeinput" placeholder="单据编号/往来单位" style="width:30%;margin-right:1%">
+                <el-input v-model="likeinput" @keyup.enter.native="selectAll()" placeholder="单据编号/往来单位" style="width:30%;margin-right:1%">
                     <template #append>
                         <el-button @click="selectAll()" :icon="icon.search" />
                     </template>

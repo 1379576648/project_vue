@@ -31,6 +31,8 @@ const routes = [
             {path:"/capitalFlow",component:()=>import('../components/financing/capitalFlow.vue')},
             //应付欠款
             {path:"/arrearsPayable",component:()=>import('../components/financing/arrearsPayable.vue')},
+            //应付欠款流水
+            {path:"/supplierArrearsFlow",component:()=>import('../components/financing/supplierArrearsFlow.vue')},
             {path:"/goin",component:()=>import('../components/commodity/goin.vue')},
             {path:"/edit",component:()=>import('../components/commodity/edit.vue')},
             {path:"/details",component:()=>import('../components/commodity/details.vue')},
