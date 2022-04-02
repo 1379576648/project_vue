@@ -54,28 +54,49 @@
             </div>
             <div class="infos">
               <div class="info_item">
-                <span class="info_item_icon iconfont icon-caogaodanju-01" style="background-color: rgb(127, 211, 131);"></span>
+                <router-link :to="{path:this.ones,query:{path:this.$route.query.path}}">
+                   <span class="info_item_icon iconfont icon-caogaodanju-01" style="background-color: rgb(127, 211, 131);">
+                  <i class="iconfont">&#xe667;</i>
+                </span>
+                </router-link>
+
                 <span  class="info_item_text">销售单</span>
               </div>
 
               <div class="info_item">
-                <span class="info_item_icon iconfont icon-caogaodanju-01" style="background-color: rgb(59, 122, 222);"></span>
-                <span  class="info_item_text">入库单</span>
+                <router-link :to="{path:this.twos,query:{path:this.$route.query.path}}">
+                <span class="info_item_icon iconfont icon-caogaodanju-01" style="background-color: rgb(59, 122, 222);">
+                   <i class="iconfont">&#xe9fe;</i>
+                </span>
+                </router-link>
+                <span  class="info_item_text">其他入库单</span>
               </div>
 
               <div class="info_item">
-                <span class="info_item_icon iconfont icon-caogaodanju-01" style="background-color: rgb(59, 166, 222);"></span>
+                <router-link :to="{path:this.threes,query:{path:this.$route.query.path}}">
+                <span class="info_item_icon iconfont icon-caogaodanju-01" style="background-color: rgb(59, 166, 222);">
+                  <i class="iconfont">&#xe957;</i>
+                </span>
+                </router-link>
                 <span  class="info_item_text">销售历史</span>
               </div>
 
               <div class="info_item">
-                <span class="info_item_icon iconfont icon-caogaodanju-01" style="background-color: rgb(131, 113, 238);"></span>
+                <router-link :to="{path:this.fours,query:{path:this.$route.query.path}}">
+                <span class="info_item_icon iconfont icon-caogaodanju-01" style="background-color: rgb(131, 113, 238);">
+                  <i class="iconfont">&#xe605;</i>
+                </span>
+                </router-link>
                 <span  class="info_item_text">仓库管理</span>
               </div>
 
               <div class="info_item">
-                <span class="info_item_icon iconfont icon-caogaodanju-01" style="background-color: rgb(255, 173, 101);"></span>
-                <span  class="info_item_text">商品资料</span>
+                <router-link :to="{path:this.sixs,query:{path:this.$route.query.path}}">
+                <span class="info_item_icon iconfont icon-caogaodanju-01" style="background-color: rgb(255, 173, 101);">
+                   <i class="iconfont">&#xe61c;</i>
+                </span>
+                </router-link>
+                <span  class="info_item_text">商品列表</span>
               </div>
             </div>
           </div>
@@ -128,8 +149,36 @@
   </div>
 </template>
 
+<script>
+export default {
+  data(){
+    return{
+      ones:"/salesTicket",
+      twos:"/godownEntry",
+      threes:"/salesHistory",
+      fours:"/Warehouse",
+      sixs:"/goin",
+    }
+  }
+}
+</script>
 
 <style scoped>
+a{
+  text-decoration: none;
+}
+.iconfont{
+  font-family:"iconfont" !important;
+  font-size:24px;font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;}
+@font-face {
+  font-family: 'iconfont';  /* Project id 3284006 */
+  src: url('//at.alicdn.com/t/font_3284006_uxgg9ckmfza.woff2?t=1648801247983') format('woff2'),
+  url('//at.alicdn.com/t/font_3284006_uxgg9ckmfza.woff?t=1648801247983') format('woff'),
+  url('//at.alicdn.com/t/font_3284006_uxgg9ckmfza.ttf?t=1648801247983') format('truetype');
+}
 * {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
