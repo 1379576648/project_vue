@@ -4,7 +4,7 @@
     <div class="ant-card-head" style="padding: 24px 16px 0px;">
       <div class="ant-card-body">
         <el-button type="primary" @click="goBack()">新增付款</el-button>&nbsp;&nbsp;&nbsp;&nbsp;
-<!--        <el-checkbox label="查看作废单据"/>&nbsp;&nbsp;&nbsp;&nbsp;-->
+        <!--        <el-checkbox label="查看作废单据"/>&nbsp;&nbsp;&nbsp;&nbsp;-->
         <el-input style="width: 200px;"
                   v-model="seek"
                   placeholder="名称"
@@ -38,11 +38,11 @@
           <el-table-column prop="staffName" label="经手人" width="160" sortable/>
           <el-table-column prop="staffName" label="制单人" width="160" sortable/>
           <el-table-column prop="paymenttabTime" label="制单时间" width="160" sortable/>
-<!--          <el-table-column prop="address" label="图片附件" width="160"/>-->
+          <!--          <el-table-column prop="address" label="图片附件" width="160"/>-->
           <el-table-column prop="address" label="是否作废" width="160">
             <template #default="scope">
-              <span  v-if="scope.row.deleted===0"><span style="color: #5aaaff">正常</span></span>
-              <span  v-if="scope.row.deleted===1"><span style="color: #5aaaff">作废</span></span>
+              <span v-if="scope.row.deleted===0"><span style="color: #5aaaff">正常</span></span>
+              <span v-if="scope.row.deleted===1"><span style="color: #5aaaff">作废</span></span>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="160">
@@ -50,7 +50,7 @@
               <el-button type="text" size="small" @click="this.paymentId=scope.row.paymenttabId,goBack2()"
               >详情
               </el-button>
-              <el-popconfirm title="您确定要作废该单据吗？">
+              <el-popconfirm @confirm="deletePayment(id=scope.row.paymenttabId)" title="您确定要作废该单据吗？">
                 <template #reference>
                   <el-button type="text" size="small">作废</el-button>
                 </template>
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import {ElMessage} from "element-plus";
+import {ElMessage, ElNotification} from "element-plus";
 
 export default {
   data() {
@@ -91,7 +91,7 @@ export default {
       url: "http://localhost:9090/",
       //表格数据
       tableData: [],
-      paymentId:'',
+      paymentId: '',
       pageInfo: {
         // 分页参数
         currentPage: 1, //当前页
@@ -109,7 +109,7 @@ export default {
     },
     //跳转到付款详情
     goBack2() {
-      this.$router.push({path: '/financing/payment_details',query:{paymentId:this.paymentId}})
+      this.$router.push({path: '/financing/payment_details', query: {paymentId: this.paymentId}})
     },
     //分页查询付款历史
     selectPayment() {
@@ -122,7 +122,7 @@ export default {
           //页大小
           pageSize: this.pageInfo.pagesize,
           //名称
-          supplierName:this.seek,
+          supplierName: this.seek,
         },
         responseType: 'json',
         responseEncoding: 'utf-8',
@@ -138,6 +138,35 @@ export default {
             type: 'warning',
           })
         }
+      })
+    },
+    // 作废
+    deletePayment(id) {
+      var _this = this
+      this.axios({
+        method: 'delete',
+        url: this.url + 'paymenttab/deletePayment/' + id,
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("作废")
+        console.log(response)
+        if (response.data.code === 200) {
+          if (response.data.data.state === 200) {
+            ElNotification({
+              title: '提示',
+              message: '作废供应商付款单成功',
+              type: 'success',
+            })
+            this.selectPayment();
+          }
+        } else {
+          ElMessage({
+            message: response.data.info,
+            type: 'warning',
+          })
+        }
+
       })
     },
   },

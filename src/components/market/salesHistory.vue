@@ -2,7 +2,7 @@
   <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick"  type="card" >
     <el-tab-pane label="已出库" name="first">
       <div>
-        <el-button style="float:right" type="primary">添加商品</el-button>
+        <el-button style="float:right" type="primary">新增销售单</el-button>
         <div>
           <el-button plain style="float: right;margin-right: 30px">高级搜索</el-button>
           <div style="width: 10px;float: right"></div>
@@ -17,59 +17,82 @@
             height="490">
           <el-table-column type="selection" width="55"/>
           <el-table-column
-              fixed
-              prop="date"
+              fixed :index="indexMethod"
+              prop="saleId"
+              align="center"
               label="序号"
+              type="index"
               width="100%">
           </el-table-column>
 
           <el-table-column
               fixed
-              prop="name"
+              prop="saleTime"
+              label="业务日期"
+              align="center"
+              width="300">
+          </el-table-column>
+
+          <el-table-column
+              prop="billId"
+              label="单据编号"
+              align="center"
+              width="200">
+          </el-table-column>
+          <el-table-column
+              prop="customerName"
+              label="客户"
+              align="center"
+              width="120">
+          </el-table-column>
+          <el-table-column
+              prop="commodityName"
               label="商品名称"
-              width="120">
+              align="center"
+              width="200">
           </el-table-column>
+          <el-table-column
+              prop="salescheduleNumber"
+              label="商品数量"
+              align="center"
+              width="100">
 
+          </el-table-column>
           <el-table-column
-              prop="province"
-              label="零售价"
+              prop="saleschedulePrice"
+              label="商品价格"
+              align="center"
               width="120">
           </el-table-column>
           <el-table-column
-              prop="city"
-              label="市区"
+              prop="salescheduleTotal"
+              label="商品总价"
+              align="center"
               width="120">
           </el-table-column>
           <el-table-column
-              prop="address"
-              label="地址"
-              width="300">
-          </el-table-column>
-          <el-table-column
-              prop="address"
-              label="地址"
-              width="300">
-          </el-table-column>
-          <el-table-column
-              prop="address"
-              label="地址"
-              width="300">
-          </el-table-column>
-          <el-table-column
-              prop="address"
-              label="地址"
-              width="300">
-          </el-table-column>
-          <el-table-column
-              prop="address"
-              label="地址"
-              width="300">
-          </el-table-column>
-
-          <el-table-column
-              prop="zip"
-              label="邮编"
+              prop="saleMoney"
+              label="销售金额"
+              align="center"
               width="120">
+          </el-table-column>
+          <el-table-column
+              prop="stockName"
+              label="仓库名称"
+              align="center"
+              width="120">
+          </el-table-column>
+          <el-table-column
+              prop="staffName"
+              label="经手人"
+              align="center"
+              width="120">
+          </el-table-column>
+          <el-table-column
+              prop="saleRemarks"
+              label="销售备注"
+              align="center"
+              width="200">
           </el-table-column>
           <el-table-column
               fixed="right"
@@ -107,22 +130,27 @@
 
         </el-table>
 
-        <div class="demo-pagination-block" style="margin-left: 0px">
-          <!-- <span class="demonstration">All combined</span> -->
+        <!-- 分页插件 -->
+        <div class="demo-pagination-block">
           <el-pagination
               v-model:currentPage="pageInfo.currentPage"
-              :page-sizes="[3, 5, 10, 50]"
-              v-model:page-size="pageInfo.pagesize"
-              :default-page-size="pageInfo.pagesize"
+              :page-sizes="[1, 3, 5, 7]"
+              v-model:page-size="pageInfo.pageSize"
+              :default-page-size="pageInfo.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="pageInfo.total"
               :pager-count="5"
               background
-              @size-change=""
-              @current-change=""
-          >
+              next-text="下一页"
+              prev-text="上一页"
+              @current-change="selectPageSale()"
+              @size-change="selectPageSale()"
+              @prev-click="selectPageSale()"
+              @next-click="selectPageSale()">
+            >
           </el-pagination>
         </div>
+
       </div>
     </el-tab-pane>
 
@@ -141,7 +169,7 @@
 
         <br><br><br>
         <el-table
-            :data="tableData"
+            :data="tableData2"
             style="width: 100%"
             height="490">
           <el-table-column type="selection" width="55"/>
@@ -236,19 +264,23 @@
 
         </el-table>
 
-        <div class="demo-pagination-block" style="margin-left: 0px">
-          <!-- <span class="demonstration">All combined</span> -->
+        <!-- 分页插件 -->
+        <div class="demo-pagination-block">
           <el-pagination
-              v-model:currentPage="pageInfo.currentPage"
-              :page-sizes="[3, 5, 10, 50]"
-              v-model:page-size="pageInfo.pagesize"
-              :default-page-size="pageInfo.pagesize"
+              v-model:currentPage="pageInfo2.currentPage"
+              :page-sizes="[1, 3, 5, 7]"
+              v-model:page-size="pageInfo2.pageSize"
+              :default-page-size="pageInfo2.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="pageInfo.total"
+              :total="pageInfo2.total"
               :pager-count="5"
               background
-              @size-change=""
-              @current-change=""
+              next-text="下一页"
+              prev-text="上一页"
+              @size-change="selectPageSale2()"
+              @current-change="selectPageSale2()"
+              @prev-click="selectPageSale2()"
+              @next-click="selectPageSale2()">
           >
           </el-pagination>
         </div>
@@ -256,124 +288,82 @@
     </el-tab-pane>
 
   </el-tabs>
-
+  {{tableData}}
 </template>
 
 <script>
+import {ElNotification} from "element-plus";
+
 export default {
   name: "",
   data() {
     return {
       activeName:'first',
+      //访问路径
+      url: "http://localhost:9090/",
       pageInfo: {
-        currentPage: 1,
-        /* 当前的页 */
-        pagesize: 5,
-        total: 0,
+        // 分页参数
+        currentPage: 1, //当前页
+        pageSize: 3, // 页大小
+        total: 0, // 总页数
+      },
+      pageInfo2: {
+        // 分页参数
+        currentPage: 1, //当前页
+        pageSize: 3, // 页大小
+        total: 0, // 总页数
       },
       input: '',
-      tableData: [{
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-08',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-06',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }]
+      tableData: [],
+      tableData2: []
     }
   },methods:{
-  }
+    selectPageSale(){
+      let _this = this
+      this.axios({
+        method:'post',
+        url: this.url+ 'saleschedule/selectPageSale',
+        data:{
+          "currentPage": this.pageInfo.currentPage,
+          "pageSize": this.pageInfo.pageSize
+        },
+        responseType:'json',
+        responseEncoding:'utf-8',
+      }).then((response)=>{
+        console.log(response)
+        _this.tableData = response.data.succeed.records;
+        this.pageInfo.pageSize = response.data.succeed.size;
+        this.pageInfo.total = response.data.succeed.total;
+      })
+    },
+    selectPageSale2(){
+      let _this = this
+      this.axios({
+        method:'post',
+        url: this.url+ 'saleschedule/selectPageSale2',
+        data:{
+          "currentPage": this.pageInfo.currentPage,
+          "pageSize": this.pageInfo.pageSize
+        },
+        responseType:'json',
+        responseEncoding:'utf-8',
+      }).then((response)=>{
+        console.log(response)
+        _this.tableData2 = response.data.succeed.records;
+        this.pageInfo2.pageSize = response.data.succeed.size;
+        this.pageInfo2.total = response.data.succeed.total;
+      })
+    },
+  },created() {
+    this.selectPageSale()
+    this.selectPageSale2()
+  },
+  //序号
+  indexMethod(index) {
+    let curpage = this.pageInfo.currentPage; //单前页码，具体看组件取值
+    let limitpage = this.pageInfo.pageSize; //每页条数，具体是组件取值
+    return index + 1 + (curpage - 1) * limitpage;
+  },
 }
 </script>
 

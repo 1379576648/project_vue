@@ -34,10 +34,14 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="商品分类" prop="regions">
-        <el-select v-model="fo.categoryId" placeholder="选择分类：" style="width: 500px;">
-          <el-option label="冰箱" value="shanghai"></el-option>
-          <el-option label="空调" value="beijing"></el-option>
+      <el-form-item label="商品分类" prop="categoryId">
+        <el-select v-model="fo.categoryId" @click="classify()" class="m-2" placeholder="选择" style="width: 500px">
+          <el-option
+              v-for="item in optionsDept"
+              :key="item.CATEGORY_ID"
+              :label="item.CATEGORY_NAME"
+              :value="item.CATEGORY_ID"
+          />
         </el-select>
       </el-form-item>
 
@@ -145,7 +149,9 @@ export default {
         tradePrice:ref(1),
         minNumber:ref(1),
         maxNumber:ref(1),
+
       },
+      optionsDept:[],
       //验证
       rules: {
         commodityName:[{
@@ -188,6 +194,7 @@ export default {
       this.fo.minNumber=1
       this.fo.maxNumber=1
     },
+    //添加
     add(){
       this.axios
           .post("http://localhost:9090/commodity/addcom", this.fo)
@@ -203,9 +210,26 @@ export default {
           }).catch(function (error){
             console.log(error);
           })
-
+    },
+    //查询
+    classify(){
+        this.axios
+            .get("http://localhost:9090/category/cla")
+            .then((response)=>{
+              console.log(response);
+              this.optionsDept=response.data;
+            })
+            .catch(function (error){
+              console.log(error);
+            })
     }
-  }
+
+
+  },
+  created() {
+    //全部部门
+    this.classify();
+  },
 }
 </script>
 
