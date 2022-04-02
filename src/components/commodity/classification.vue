@@ -1,158 +1,4 @@
-<!-- <template>
- 	<div style="border-width: 0 0 1px 0;
- border-style: solid;
- border-color: black;
- height: 70px;">
- 		<span style="font-size: 30px;" @click="tj()">商品分类</span>
- 	</div>
- 	  <el-button type="primary" @click="centerDel=true">添加分类</el-button>
- 	   <el-button type="danger">编辑分类</el-button>
- 	     <el-button>删除分类</el-button>
- 		 <el-tree
- 		 @node-click="handleBucketClick"
- 		 :data="treeData"
- 		    show-cheeckbox
- 		    node-key="deptDid"
- 		 	default-expand-all
- 		    ref="tree"
- 		  draggable
- 		    :props="defaultProps"
- 		 	     @node-drag-start="handleDragStart"
- 		 	     @node-drag-enter="handleDragEnter"
- 		 	     @node-drag-leave="handleDragLeave"
- 		 	     @node-drag-over="handleDragOver"
- 		 	     @node-drag-end="handleDragEnd"
- 		 	     @node-drop="handleDrop"
- 		 		 highlight-current
- 		 >
- 		 	
- 		 </el-tree>
- 		 <el-dialog v-model="centerDel" title="提示" width="35%">
- 		 	<el-input v-model="deptName"></el-input>
- 			<button @click="tj()">确定</button>
- 		 </el-dialog>
- </template>
- 
- <script>
- 	import { ref } from 'vue'
- 	import { Search } from '@element-plus/icons'
- import qs from 'qs'
- 	import { ElMessage } from 'element-plus'
- 	export default{
- 		data(){
- 			return{
- 				centerDel:ref(false),
- 				setTree:[],
- 				defaultProps:{
- 					   children: 'children',
- 					   label: 'organName',
- 					   disabled: 'disabled',
- 				},
- 				treeData:[],
- 				organList:[],
- 				deptDid:"",
- 				deptName:"",
- 			}
- 		},
- 		methods:{
- 			tj(){
- 				this.axios.post("http://localhost:8088/TSM/dept/addDept",{
- 				
- 					deptName:this.deptName,
- 					deptDid:this.deptDid,
- 				})
- 					.then(function(response){
- 						console.log(response.data)
- 						
- 						this.centerDel=false
- 					}).catch(function(error){
- 						console.log(error)
- 					})
- 				    
- 				
- 			},
- 			// handleDragEnter(a,b){
- 			// 		  console.log(a.id,"sss")
- 			// 		  console.log(b.id+"qq")
- 			// },
- 			handleDragEnd(a,b){
- 					  console.log(a.data,"aaa",b)
- 					  this.getQuerycheckList()
- 			},
- 			handleBucketClick(node){
- 					  this.deptDid=node.id
- 					  console.log(node)
- 			},
- 			getQuerycheckList(){
- 								
- 								
- 								this.axios
- 								  .post("http://localhost:8088/TSM/dept/selectDept", {})
- 								  .then((res) => {
- 								  
- 								    this.setTree = res.data;
- 										this.organList=res.data.map((a)=>({
- 											label:a.deptName,
- 											value:a.deptId,
- 										}));
- 										this.getListData();
- 										
- 								  });	  
- 			},
- 			getListData(){
- 					  let dataArray =[];
- 					    
- 					 
- 							  let objTemp ={
- 								  id:0,
- 								  organName:"商品分类",
- 							  };
- 							  dataArray.push(objTemp);
- 					
- 					 console.log(dataArray,"aaasss")
- 					  this.treeData=this.data2treeDG(this.setTree,dataArray);
- 			},
- 			data2treeDG(datas,dataArray){
- 				 
- 					  for(let j=0;j<dataArray.length;j++){
- 						  console.log(dataArray[j],"ss")
- 						  let dataArrayIndex = dataArray[j];
- 						  let childrenArray =[];
- 						  let Id=dataArrayIndex.id;
- 						  for(let i=0; i<datas.length;i++){
- 							 
- 							  let data=datas[i];
- 							  let parentId = data.deptDid;
- 							  if(parentId === Id){
- 								  //判断是否为儿子节点
- 								  let objTemp={
- 									  id:data.deptId,
- 									  organName:data.deptName,
- 									 
- 									  parentId:parentId,
- 								  };
- 								  childrenArray.push(objTemp);
- 							  }
- 						  }
- 						
- 						  dataArrayIndex.children =childrenArray;
- 						  if(childrenArray.length>0){
- 							  this.data2treeDG(datas,childrenArray);
- 						  }
- 					  }
- 					
- 					  return dataArray;
- 			},
- 		},
- 		created(){
- 			 this.getQuerycheckList();
- 		}
- 	}
- </script>
- 
- <style>
- </style>
- -->
+
  <template>
  	<div style="border-width: 0 0 1px 0;
  border-style: solid;
@@ -288,6 +134,7 @@ import { defineComponent, ref } from "vue";
 				}else if(this.ruleForm.categoryId===0){
 					 ElMessage({ message: "根节点不可被编辑！", type: "warning" });
 				}else{
+				
 					this.update=true
 				}
 			},
@@ -325,6 +172,7 @@ import { defineComponent, ref } from "vue";
 				if(this.ruleForm.categoryId===""){
 					 ElMessage({ message: "请选择节点！", type: "warning" });
 				}else{
+					this.ruleForm.categoryName="";
 					this.insert=true
 				}
 			},
@@ -374,7 +222,7 @@ import { defineComponent, ref } from "vue";
  			handleBucketClick(node){
  					  this.ruleForm.categoryPid=node.id
 					  this.ruleForm.categoryId=node.id
-					  this.categoryName=node.categoryName
+					  this.ruleForm.categoryName=node.organName
  					  console.log(node)
  			},
  			getQuerycheckList(){

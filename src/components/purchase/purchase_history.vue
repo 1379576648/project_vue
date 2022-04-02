@@ -1,4 +1,5 @@
 <template>
+	
 	<div 
 	 class="a"
 	style="border-width: 0 0 1px 0;
@@ -13,7 +14,7 @@
 
 	
 </div>
-<div style="float: left;margin-left:35%;margin-top:-10px;"><el-checkbox style="color:lightsteelblue;zoom: 150%;" v-model="pageInfo.checked1" label="查看已作废" size="large" /></div>
+<div style="float: left;margin-left:35%;margin-top:-10px;"><el-checkbox style="color:lightsteelblue;zoom: 150%;"  v-model="pageInfo.checked1"  label="查看已作废" size="large" @change="cx()" /></div>
   <div class="b"  style="float: left;margin-left:20px;margin-top:-35px;"><el-input 
     v-model="pageInfo.scss"
       placeholder="商品/供应商/经办人/入仓仓库"
@@ -25,7 +26,7 @@
 	</div>
 	<div class="b" style="float: left;margin-left:20px;margin-top: 5px;" @click="drawer=true"><el-button>高级搜索</el-button></div>
 	<div class="b" style="float: left;margin-left:20px;margin-top: 5px;" @click="aa()"> <el-button type="primary" >新增进货单</el-button></div>
-	 
+	
   </div>
   <!-- 抽屉 -->
   <el-drawer v-model="drawer" title="I am the title" :with-header="false">
@@ -90,13 +91,14 @@
 	    <el-table-column prop="purchaseDetailsNumber" label="商品数量" width="120" />
 		 <el-table-column prop="commodityCompany" label="单位" width="120" />
 		  <el-table-column prop="purchaseDetailsTotal" label="总金额" width="120" />
+		  <el-table-column prop="stockName" label="入仓仓库" width="150" />
 		    <el-table-column prop="purchaseRemarks" label="备注" width="300" />
 	    <el-table-column fixed="right" label="操作" width="120">
-	      <template #default>
-	        <el-button type="text" size="small" @click="handleClick"
+	      <template #default="scope">
+	        <el-button type="text" size="small" @click="tzxq(scope.row)"
 	          >详情</el-button
 	        >
-	        <el-button type="text" size="small">作废</el-button>
+	        <el-button type="text" size="small" @click="tovoid(scope.row.purchaseId)">作废</el-button>
 	      </template>
 	    </el-table-column>
 	  </el-table>
@@ -119,7 +121,9 @@
 	}
 	
 	
-	import { ref } from 'vue'
+	import { defineComponent, ref } from "vue";
+	 import qs from 'qs'
+	 	import { ElMessage } from 'element-plus'
 export default {
   data() {
     return {
@@ -135,8 +139,8 @@ export default {
 		   staffName:"",//经办人
 		   stockName:"",//入仓仓库
 		 purchaseTime:"",//业务日期
-		   scss:"毒瘤",//模糊查询参数（商品名称/供应商名称/单据编号/经办人/入仓仓库/）
-		   checked1:"false", //多选框参数
+		   scss:"",//模糊查询参数（商品名称/供应商名称/单据编号/经办人/入仓仓库/）
+		   checked1:"false", //（已作废/未作废）
 		   activeNum:0, //点击变颜色参数
 		},
 		
@@ -148,6 +152,26 @@ export default {
     };
   },
   methods: {
+	  tovoid(id){
+		  alert(id)
+		var _this =this
+		this.axios.post("http://localhost:9090/purchase/tovoid",{
+		purchaseId:id,
+	
+		}) 
+		.then(function(response){
+			   console.log(response.data)
+							  if(response.data.code==='0'){
+							 ElMessage({ message: "作废成功！", type: "warning" });
+							_this.cx();
+							
+							  }else{
+								alert(response.data.msg);
+							  }
+						}).catch(function(error){
+							console.log(error)
+						})
+	  },
 	  Advancedquery(){   //详细查询
 		 var _this =this
 		 this.axios.get("http://localhost:9090/purchase/AdvancedqueryPurchasehistory",{
@@ -170,8 +194,13 @@ export default {
   	  this.pageInfo.activeNum =i;
 	  this.cx();
   },
-  aa(){        //跳转详情
+  tzxq(data){        //跳转详情
+    localStorage.setItem("data",JSON.stringify(data)); 
+
+
 	  this.$router.push("/Purchasedetails")
+	   
+	  
   },
   selectStock(){      //查询仓库
 	  var _this =this
