@@ -149,7 +149,7 @@
     </div>
     <div class="ant-card-body2" style="margin-top: 70px;padding: 10px;background: white">
       <div class="ant-button">
-        <el-button>取消</el-button>
+        <el-button @click="restinsert()">取消</el-button>
         <el-button type="primary" @click="insertCope()">保存</el-button>
       </div>
     </div>
@@ -381,6 +381,16 @@ export default defineComponent({
       this.ruleForm.phone="";
       this.ruleForm.remark2="";
       this.ruleForm.address="";
+    },
+    //清空
+    restinsert(){
+      this.payment="";
+      this.tableData5.agregateTotal="";
+      this.onePay="";
+      this.salePay="";
+      this.region="";
+      this.remark="";
+      this.time="";
     },
     //选中名称赋值进供应商文本框
     a(val) {
@@ -651,6 +661,9 @@ export default defineComponent({
               this.tableData5.agregateTotal="";
               this.onePay="";
               this.salePay="";
+              this.region="";
+              this.remark="";
+              this.time="";
             } else {
               ElMessage({
                 type: 'warning',
