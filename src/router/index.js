@@ -18,6 +18,8 @@ const routes = [
             {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
             {path:"/financing/debt",component:()=>import('../components/financing/debt.vue')},
             {path:"/financing/Balance",component:()=>import('../components/financing/Balance.vue')},
+            {path:"/arrearsPayable", component:()=>import('../components/financing/arrearsPayable.vue')},
+            {path:"/supplierArrearsFlow", component:()=>import('../components/financing/supplierArrearsFlow.vue')},
         ]
     },
 
