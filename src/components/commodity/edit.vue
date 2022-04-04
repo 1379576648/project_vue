@@ -138,10 +138,7 @@ export default {
     * 根据id修改商品表方法
     * */
     updateById(){
-      this.$message({
-        message: '修改成功！！！',
-        type: 'success'
-      });
+
       this.axios
       .post("http://localhost:9090/commodity/updata",{
         commodityId:this.form.commodityId,
@@ -154,7 +151,22 @@ export default {
         retailPrice:this.form.retailPrice,
         tradePrice:this.form.tradePrice,
       }).then((res=>{
-        console.log(res)
+        console.log("商品修改",res)
+
+        if(res.data>0){
+          this.$message({
+            message: '修改成功！！！',
+            type: 'success'
+          });
+        }else{
+          this.$message({
+            message: '修改失败！！！',
+            type: 'error'
+          });
+        }
+
+
+
       })).catch(function (error) {
         console.log(error);
     })

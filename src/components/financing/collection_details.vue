@@ -9,19 +9,19 @@
           </div>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">单据编号：</span>
-          <span busitype="104">FK202203290001</span></span><!----></span></span>
-          </div>
-          <div class="ant-col ant-col-8" align="right"><span><span>
-        <span class="font-size-14"><span class="font-color-45">经手人：</span>
-          <span busitype="104">张三</span></span><!----></span></span>
+          <span busitype="104">{{ this.receivableSerial }}</span></span><!----></span></span>
           </div>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">业务日期：</span>
-          <span busitype="104">2022-3-20</span></span><!----></span></span>
+          <span busitype="104">{{ this.tabTime }}</span></span><!----></span></span>
+          </div>
+          <div class="ant-col ant-col-8" align="right"><span><span>
+        <span class="font-size-14"><span class="font-color-45">经手人：</span>
+          <span busitype="104">{{ this.staffName }}</span></span><!----></span></span>
           </div>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">客户名称：</span>
-          <span busitype="104">小明</span></span><!----></span></span>
+          <span busitype="104">{{ this.customerName }}</span></span><!----></span></span>
           </div>
           <br/>
           <br/>
@@ -36,16 +36,16 @@
                   :default-sort="{ prop: 'name', order: 'descending' }"
               >
                 <el-table-column prop="name" label="序号" type="index" width="80"/>
-                <el-table-column prop="address" label="结算账户" width="290"/>
-                <el-table-column prop="address" label="本单收回欠款(元)" width="296"/>
-                <el-table-column prop="address" label="本单优惠金额(元)" width="300"/>
-                <el-table-column prop="address" label="合计(元)" width="300"/>
+                <el-table-column prop="settlement" label="结算账户" width="290"/>
+                <el-table-column prop="tabMoney" label="本单收回欠款(元)" width="296"/>
+                <el-table-column prop="coupon" label="本单优惠金额(元)" width="300"/>
+                <el-table-column prop="tabMoney" label="合计(元)" width="300"/>
               </el-table>
               <br/>
               <br/>
-              制单人： &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
+              制单人：{{ this.staffName }} &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
               &nbsp; &nbsp;&nbsp;
-              制单日期：
+              制单日期：{{ this.tabTime }}
             </div>
           </div>
         </div>
@@ -54,50 +54,9 @@
     <div class="ant-card-body2" style="margin-top: 20px;padding: 10px;background: white">
       备注：
       <br/>
-      <el-input v-model="remark" type="textarea" placeholder="请输入备注信息"/>
+      <el-input disabled v-model="remarks" type="textarea"/>
       <br/>
       <br/>
-      附件上传：
-      <el-upload action="#" list-type="picture-card" :auto-upload="false">
-        <el-icon>
-          <Plus/>
-        </el-icon>
-
-        <template #file="{ file }">
-          <div>
-            <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
-            <span class="el-upload-list__item-actions">
-          <span
-              class="el-upload-list__item-preview"
-              @click="handlePictureCardPreview(file)"
-          >
-            <el-icon><zoom-in/></el-icon>
-          </span>
-          <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleDownload(file)"
-          >
-            <el-icon><Download/></el-icon>
-          </span>
-          <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleRemove(file)"
-          >
-            <el-icon><Delete/></el-icon>
-          </span>
-        </span>
-          </div>
-        </template>
-      </el-upload>
-
-      <el-dialog v-model="dialogVisible">
-        <img width="50%" :src="dialogImageUrl" alt=""/>
-      </el-dialog>
-      <div class="text">
-        仅支持jpg/jpeg/png格式，最多5张图片
-      </div>
     </div>
     <div class="ant-card-body2" style="margin-top: 20px;padding: 10px;background: white">
       <div class="ant-button">
@@ -117,15 +76,63 @@ export default {
       url: "http://localhost:9090/",
       //表格数据
       tableData: [],
+      // 当前记录ID1
+      NowID: "",
+      // 当前记录ID2
+      NowID2: "",
+      // 单据编号
+      receivableSerial: "",
+      // 经手人/制单人
+      staffName: "",
+      // 业务时间/制单时间
+      tabTime: "",
+      // 客户名称
+      customerName: "",
+      // 备注
+      remarks: "",
     }
   },
   methods: {
+    // 根据ID查询记录
+    selectTabByID() {
+      this.axios({
+        method: 'get',
+        url: this.url + 'tab/selectTabByID/' + this.NowID + '/' + this.NowID2,
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("根据ID查询记录");
+        console.log(response);
+        if (response.data.code === 200) {
+          if (response.data.data.state === 200) {
+            this.tableData.push(response.data.data.info)
+            this.receivableSerial = response.data.data.info.receivableSerial
+            this.staffName = response.data.data.info.staffName
+            this.tabTime = response.data.data.info.tabTime
+            this.customerName = response.data.data.info.customerName
+            this.remarks = response.data.data.info.remarks
+
+          }
+        } else {
+          ElMessage({
+            message: response.data.message,
+            type: 'warning',
+          })
+        }
+      })
+    },
     //跳转到收款历史
     goBack() {
       this.$router.push({path: '/financing/collection'})
     },
-
   }, created() {
+    // 当前记录ID
+    this.NowID = this.$route.query.NowId
+    // 当前记录ID
+    this.NowID2 = this.$route.query.NowId2
+    // 根据ID查询记录
+    this.selectTabByID();
   },
 }
 </script>
