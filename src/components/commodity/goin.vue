@@ -100,6 +100,7 @@
                 type="text"
                 size="small"
                 style="color: red"
+                @click="deteleById(scope.row)"
             >
               移除
             </el-button>
@@ -148,6 +149,30 @@ export default {
       tableData: []
     }
   }, methods: {
+    /*
+   * 根据id删除商品表
+   * */
+    deteleById(row){
+      this.axios
+          .delete("http://localhost:9090/commodity/delete/"+row.commodityId)
+          .then((res=>{
+            if(res.data === 1){
+              this.$message({
+                message: '删除成功！！！',
+                type: 'success'
+              });
+              //调用查询
+              this.selectpage()
+            }else {
+              this.$message({
+                message: '删除失败！！！',
+                type: 'error'
+              });
+            }
+          })).catch(function (error) {
+        console.log(error);
+      })
+    },
     //分写查询商品表
     selectpage() {
       this.axios
