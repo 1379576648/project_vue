@@ -60,17 +60,45 @@
                 :default-sort="{ prop: 'date', order: 'descending' }"
       >
         <el-table-column type="index"  label="序号" width="70px"  />
-        <el-table-column prop="a" label="商品名称"  >
+        <el-table-column  prop="commodityName" label="商品名称"  >
           <template #default="scope">
-            <el-button @click="dialogVisible = true">请选择</el-button>
+            <el-button v-if="scope.row.commodityName==null" v-show="bad" @click="dialogVisible = true,selectIPages(),this.index=scope.$index">请选择</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="b" label="规/属性"  />
-        <el-table-column prop="c" label="单位"  />
-        <el-table-column prop="d" label="单价"  />
-        <el-table-column prop="e" label="数量"  />
-        <el-table-column prop="f" label="商品金额（元）"  />
-        <el-table-column prop="g" label="备注"  />
+        <el-table-column prop="commoditySpecifications" label="规/属性"  />
+        <el-table-column prop="commodityCompany" label="单位"  />
+        <el-table-column prop="goodsPricePurchase" label="单价"  >
+          <template #default="scope">
+          <el-input-number
+              v-model="scope.row.goodsPricePurchase"
+              disabled
+              min="0"
+              size="small"
+              controls-position="right">
+          </el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column prop="otherInStockDetailsNumber"  label="数量"  >
+
+          <template #default="scope">
+            <el-input-number
+                v-model="scope.row.otherInStockDetailsNumber"
+                min="0"
+                size="small"
+                controls-position="right"
+                :change="totil()"
+            >
+              <!--              {{scope.row.goodsPricePurchase}}-->
+            </el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column prop="otherInStockDetailsTotal"  label="商品金额（元）" >
+          <template #default="scope">
+            {{isNaN(scope.row.goodsPricePurchase*scope.row.otherInStockDetailsNumber)?'0.00':scope.row.goodsPricePurchase*scope.row.otherInStockDetailsNumber}}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="remark" label="备注"  />
         <!-- 操作 -->
         <el-table-column label="操作" width="150">
           <template #default="scope">
@@ -80,9 +108,8 @@
             <el-button @click="add_social()" size="small"  type="text">新增</el-button>
           </template>
         </el-table-column>
-
       </el-table>
-      <span>合计：{{}}</span>
+      <span>合计：{{ totil() }}元</span>
     </div>
 
   </el-card>
@@ -115,21 +142,22 @@
     <hr style="margin-top: -20px;margin-bottom:20px;color:  #FFFFFF"/>
 
     <el-button style="width: 90px" @click="addStockDatas(),dialogVisible=false,added=true">新增商品</el-button>
-
-    <span style="margin-left: 437px">商品分类：</span>
-    <el-select v-model="value1" placeholder="请选择" style="width: 200px">
-      <el-option
-          style="width: 200px"
-          v-for="item in classify"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-      </el-option>
+    <span style="margin-left: 387px">商品分类：</span>
+    <el-select v-model="classifysName" placeholder="请选择" style="width: 200px">
+      <el-option hidden></el-option>
+      <el-tree
+                  :data="assignment"
+                  @node-click="handleNodeCliks"
+                  :props="defaultProps1"
+                  default-expand-all
+                  :filter-node-method="filterNode"
+                  highlight-current
+                  ref="tree">
+      </el-tree>
     </el-select>
     &nbsp;
-    <el-input style="width: 200px" placeholder="编号/商品名称">
-
-    </el-input>
+    <el-input style="width: 200px" v-model="pageInfo.commodityName" placeholder="商品名称"/>
+    <el-button style="margin-left: 5px;margin-top: -5px" @click="selectIPages()">查询</el-button>
 
     <!--选择商品表格-->
     <el-table
@@ -143,28 +171,40 @@
     >
       <el-table-column type="selection" width="55" />
       <el-table-column type="index"  width="55" label="序号" />
-      <el-table-column prop="address" label="商品编号" width="175" sortable />
-      <el-table-column property="name" label="规格/属性"  />
-      <el-table-column property="name" label="单位"  />
+      <el-table-column prop="commodityId" label="商品编号" width="175" sortable />
+      <el-table-column property="commodityName" label="商品名称"  />
+      <el-table-column property="commoditySpecifications" label="规格/属性"  />
+      <el-table-column property="commodityCompany" label="单位"  />
 
-      <el-table-column property="name" label="参考进货价"  />
-      <el-table-column property="name" label="实际库存"  />
+      <el-table-column property="goodsPricePurchase" label="参考进货价" >
+        <template #default="scope">
+          <span v-if="scope.row.goodsPricePurchase==null">0.00</span>
+          <span v-if="scope.row.goodsPricePurchase!=null">{{scope.row.goodsPricePurchase}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="actualStock" label="实际库存" >
+        <template #default="scope">
+          <span v-if="scope.row.actualStock==null">0.00</span>
+          <span v-if="scope.row.actualStock!=null">{{scope.row.actualStock}}</span>
+        </template>
+      </el-table-column>
     </el-table>
 
     <!-- 分页 -->
-    <div style="margin-top: 5px;margin-left: 550px;">
+    <div style="margin-top: 5px;margin-left: 500px;">
       <el-pagination
           v-model:current-page="pageInfo.currentPage"
           v-model:currentPage="pageInfo.currentPage"
           v-model:page-size="pageInfo.pagesize"
           :default-page-size="pageInfo.pagesize"
-          :page-sizes="[3, 4, 5, 6]"
+          :page-sizes="[9, 12, 18, 27]"
           :page-size="3"
           :pager-count="4"
           layout="total, sizes, prev, pager, next, jumper"
           :total="pageInfo.total"
-          @size-change="pagingQuery"
-          @current-change="pagingQuery"
+          @size-change="selectIPages"
+          @current-change="selectIPages"
           prev-text="上一页"
           next-text="下一页"
           background
@@ -174,12 +214,13 @@
 
     <hr style="margin-top: 20px;margin-bottom: -30px;color:  #FFFFFF"/>
 
+
     <template #footer >
         <span class="dialog-footer" >
           <el-button @click="dialogVisible = false">
             取消
           </el-button>
-          <el-button type="primary" @click="dialogVisible = false">
+          <el-button type="primary" @click="dialogVisible = false,fuzhi(this.index),totil()">
             确定选择
           </el-button>
         </span>
@@ -319,6 +360,32 @@ const shortcuts = [
 export default {
 data(){
   return{
+    index:0,
+
+    bad:true,
+
+    adds:{
+
+    },
+
+    /**
+     *    选择对话框分类
+     */
+    //所有的分类数据
+    assignment:[],
+    //节点数据发生变化时将数据存入集合
+    gather :{},
+    //设置默认的属性值
+    defaultProps1:{
+      children:'categorys',
+      label:'categoryName'
+    },
+    //显示选择的分类名称
+    classifysName:'',
+
+
+
+
     //添加对话框表格
     addTableData:[],
 
@@ -367,15 +434,7 @@ data(){
       label: '个'
     }
     ],
-    //分类
-    classifys:[{
-      value4: '语文',
-      label: '语文'
-    }, {
-      value4: '数学',
-      label: '数学'
-    }],
-    value4:'',
+
 
 
       ruleForm: {
@@ -398,8 +457,10 @@ data(){
     //分页
     pageInfo: {
       currentPage: 1,
-      pagesize: 3,
+      pagesize: 9,
       total: 0,
+      categoryId:'',
+      commodityName:'',
     },
 
     //备注
@@ -412,56 +473,17 @@ data(){
 
     //选择对话框表格
     tableDatas:[
-      {
-        date: '2016-05-03',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-02',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St',
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St, ',
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-01',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-08',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      }
     ],
     //表格
     tableData:[
-      {}
+      {otherInStockDetailsTotal:0.00},
+      {otherInStockDetailsTotal:0.00},
+      {otherInStockDetailsTotal:0.00},
+      {otherInStockDetailsTotal:0.00},
+      {otherInStockDetailsTotal:0.00}
     ],
+
+
     //出库数据
     outinstocktype:[],
     //库存
@@ -473,20 +495,107 @@ data(){
       outinstocktypeId:'',
     },
 
-    multipleSelection:''
+    multipleSelection:[],
   }
 },
 
   created() {
-  this.axios.get("http://localhost:9090/category/find")
-      .then(res=>{
-       this.all=res.data.data
-      })
+  // this.totil()
+  this.choice()
+  this.classification()
   this.form ()
   this.inventory()
   },
 
   methods:{
+
+  //合计
+    totil(){
+      var i=0;
+     this.tableData.forEach(item=>{
+       i+=isNaN(item.otherInStockDetailsNumber)?0:item.otherInStockDetailsNumber * item.otherInStockDetailsTotal
+     })
+      return i;
+    },
+
+    //选中获取表格里面的值
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+  //赋值方法
+    fuzhi(index){
+      this.tableData.splice(index,5)
+
+      if(this.tableData.length==0){
+        if(this.multipleSelection.length==0){
+          this.tableData.push(
+              {}
+          )
+        }else {
+
+          for (let i = 0; i <this.multipleSelection.length ; i++) {
+            this.tableData.push(
+                {
+                  commodityName:this.multipleSelection[i].commodityName,
+                  commoditySpecifications:this.multipleSelection[i].commoditySpecifications,
+                  commodityCompany:this.multipleSelection[i].commodityCompany,
+                  goodsPricePurchase:this.multipleSelection[i].goodsPricePurchase,
+                  otherInStockDetailsNumber:1,
+                  otherInStockDetailsTotal:this.multipleSelection[i].goodsPricePurchase*1,
+                  remark:this.multipleSelection[i].remark,
+                }
+            )
+          }
+        }
+      }else {
+        for (let i = 0; i <this.multipleSelection.length ; i++) {
+          for (let j=0;j<this.tableData.length;j++){
+            if (this.tableData[j].commodityName == this.multipleSelection[i].commodityName) {
+              this.multipleSelection.splice(this.multipleSelection[i], 1)
+            }
+          }
+          this.tableData.push(
+              {
+                commodityName: this.multipleSelection[i].commodityName,
+                commoditySpecifications: this.multipleSelection[i].commoditySpecifications,
+                commodityCompany: this.multipleSelection[i].commodityCompany,
+                goodsPricePurchase: this.multipleSelection[i].goodsPricePurchase,
+                otherInStockDetailsNumber: 1,
+                otherInStockDetailsTotal:this.multipleSelection[i].goodsPricePurchase*this.otherInStockDetailsNumber,
+                remark: this.multipleSelection[i].remark,
+              }
+          )
+        }
+      }
+    },
+
+    //选择分页
+    selectIPages(){
+      this.axios.post("http://localhost:9090/commodity/selectIPages",this.pageInfo)
+         .then(response=>{
+        this.pageInfo.total=response.data.data.total
+        this.tableDatas=response.data.data.records
+
+      })
+    },
+
+    //节点被点击时的回调
+    handleNodeCliks(node,data){
+      //点击赋值回调
+      this.gather=data.data;
+      this.pageInfo.categoryId=data.data.categoryId
+      this.classifysName=data.data.categoryName
+    },
+
+    //选择商品分类
+    choice(){
+      this.axios.get("http://localhost:9090/category/find")
+          .then(res=>{
+            this.assignment=res.data.data
+
+          })
+    },
+
   //商品添加
     goodsToAdd(){
       this.axios({
@@ -517,7 +626,6 @@ data(){
      this.ruleForm.classifys=data.data.categoryName
       this.ruleForm.categoryId=data.data.categoryId
 
-     //console.error(data.data.categoryName)
     },
     //生成密码
     // generate(){
@@ -534,6 +642,14 @@ data(){
     // randomNum(min, max) {
     //   return Math.floor(Math.random() * (max - min) + min);
     // },
+
+    //新增商品分类
+    classification(){
+      this.axios.get("http://localhost:9090/category/find")
+          .then(res=>{
+            this.all=res.data.data
+          })
+    },
 
 
     //查询出库类型表数据
@@ -592,10 +708,7 @@ data(){
 
 
 
-    //全选
-    handleSelectionChange(val) {
-      this.multipleSelection.value = val
-    },
+
 
 
     // 删除行
@@ -609,13 +722,13 @@ data(){
 
     add_social() {
       let social_row = {
-        a: null, // 缴费项目
-        b: null, // 基数下限、
-        c: null, // 基数上限
-        d: null, // 公司缴纳比例
-        e: null, // 个人缴纳比例
-        f:null,
-        g: null, // 个人固定金额
+        commodityName: null, // 缴费项目
+        commoditySpecifications: null, // 基数下限、
+        commodityCompany: null, // 基数上限
+        goodsPricePurchase: null, // 公司缴纳比例
+        otherInStockDetailsNumber: null, // 个人缴纳比例
+        otherInStockDetailsTotal:null,
+        remark: null, // 个人固定金额
 
       }
       this.tableData.push(social_row)
