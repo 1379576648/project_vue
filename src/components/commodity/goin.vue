@@ -114,8 +114,8 @@
         <!--        <span class="demonstration">All combined</span>-->
         <el-pagination
             v-model:currentPage="pageInfo1.currentPage"
-            v-model:page-size="pageInfo1.pagesize"
-            :default-page-size="pageInfo1.pagesize"
+            v-model:page-size="pageInfo1.pageSize"
+            :default-page-size="pageInfo1.pageSize"
             :page-sizes="[3, 5, 10, 50]"
             :pager-count="5"
             :total="pageInfo1.total"
@@ -140,7 +140,7 @@ export default {
       pageInfo1: {
         // 分页参数
         currentPage: 1, //当前页
-        pagesize: 3, // 页大小
+        pageSize: 3, // 页大小
         total: 0, // 总页数
         input: '',
       },
@@ -155,6 +155,7 @@ export default {
           .then((response => {
             console.log(response);
             this.tableData = response.data.data.records;
+            this.pageInfo1.total = response.data.data.total;
             console.log(this.tableData)
           })).catch(function (error) {
         console.log(error);
