@@ -79,7 +79,7 @@
 	</div>
 	
     </el-drawer>
-	 <el-table :data="tableData" style="width: 100%" border>
+	 <el-table :data="tableData" style="width: 100%;height: 450px;" border>
 	  <el-table-column  label="序号" width="100" >
 		  <template #default="scope">
 		     {{scope.$index+1}}
