@@ -5,75 +5,62 @@
   <div style="background-color: white;padding: 20px;">
     <!-- 头部 -->
     <div style="text-align: center;border-bottom: 1px dotted lightgray;">
-      <h2>退货单</h2>
+      <h2>采购退货单</h2>
       <span style="margin-left: 80%;">
         <el-button style="width: 85px;height: 35px">
           <router-link to="returnHistory">退货历史</router-link></el-button>
       </span>
-      <span style="color: #00000073;margin-left: 80%;">
-				单据编号：
-				<span style="color: #000000D9;">
-					JH202203290001
-				</span>
-			</span>
     </div>
     <!-- 左 -->
     <div style="margin-top: 10px;padding: 20px;float: left;">
       仓库:
-      <el-select v-model="value" placeholder="选择仓库">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"/>
+      <el-select v-model="stock" placeholder="选择仓库" @change="selectCommodity()">
+        <el-option v-for="item in returnStock" :key="item.stockId" :label="item.stockName" :value="item.stockId"/>
       </el-select>
 
       供应商:
-      <el-select v-model="value" placeholder="请选择供应商">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"/>
+      <el-select v-model="supplier" placeholder="请选择供应商">
+        <el-option v-for="item in returnSupplier" :key="item.supplierId" :label="item.supplierName" :value="item.supplierName"/>
       </el-select>
     </div>
 
     <!-- 右 -->
     <div style="margin-top: 10px;padding: 20px;float: right;">
       经手人:
-      <el-input style="width: 180px" disabled></el-input>
-
-      业务日期:
-      <el-date-picker
-          v-model="datetime"
-          type="datetime"
-          placeholder="Select date and time"
-      />
+      <el-input style="width: 180px" disabled v-model="returnStaff">
+      </el-input>
     </div>
 
     <!-- 表格 -->
-    <el-table :data="tableData" border
+    <el-table :data="returnCommodity" border
               :header-cell-style="{textAlign: 'center',background:'#F0F0F0',color:'#6C6C6C'}"
-              :cell-style="{ textAlign: 'center' }">
-      <el-table-column prop="date" label="序号" min-width="21%"/>
-      <el-table-column prop="date" label="商品名称" width="200px"/>
-      <el-table-column prop="name" label="单位"/>
-      <el-table-column prop="name" label="单价"/>
-      <el-table-column prop="name" label="数量"/>
-      <el-table-column prop="name" label="总金额"/>
-      <el-table-column prop="name" label="备注"/>
-      <el-table-column prop="name" label="操作" min-width="50%">
-        <el-button type="text">删除</el-button>
-        <el-button type="text">添加</el-button>
-      </el-table-column>
+              :cell-style="{ textAlign: 'center' }"
+              @selection-change="handleSelectionChange">
+
+      <el-table-column type="index" label="序号" width="60px"/>
+      <el-table-column type="selection" width="55" />
+      <el-table-column prop="commodityName" label="商品名称" width="200px"/>
+      <el-table-column prop="commodityCompany" label="单位"/>
+      <el-table-column prop="purchaseDetailsPrice" label="单价"/>
+      <el-table-column prop="purchaseDetailsNumber" label="数量"/>
+      <el-table-column prop="purchaseDetailsTotal" label="总金额" />
+      <el-table-column prop="purchaseRemarks" label="备注"/>
 
     </el-table>
     <div style="margin-top:10px;height: 30px">
-      <span>退货金额：</span><span></span>
+      <span>退货金额：</span><span>{{purchaseDetailsTotal}}</span>
     </div>
   </div>
   <br/>
   <div style="background-color: white;padding: 20px;">
-    备注；<br/><br/>
-    <el-input :rows="2" type="textarea" placeholder="请输入备注信息"/>
+    退货原因：<br/><br/>
+    <el-input :rows="2" type="textarea" placeholder="请输入退货原因" v-model="reason"/>
   </div>
   <div class="button_box">
     <div style="display: inline-block;margin-left: 1076px">
       <el-button>取消</el-button>
-      <el-button>保存</el-button>
-      <el-button type="primary">保存出库</el-button>
+      <el-button @click="insertReturnGoods()">保存</el-button>
+      <el-button type="primary" @click="insertStock()">保存出库</el-button>
     </div>
 
   </div>
@@ -82,17 +69,13 @@
 </template>
 
 <script>
-// import { Calendar, Search } from '@element-plus/icons-vue'
-import {
-  ElMessage
-} from 'element-plus'
-import {ref} from 'vue'
-
+import { ElMessage } from "element-plus";
 export default {
   data() {
     return {
-      //时间
-      datetime:ref(''),
+      //选中的节点
+      sels:[],
+      purchaseDetailsTotal:0,
       // 选择商品 对话框
       selectGoodsDialog: false,
       // 分页
@@ -103,33 +86,147 @@ export default {
         total: 0, // 总页数
       },
 
-      tableData: [{
-        date: '1',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-        {
-          date: '2',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-        {
-          date: '3',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-        {
-          date: '4',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-      ]
+      //退货数组
+      returnOrder: [],
+      //仓库数组
+      returnStock:[],
+      //供应商数组
+      returnSupplier:[],
+      //商品数组
+      returnCommodity:[],
+
+      //经选人数组
+      returnStaff:'管理员',
+      //仓库
+      stock:"",
+      //供应商
+      supplier:"",
+    //  采购id
+      purchaseId:'',
+    //  采购明细id
+      purchaseDetailsId:'',
+    //  退货原因
+      reason:''
 
     }
   },
-  methods: {},
-  created() {
+  methods: {
+    //获取选中的复选框
+    handleSelectionChange(sels) {
+      this.purchaseDetailsTotal=0
+      sels.forEach(item=>{
+        this.purchaseDetailsTotal=this.purchaseDetailsTotal+item.purchaseDetailsTotal;
+      })
+    this.sels=sels
+      console.log("选中的值：", this.sels);
+    },
+    //查询仓库
+    selectStock(){
+      this.axios.get("http://localhost:9090/stock/selectStock",{
+      }).then(res=>{
+        console.log(res)
+        this.returnStock = res.data.data;
+      }).catch(error=>{
+        console.log(error)
+      })
+    },
+  //  查询供应商
+    selectSupplier(){
+      this.axios.get("http://localhost:9090/returngoods/selectSupplier",{
+      }).then(res=>{
+        console.log(res)
+        this.returnSupplier=res.data.data;
+      }).catch(error=>{
+        console.log(error)
+      })
+    },
+  //  查询所有的商品
+    selectCommodity(){
+      // this.returnCommodity.push();
+      this.axios.get("http://localhost:9090/returngoods/selectReturnCommodity/"+this.stock
+      ).then(res=>{
+        console.log(res)
+        this.returnCommodity=res.data.data;
+      }).catch(error=>{
+        console.log(error)
+      })
+    },
 
+    //保存退货信息
+    insertReturnGoods(){
+      let a = this.sels;
+      if(a==0){
+        ElMessage({
+          message: "请选中你要添加的一行",
+          type: "error",
+        });
+      }else{
+        for(let i=0;i<a.length;i++){
+          this.axios.post("http://localhost:9090/returngoods/insertReturnGoods/"+a[i].purchaseDetailsId,{
+            purchaseId:a[i].purchaseId,
+            returngoodsReason:this.reason,
+            returngoodsMoney:this.purchaseDetailsTotal,
+            returngoodsState:2
+          }).then(res=>{
+            console.log(res.data.msg)
+            if(res.data.code==0){
+              ElMessage({
+                message: "退货成功",
+                type: "success",
+              });
+              this.$router.push("/returnHistory")
+            }else{
+              ElMessage({
+                message: "退货失败",
+                type: "error",
+              });
+            }
+          }).catch(error=>{
+            console.log(error)
+          })
+        }
+      }
+    },
+    //保存退货信息
+    insertStock(){
+      let a = this.sels;
+      if(a==0){
+        ElMessage({
+          message: "请选中你要添加的一行",
+          type: "error",
+        });
+      }else{
+        for(let i=0;i<a.length;i++){
+          this.axios.post("http://localhost:9090/returngoods/insertReturnGoods/"+a[i].purchaseDetailsId,{
+            purchaseId:a[i].purchaseId,
+            returngoodsReason:this.reason,
+            returngoodsMoney:this.purchaseDetailsTotal,
+            returngoodsState:1
+          }).then(res=>{
+            console.log(res.data.msg)
+            if(res.data.code==0){
+              ElMessage({
+                message: "退货成功",
+                type: "success",
+              });
+              this.$router.push("/returnHistory")
+            }else{
+              ElMessage({
+                message: "退货失败",
+                type: "error",
+              });
+            }
+          }).catch(error=>{
+            console.log(error)
+          })
+        }
+      }
+    }
+
+  },
+  created() {
+      this.selectStock();
+      this.selectSupplier();
   }
 }
 </script>

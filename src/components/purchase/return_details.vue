@@ -2,7 +2,8 @@
   <div>
 
     <div style="height: 430px;background: white;">
-      <div style="height: 80px;border-bottom:1px solid black; line-height: 80px">
+      <div style="height: 80px;border-bottom: 1px dashed rgb(217, 217, 217);
+    padding: 24px 12px 0px; line-height: 80px">
         <div style="float: left"><span v-for="a in tableData">供应商：<span>{{a.supplierName}}</span></span></div>
         <div><span style="font-size: 30px;margin-left:35%">退货单详情</span></div>
         <div style="float: right;margin-top: -84px;"><span v-for="ss in tableData">单据编号：<span>{{ss.billId}}</span></span></div>
@@ -63,13 +64,13 @@
 export default {
   data() {
     return {
-      id: sessionStorage.getItem("aaa"),
+      id: localStorage.getItem("aaa"),
       tableData: [],
     }
   }, methods: {
     find() {
       this.axios.get("http://localhost:9090/returngoods/selectReturnGoodsById/" + this.id, {}).then(res => {
-        console.error(res)
+        console.log(res)
         this.tableData.push( res.data);
       }).catch(error => {
         console.log(error)
