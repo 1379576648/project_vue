@@ -10,25 +10,25 @@
     <br>
     <div>
       仓库：
-      <el-select v-model="value" placeholder="请选择">
+      <el-select v-model="this.add.stockId" placeholder="请选择">
         <el-option
             style="width: 200px"
-            v-for="item in payments"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="item in stock"
+            :key="item.stockId"
+            :label="item.stockName"
+            :value="item.stockId">
         </el-option>
       </el-select>
       &nbsp;
       入库类型：
-      <el-select v-model="value" placeholder="请选择">
+      <el-select v-model="this.add.outinstocktypeId" placeholder="请选择">
         <el-option
 
             style="width: 200px"
-            v-for="item in payments"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="item in outinstocktype"
+            :key="item.outinstocktypeId"
+            :label="item.outinstocktypeName"
+            :value="item.outinstocktypeId">
         </el-option>
       </el-select>
 
@@ -60,17 +60,45 @@
                 :default-sort="{ prop: 'date', order: 'descending' }"
       >
         <el-table-column type="index"  label="序号" width="70px"  />
-        <el-table-column prop="a" label="商品名称"  >
+        <el-table-column  prop="commodityName" label="商品名称"  >
           <template #default="scope">
-            <el-button @click="dialogVisible = true">请选择</el-button>
+            <el-button v-if="scope.row.commodityName==null" v-show="bad" @click="dialogVisible = true,selectIPages(),this.index=scope.$index">请选择</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="b" label="规/属性"  />
-        <el-table-column prop="c" label="单位"  />
-        <el-table-column prop="d" label="单价"  />
-        <el-table-column prop="e" label="数量"  />
-        <el-table-column prop="f" label="商品金额（元）"  />
-        <el-table-column prop="g" label="备注"  />
+        <el-table-column prop="commoditySpecifications" label="规/属性"  />
+        <el-table-column prop="commodityCompany" label="单位"  />
+        <el-table-column prop="goodsPricePurchase" label="单价"  >
+          <template #default="scope">
+          <el-input-number
+              v-model="scope.row.goodsPricePurchase"
+              disabled
+              min="0"
+              size="small"
+              controls-position="right">
+          </el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column prop="otherInStockDetailsNumber"  label="数量"  >
+
+          <template #default="scope">
+            <el-input-number
+                v-model="scope.row.otherInStockDetailsNumber"
+                min="0"
+                size="small"
+                controls-position="right"
+                :change="totil()"
+            >
+              <!--              {{scope.row.goodsPricePurchase}}-->
+            </el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column prop="otherInStockDetailsTotal"  label="商品金额（元）" >
+          <template #default="scope">
+            {{isNaN(scope.row.goodsPricePurchase*scope.row.otherInStockDetailsNumber)?'0.00':scope.row.goodsPricePurchase*scope.row.otherInStockDetailsNumber}}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="remark" label="备注"  />
         <!-- 操作 -->
         <el-table-column label="操作" width="150">
           <template #default="scope">
@@ -80,9 +108,8 @@
             <el-button @click="add_social()" size="small"  type="text">新增</el-button>
           </template>
         </el-table-column>
-
       </el-table>
-      <span>合计：{{}}</span>
+      <span>合计：{{ totil() }}元</span>
     </div>
 
   </el-card>
@@ -114,22 +141,23 @@
 
     <hr style="margin-top: -20px;margin-bottom:20px;color:  #FFFFFF"/>
 
-    <el-button style="width: 90px" @click="dialogVisible=false,added=true">新增商品</el-button>
-
-    <span style="margin-left: 437px">商品分类：</span>
-    <el-select v-model="value1" placeholder="请选择" style="width: 200px">
-      <el-option
-          style="width: 200px"
-          v-for="item in classify"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-      </el-option>
+    <el-button style="width: 90px" @click="addStockDatas(),dialogVisible=false,added=true">新增商品</el-button>
+    <span style="margin-left: 387px">商品分类：</span>
+    <el-select v-model="classifysName" placeholder="请选择" style="width: 200px">
+      <el-option hidden></el-option>
+      <el-tree
+                  :data="assignment"
+                  @node-click="handleNodeCliks"
+                  :props="defaultProps1"
+                  default-expand-all
+                  :filter-node-method="filterNode"
+                  highlight-current
+                  ref="tree">
+      </el-tree>
     </el-select>
     &nbsp;
-    <el-input style="width: 200px" placeholder="编号/商品名称/条形码">
-
-    </el-input>
+    <el-input style="width: 200px" v-model="pageInfo.commodityName" placeholder="商品名称"/>
+    <el-button style="margin-left: 5px;margin-top: -5px" @click="selectIPages()">查询</el-button>
 
     <!--选择商品表格-->
     <el-table
@@ -142,29 +170,41 @@
         :cell-style="{ textAlign: 'center' }"
     >
       <el-table-column type="selection" width="55" />
-      <el-table-column type="index"  width="55" label="序号"/>
-      <el-table-column prop="address" label="商品编号" width="175" />
-      <el-table-column property="name" label="规格/属性"  />
-      <el-table-column property="name" label="单位"  />
-      <el-table-column property="name" label="条形码"  />
-      <el-table-column property="name" label="参考进货价"  />
-      <el-table-column property="name" label="实际库存"  />
+      <el-table-column type="index"  width="55" label="序号" />
+      <el-table-column prop="commodityId" label="商品编号" width="175" sortable />
+      <el-table-column property="commodityName" label="商品名称"  />
+      <el-table-column property="commoditySpecifications" label="规格/属性"  />
+      <el-table-column property="commodityCompany" label="单位"  />
+
+      <el-table-column property="goodsPricePurchase" label="参考进货价" >
+        <template #default="scope">
+          <span v-if="scope.row.goodsPricePurchase==null">0.00</span>
+          <span v-if="scope.row.goodsPricePurchase!=null">{{scope.row.goodsPricePurchase}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="actualStock" label="实际库存" >
+        <template #default="scope">
+          <span v-if="scope.row.actualStock==null">0.00</span>
+          <span v-if="scope.row.actualStock!=null">{{scope.row.actualStock}}</span>
+        </template>
+      </el-table-column>
     </el-table>
 
     <!-- 分页 -->
-    <div style="margin-top: 5px;margin-left: 550px;">
+    <div style="margin-top: 5px;margin-left: 500px;">
       <el-pagination
           v-model:current-page="pageInfo.currentPage"
           v-model:currentPage="pageInfo.currentPage"
           v-model:page-size="pageInfo.pagesize"
           :default-page-size="pageInfo.pagesize"
-          :page-sizes="[3, 4, 5, 6]"
+          :page-sizes="[9, 12, 18, 27]"
           :page-size="3"
           :pager-count="4"
           layout="total, sizes, prev, pager, next, jumper"
           :total="pageInfo.total"
-          @size-change="pagingQuery"
-          @current-change="pagingQuery"
+          @size-change="selectIPages"
+          @current-change="selectIPages"
           prev-text="上一页"
           next-text="下一页"
           background
@@ -174,12 +214,13 @@
 
     <hr style="margin-top: 20px;margin-bottom: -30px;color:  #FFFFFF"/>
 
+
     <template #footer >
         <span class="dialog-footer" >
           <el-button @click="dialogVisible = false">
             取消
           </el-button>
-          <el-button type="primary" @click="dialogVisible = false">
+          <el-button type="primary" @click="dialogVisible = false,fuzhi(this.index),totil()">
             确定选择
           </el-button>
         </span>
@@ -198,45 +239,39 @@
     <hr style="margin-top: -30px;margin-bottom:20px;color:  #FFFFFF">
 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
 
-    <el-form-item style="margin-left: 20px" label="编号："  prop="number">
-      <el-input style="width: 300px" v-model="ruleForm.number"></el-input>
+    <el-form-item style="margin-left: 20px;"   label="名称：" prop="commodityName">
+      <el-input style="width: 300px" v-model="ruleForm.commodityName" placeholder="例如：夹克"></el-input>
     </el-form-item>
 
-    <el-form-item style="margin-left: 578px;margin-top: -47px;"   label="名称：" prop="name">
-      <el-input style="width: 300px" v-model="ruleForm.name" placeholder="例如：夹克"></el-input>
-    </el-form-item>
-
-  <el-form-item style="margin-left: 20px" label="分类：" prop="classifys">
+  <el-form-item style="margin-left: 578px;margin-top:-50px;" label="分类：" prop="classifys">
     <el-select v-model="ruleForm.classifys" placeholder="请选择分类">
+      <el-option hidden></el-option>
+      <el-tree
+          :data="all"
+          @node-click="handleNodeClik"
+          :props="defaultProps"
+          default-expand-all
+          :filter-node-method="filterNode"
+          highlight-current
+          ref="tree">
+      </el-tree>
+    </el-select>
+  </el-form-item>
+
+  <el-form-item style="margin-left: 20px" label="单位：" prop="commodityCompany">
+    <el-select v-model="ruleForm.commodityCompany" placeholder="请选择单位">
       <el-option
           style="width: 200px"
-          v-for="item in classifys"
-          :key="item.value4"
+          v-for="item in commodityCompany"
+          :key="item.commodityCompany"
           :label="item.label"
-          :value="item.value4">
+          :value="item.commodityCompany">
       </el-option>
     </el-select>
   </el-form-item>
 
-  <el-form-item style="margin-left: 578px;margin-top: -47px;" label="条形码：" prop="barcode">
-    <el-input style="width: 240px" placeholder="例如：772462862882" v-model="ruleForm.barcode"></el-input>
-    <el-button @click="generate()">生成</el-button>
-  </el-form-item>
-
-  <el-form-item style="margin-left: 20px" label="单位：" prop="unit">
-    <el-select v-model="ruleForm.unit" placeholder="请选择单位">
-      <el-option
-          style="width: 200px"
-          v-for="item in unit"
-          :key="item.value4"
-          :label="item.label"
-          :value="item.value4">
-      </el-option>
-    </el-select>
-  </el-form-item>
-
-  <el-form-item style="margin-left: 578px;margin-top: -47px;" label="规格/属性：">
-    <el-input style="width: 300px" v-model="ruleForm.property" placeholder="例如：红色"></el-input>
+  <el-form-item style="margin-left: 578px;margin-top:-47px;" label="规格/属性：">
+    <el-input style="width: 300px" v-model="ruleForm.commoditySpecifications" placeholder="例如：红色"></el-input>
   </el-form-item>
 
   <el-form-item style="margin-left: 20px;" label="零售价：" >
@@ -248,29 +283,32 @@
     <el-input style="width: 150px" v-model="ruleForm.tradePrice" placeholder="输入批发价"></el-input>
   </el-form-item>
 
-  <el-form-item style="margin-left:493px;margin-top: -50px;" label="最低价：">
-    <el-input style="width: 150px" v-model="ruleForm.floorPrice" placeholder="输入最低价"></el-input>
+  <el-form-item style="margin-left:493px;margin-top: -50px;" label="最低售价：">
+    <el-input style="width: 150px" v-model="ruleForm.goodsPriceMinPrice" placeholder="输入最低价"></el-input>
   </el-form-item>
 
   <el-form-item style="margin-left: 728px;margin-top: -50px;" label="进货价：">
-    <el-input style="width: 150px" v-model="ruleForm.stockPrice" placeholder="输入进货价"></el-input>
+    <el-input style="width: 150px" v-model="ruleForm.goodsPricePurchase" goodsPricePurchase="输入进货价"></el-input>
   </el-form-item>
 
   <el-form-item style="margin-left: 20px;" label="备注：">
     <el-input type="textarea" v-model="ruleForm.remark" placeholder="请输入备注"></el-input>
   </el-form-item>
 
-  <el-table :data="addTableData" height="200px" style="width: 100%;"
-            :header-cell-style="{textAlign: 'center',background:'#f8f8f9',color:'#6C6C6C'}"
-            :cell-style="{ textAlign: 'center' }"
-            :default-sort="{ prop: 'date', order: 'descending' }"
-  >
-    <el-table-column type="index"  label="序号" width="70px"  />
-    <el-table-column prop="a" label="仓库" />
-    <el-table-column prop="b" label="初期库存数量"  />
-    <el-table-column prop="c" label="初期成本价(元)"  />
-    <el-table-column prop="d" label="初期总额"  />
-  </el-table>
+  <el-form-item>
+    <el-table :data="addTableData" height="200px" style="width: 100%;"
+              :header-cell-style="{textAlign: 'center',background:'#f8f8f9',color:'#6C6C6C'}"
+              :cell-style="{ textAlign: 'center' }"
+              :default-sort="{ prop: 'date', order: 'descending' }"
+    >
+      <el-table-column type="index"  label="序号" width="70px"  />
+      <el-table-column prop="stockName" label="仓库" />
+      <el-table-column prop="quantity" label="初期库存数量"  />
+      <el-table-column prop="money" label="初期成本价(元)"  />
+      <el-table-column prop="rental" label="初期总额"  />
+    </el-table>
+  </el-form-item>
+
 </el-form>
     <hr style="margin-top: 20px;color:  #FFFFFF">
 
@@ -279,7 +317,7 @@
             <el-button style="margin-left: 460px" @click="resetForm('ruleForm'),added = false,dialogVisible=true">
               取消并返回
             </el-button>
-            <el-button type="primary"  @click="submitForm('ruleForm')">
+            <el-button type="primary"  @click="goodsToAdd(),submitForm('ruleForm')">
               保存
             </el-button>
     </div>
@@ -322,52 +360,96 @@ const shortcuts = [
 export default {
 data(){
   return{
+    index:0,
+
+    bad:true,
+
+    adds:{
+
+    },
+
+    /**
+     *    选择对话框分类
+     */
+    //所有的分类数据
+    assignment:[],
+    //节点数据发生变化时将数据存入集合
+    gather :{},
+    //设置默认的属性值
+    defaultProps1:{
+      children:'categorys',
+      label:'categoryName'
+    },
+    //显示选择的分类名称
+    classifysName:'',
+
+
+
+
+    //添加对话框表格
+    addTableData:[],
+
+
+    //树形控件
+    bads:{},
+    //所有的分类数据
+    all:[],
+    //设置默认的属性值
+    defaultProps:{
+      children:'categorys',
+      label:'categoryName'
+    },
+
     //单位
-    unit:[{
-      value4: '克',
-      label: '克'
+    commodityCompany:[
+        {
+      commodityCompany: '台',
+      label: '台'
     }, {
-      value4: '盒',
-      label: '盒'
-    }],
-    //分类
-    classifys:[{
-      value4: '语文',
-      label: '语文'
+      commodityCompany: '箱',
+      label: '箱'
     }, {
-      value4: '数学',
-      label: '数学'
-    }],
-    value4:'',
+        commodityCompany: '打',
+        label: '打'
+    }, {
+      commodityCompany: '瓶',
+      label: '瓶'
+    }, {
+      commodityCompany: '条',
+      label: '条'
+    }, {
+      commodityCompany: '公斤',
+      label: '公斤'
+    }, {
+      commodityCompany: '套',
+      label: '套'
+    }, {
+      commodityCompany: '件',
+      label: '件'
+    }, {
+      commodityCompany: '袋',
+      label: '袋'
+    }, {
+      commodityCompany: '个',
+      label: '个'
+    }
+    ],
+
 
 
       ruleForm: {
-        number:'',
-        name: '',
-        classifys:'',
-        barcode:'',
-        unit:'',
-        property:'',
-        retailPrice:'',
-        tradePrice:'',
-        floorPrice:'',
-        stockPrice:'',
-        remark:''
+
       },
     //表单验证
     rules:{
-      number: [
-        { required: true, message: '请输入编号', trigger: 'blur' },
-        { min: 1, max: 14, message: '长度在14个字符', trigger: 'blur' }
-      ],
-      name:[
+      commodityName:[
         { required: true, message: '请输入名称', trigger: 'blur' },
         { min: 1, max: 30, message: '长度在 3 到 5 个字符', trigger: 'blur' }
       ],
       classifys:[
         { required: true, message: '请选择分类', trigger: 'blur' },
       ],
-      unit:[
+      commodityCompany:[
         { required: true, message: '请选择单位', trigger: 'blur' },
       ],
     },
@@ -375,8 +457,10 @@ data(){
     //分页
     pageInfo: {
       currentPage: 1,
-      pagesize: 3,
+      pagesize: 9,
       total: 0,
+      categoryId:'',
+      commodityName:'',
     },
 
     //备注
@@ -389,105 +473,228 @@ data(){
 
     //选择对话框表格
     tableDatas:[
-      {
-        date: '2016-05-03',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-02',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St',
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St, ',
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-01',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      },
-      {
-        date: '2016-05-08',
-        name: 'Tom',
-        address: 'No. 189, Grove St,',
-      }
     ],
     //表格
     tableData:[
-      {}
+      {otherInStockDetailsTotal:0.00},
+      {otherInStockDetailsTotal:0.00},
+      {otherInStockDetailsTotal:0.00},
+      {otherInStockDetailsTotal:0.00},
+      {otherInStockDetailsTotal:0.00}
     ],
 
-    value3:'',
 
-    classify:[{
-      value: '语文',
-      label: '语文'
-    }, {
-      value: '数学',
-      label: '数学'
-    }],
-    value1:'',
-    payments: [{
-      value: '语文',
-      label: '语文'
-    }, {
-      value: '数学',
-      label: '数学'
-    }],
-    value:'',
+    //出库数据
+    outinstocktype:[],
+    //库存
+    stock:[],
 
-    multipleSelection:''
+    //添加其他入库单
+    add:{
+      stockId:'',
+      outinstocktypeId:'',
+    },
+
+    multipleSelection:[],
   }
 },
 
+  created() {
+  // this.totil()
+  this.choice()
+  this.classification()
+  this.form ()
+  this.inventory()
+  },
 
   methods:{
-    //生成密码
-    generate(){
-      //随机参数
-      let identifyCodes= '0123456789';
-      //初始化密码
-      this.ruleForm.barcode='';
-      for (let i = 0; i < 13; i++) {
-        this.ruleForm.barcode += identifyCodes[
-            this.randomNum(0, identifyCodes.length)]
-      }
-      console.log(this.ruleForm.barcode);
+
+  //合计
+    totil(){
+      var i=0;
+     this.tableData.forEach(item=>{
+       i+=isNaN(item.otherInStockDetailsNumber)?0:item.otherInStockDetailsNumber * item.otherInStockDetailsTotal
+     })
+      return i;
     },
-    randomNum(min, max) {
-      return Math.floor(Math.random() * (max - min) + min);
+
+    //选中获取表格里面的值
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+  //赋值方法
+    fuzhi(index){
+      this.tableData.splice(index,5)
+
+      if(this.tableData.length==0){
+        if(this.multipleSelection.length==0){
+          this.tableData.push(
+              {}
+          )
+        }else {
+
+          for (let i = 0; i <this.multipleSelection.length ; i++) {
+            this.tableData.push(
+                {
+                  commodityName:this.multipleSelection[i].commodityName,
+                  commoditySpecifications:this.multipleSelection[i].commoditySpecifications,
+                  commodityCompany:this.multipleSelection[i].commodityCompany,
+                  goodsPricePurchase:this.multipleSelection[i].goodsPricePurchase,
+                  otherInStockDetailsNumber:1,
+                  otherInStockDetailsTotal:this.multipleSelection[i].goodsPricePurchase*1,
+                  remark:this.multipleSelection[i].remark,
+                }
+            )
+          }
+        }
+      }else {
+        for (let i = 0; i <this.multipleSelection.length ; i++) {
+          for (let j=0;j<this.tableData.length;j++){
+            if (this.tableData[j].commodityName == this.multipleSelection[i].commodityName) {
+              this.multipleSelection.splice(this.multipleSelection[i], 1)
+            }
+          }
+          this.tableData.push(
+              {
+                commodityName: this.multipleSelection[i].commodityName,
+                commoditySpecifications: this.multipleSelection[i].commoditySpecifications,
+                commodityCompany: this.multipleSelection[i].commodityCompany,
+                goodsPricePurchase: this.multipleSelection[i].goodsPricePurchase,
+                otherInStockDetailsNumber: 1,
+                otherInStockDetailsTotal:this.multipleSelection[i].goodsPricePurchase*this.otherInStockDetailsNumber,
+                remark: this.multipleSelection[i].remark,
+              }
+          )
+        }
+      }
+    },
+
+    //选择分页
+    selectIPages(){
+      this.axios.post("http://localhost:9090/commodity/selectIPages",this.pageInfo)
+         .then(response=>{
+        this.pageInfo.total=response.data.data.total
+        this.tableDatas=response.data.data.records
+
+      })
+    },
+
+    //节点被点击时的回调
+    handleNodeCliks(node,data){
+      //点击赋值回调
+      this.gather=data.data;
+      this.pageInfo.categoryId=data.data.categoryId
+      this.classifysName=data.data.categoryName
+    },
+
+    //选择商品分类
+    choice(){
+      this.axios.get("http://localhost:9090/category/find")
+          .then(res=>{
+            this.assignment=res.data.data
+
+          })
+    },
+
+  //商品添加
+    goodsToAdd(){
+      this.axios({
+        method:'post',
+        url:'http://localhost:9090/commodity/goodsToAdd',
+        data:this.ruleForm,
+        responseType:'json',
+        responseEncoding:'utf-8',
+      }).then(res=>{
+        if(res.data.code=="200"){
+          this.$message.success(res.data.msg)
+          this.ruleForm='',
+          this.added = false
+          this.dialogVisible=true
+        }else{
+          this.$message.error(res.data.msg)
+        }
+      })
+      .catch(error=>{
+        console.error(error)
+      })
+    },
+
+    //节点被点击时的回调
+    handleNodeClik(node,data){
+      //点击赋值回调
+     this.bads=data.data;
+     this.ruleForm.classifys=data.data.categoryName
+      this.ruleForm.categoryId=data.data.categoryId
+
+    },
+    //生成密码
+    // generate(){
+    //   //随机参数
+    //   let identifyCodes= '0123456789';
+    //   //初始化密码
+    //   this.ruleForm.barcode='';
+    //   for (let i = 0; i < 13; i++) {
+    //     this.ruleForm.barcode += identifyCodes[
+    //         this.randomNum(0, identifyCodes.length)]
+    //   }
+    //   console.log(this.ruleForm.barcode);
+    // },
+    // randomNum(min, max) {
+    //   return Math.floor(Math.random() * (max - min) + min);
+    // },
+
+    //新增商品分类
+    classification(){
+      this.axios.get("http://localhost:9090/category/find")
+          .then(res=>{
+            this.all=res.data.data
+          })
+    },
+
+
+    //查询出库类型表数据
+    addStockDatas (){
+
+      this.axios({
+        method:'get',
+        url:'http://localhost:9090/stock/selectStockData/'+this.add.stockId,
+        responseType:'json',
+        responseEncoding:'utf-8',
+      }).then(response=>{
+        console.log(response.data.data)
+        this.addTableData.push(response.data.data)
+      })
+    },
+
+    //查询出库类型表数据
+    form (){
+      this.axios({
+        method:'get',
+        url:'http://localhost:9090/outinstocktype/selectOutinstocktypes',
+        responseType:'json',
+        responseEncoding:'utf-8',
+      }).then(response=>{
+        this.outinstocktype=response.data.data
+      })
+    },
+
+
+    //查询全部库存
+    inventory(){
+      this.axios({
+        method:'get',
+        url:'http://localhost:9090/stock/selectStocks',
+        responseType:'json',
+        responseEncoding:'utf-8',
+      }).then(response=>{
+        this.stock=response.data.data
+      })
     },
 
   //表单验证
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-        //,added = false,dialogVisible=true
-          this.added = false
-          this.dialogVisible=true
           this.$refs[formName].resetFields();
         } else {
           console.log('error submit!!');
@@ -501,10 +708,7 @@ data(){
 
 
 
-    //全选
-    handleSelectionChange(val) {
-      this.multipleSelection.value = val
-    },
+
 
 
     // 删除行
@@ -518,13 +722,13 @@ data(){
 
     add_social() {
       let social_row = {
-        a: null, // 缴费项目
-        b: null, // 基数下限、
-        c: null, // 基数上限
-        d: null, // 公司缴纳比例
-        e: null, // 个人缴纳比例
-        f:null,
-        g: null, // 个人固定金额
+        commodityName: null, // 缴费项目
+        commoditySpecifications: null, // 基数下限、
+        commodityCompany: null, // 基数上限
+        goodsPricePurchase: null, // 公司缴纳比例
+        otherInStockDetailsNumber: null, // 个人缴纳比例
+        otherInStockDetailsTotal:null,
+        remark: null, // 个人固定金额
 
       }
       this.tableData.push(social_row)
