@@ -273,20 +273,20 @@
   </el-form-item>
 
   <el-form-item style="margin-left: 20px;" label="零售价：" >
-    <el-input style="width: 150px" v-model="ruleForm.retailPrice" placeholder="输入零售价">
+    <el-input style="width: 150px" oninput="value=value.replace(/[^0-9.]/g,'')" v-model="ruleForm.retailPrice" placeholder="输入零售价">
     </el-input>
   </el-form-item>
 
   <el-form-item style="margin-left: 257px;margin-top: -47px;" label="批发价：">
-    <el-input style="width: 150px" v-model="ruleForm.tradePrice" placeholder="输入批发价"></el-input>
+    <el-input style="width: 150px" oninput="value=value.replace(/[^0-9.]/g,'')" v-model="ruleForm.tradePrice" placeholder="输入批发价"></el-input>
   </el-form-item>
 
   <el-form-item style="margin-left:493px;margin-top: -50px;" label="最低售价：">
-    <el-input style="width: 150px" v-model="ruleForm.goodsPriceMinPrice" placeholder="输入最低价"></el-input>
+    <el-input oninput="value=value.replace(/[^0-9.]/g,'')" style="width: 150px" v-model="ruleForm.goodsPriceMinPrice"  placeholder="输入最低价"></el-input>
   </el-form-item>
 
   <el-form-item style="margin-left: 728px;margin-top: -50px;" label="进货价：">
-    <el-input style="width: 150px" v-model="ruleForm.goodsPricePurchase" goodsPricePurchase="输入进货价"></el-input>
+    <el-input oninput="value=value.replace(/[^0-9.]/g,'')" style="width: 150px" v-model="ruleForm.goodsPricePurchase" goodsPricePurchase="输入进货价"></el-input>
   </el-form-item>
 
   <el-form-item style="margin-left: 20px;" label="备注：">
@@ -330,7 +330,26 @@ import {ElMessage} from "element-plus";
 
 export default {
 data(){
+  const validateMoney = (rule,value,callback) =>{
+    if(!value){
+      callback(new Error('审计价格不能为空'))
+    }else if(value.indexOf(".") != -1 && value.split('.').length > 2){
+      callback(new Error('请输入正确格式的金额')) //防止输入多个小数点
+    }else if(value.indexOf(".") != -1 && value.split('.')[1].length > 2){
+      callback(new Error('请输入正确的小数位数')) //小数点后两位
+    }else{
+      callback();
+    }
+  };
+
+
   return{
+    ruless: {
+      auditPrice:[
+        { type: 'string',required: true,trigger: 'blur', validator:validateMoney},
+      ]
+    },
+
     //经手人
     payments:[],
     //合计初始值
@@ -709,25 +728,48 @@ data(){
 
     //商品添加方法
     goodsToAdd(){
-      this.axios({
-        method:'post',
-        url:'http://localhost:9090/commodity/goodsToAdd',
-        data:this.ruleForm,
-        responseType:'json',
-        responseEncoding:'utf-8',
-      }).then(res=>{
-        if(res.data.code=="200"){
-          this.$message.success(res.data.msg)
-          this.ruleForm='',
-          this.added = false
-          this.dialogVisible=true
-        }else{
-          this.$message.error(res.data.msg)
-        }
-      })
-      .catch(error=>{
-        console.error(error)
-      })
+      if(this.ruleForm.goodsPricePurchase==''){
+        ElMessage({
+          message: '请输入进货价',
+          type: 'warning',
+        })
+      }else if(this.ruleForm.goodsPriceMinPrice==''){
+        ElMessage({
+          message: '请输入批发价',
+          type: 'warning',
+        })
+      }else if(this.ruleForm.tradePrice==''){
+        ElMessage({
+          message: '请输入最低售价',
+          type: 'warning',
+        })
+      }else if(this.ruleForm.retailPrice==''){
+        ElMessage({
+          message: '请输入零售价',
+          type: 'warning',
+        })
+      }else {
+        this.axios({
+          method:'post',
+          url:'http://localhost:9090/commodity/goodsToAdd',
+          data:this.ruleForm,
+          responseType:'json',
+          responseEncoding:'utf-8',
+        }).then(res=>{
+          if(res.data.code=="200"){
+            this.$message.success(res.data.msg)
+            this.ruleForm='',
+                this.added = false
+            this.dialogVisible=true
+          }else{
+            this.$message.error(res.data.msg)
+          }
+        })
+            .catch(error=>{
+              console.error(error)
+            })
+      }
+
     },
 
     //树形控件节点被点击时的回调
@@ -765,6 +807,8 @@ data(){
     //查询出库类型表数据
     addStockDatas (){
 
+      this.addTableData=[]
+      this.ruleForm={}
       this.axios({
         method:'get',
         url:'http://localhost:9090/stock/selectStockData/'+this.add.stockId,
@@ -774,6 +818,7 @@ data(){
         console.log(response.data.data)
         this.addTableData.push(response.data.data)
       })
+
     },
 
     //查询出库类型表数据
