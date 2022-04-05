@@ -8,11 +8,14 @@
 
 
     <div style="padding: 10px">
-      <el-button style="float:left" type="primary">添加商品</el-button>
-
+      <router-link to="addcommodity">
+      <el-button style="float:left" type="primary">
+        添加商品
+      </el-button>
+      </router-link>
 
       <div>
-        <el-button plain style="float: right" @click="selectpage()">高级搜索</el-button>
+        <el-button plain style="float: right" @click="selectpage()">按名称搜索</el-button>
         <div style="width: 10px;float: right"></div>
         <el-input v-model="pageInfo1.input" placeholder="输入你要搜索的名称" style="width: 200px;float: right"></el-input>
 
@@ -48,12 +51,12 @@
         </el-table-column>
         <el-table-column
             prop="commodityCompany"
-            label="规格"
+            label="单位"
             width="300">
         </el-table-column>
         <el-table-column
             prop="commoditySpecifications"
-            label="单位"
+            label="规格/属性"
             width="300">
         </el-table-column>
         <el-table-column
@@ -141,7 +144,7 @@ export default {
       pageInfo1: {
         // 分页参数
         currentPage: 1, //当前页
-        pageSize: 3, // 页大小
+        pageSize: 10, // 页大小
         total: 0, // 总页数
         input: '',
       },
