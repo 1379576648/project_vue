@@ -51,7 +51,15 @@ const routes = [
             //库存查询
             {path:"/Management",component:()=>import('../components/stock/Management.vue')},
             //仓库管理
-            {path: "/Warehouse",component:()=>import('../components/stock/Warehouse.vue')}
+            {path: "/Warehouse",component:()=>import('../components/stock/Warehouse.vue')},
+
+            // 供应商列表
+            {path: "/supplierList",component:()=>import('../components/stock/Supplier_list.vue')},
+
+            // 供应商分类
+            {path: "/supplierClassify",component:()=>import('../components/stock/Supplier_classify.vue')}
+
+
             // {path:"/user",component:()=>import('../components/sys/user.vue')},
             // {path:"/role",component:()=>import('../components/sys/role.vue')},
             // {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},

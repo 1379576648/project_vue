@@ -100,6 +100,7 @@
                 type="text"
                 size="small"
                 style="color: red"
+                @click="deteleById(scope.row)"
             >
               移除
             </el-button>
@@ -114,8 +115,8 @@
         <!--        <span class="demonstration">All combined</span>-->
         <el-pagination
             v-model:currentPage="pageInfo1.currentPage"
-            v-model:page-size="pageInfo1.pagesize"
-            :default-page-size="pageInfo1.pagesize"
+            v-model:page-size="pageInfo1.pageSize"
+            :default-page-size="pageInfo1.pageSize"
             :page-sizes="[3, 5, 10, 50]"
             :pager-count="5"
             :total="pageInfo1.total"
@@ -140,7 +141,7 @@ export default {
       pageInfo1: {
         // 分页参数
         currentPage: 1, //当前页
-        pagesize: 3, // 页大小
+        pageSize: 3, // 页大小
         total: 0, // 总页数
         input: '',
       },
@@ -148,6 +149,30 @@ export default {
       tableData: []
     }
   }, methods: {
+    /*
+   * 根据id删除商品表
+   * */
+    deteleById(row){
+      this.axios
+          .delete("http://localhost:9090/commodity/delete/"+row.commodityId)
+          .then((res=>{
+            if(res.data === 1){
+              this.$message({
+                message: '删除成功！！！',
+                type: 'success'
+              });
+              //调用查询
+              this.selectpage()
+            }else {
+              this.$message({
+                message: '删除失败！！！',
+                type: 'error'
+              });
+            }
+          })).catch(function (error) {
+        console.log(error);
+      })
+    },
     //分写查询商品表
     selectpage() {
       this.axios
@@ -155,6 +180,7 @@ export default {
           .then((response => {
             console.log(response);
             this.tableData = response.data.data.records;
+            this.pageInfo1.total = response.data.data.total;
             console.log(this.tableData)
           })).catch(function (error) {
         console.log(error);
