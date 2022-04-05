@@ -33,12 +33,12 @@
 
             <div class="det_bh"  style="float:left;margin-left: 100px;width: 25%;text-align: left">
               <span>单位&nbsp;:&nbsp;&nbsp;</span>
-              <span>{{this.tatadata.commodityCompany}}</span>
+              <span>{{this.tatadata.commoditySpecifications}}</span>
             </div>
 
             <div class="det_bh"  style="float:left;margin-left: 100px;width: 100%;text-align: left" >
               <span>规格&nbsp;:&nbsp;&nbsp;</span>
-              <span>{{this.tatadata.commoditySpecifications}}</span>
+              <span>{{this.tatadata.commodityCompany}}</span>
             </div>
             <div class="det_bh"  style="float:left;margin-left: 100px;width: 100%;text-align: left" >
               <span>备注&nbsp;:&nbsp;&nbsp;</span>
