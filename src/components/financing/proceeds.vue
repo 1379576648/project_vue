@@ -8,9 +8,11 @@
             <span class="font-size-24 font-bold-700">收款单</span>
           </div>
           <el-button @click="goBack()" style="margin-left: 1100px;margin-bottom: 5px;">收款历史</el-button>
-          <div class="ant-col ant-col-8" align="right"><span><span>
-        <span class="font-size-14"><span class="font-color-45">单据编号：</span>
-          <span busitype="104">FK202203290001</span></span><!----></span></span>
+          <div class="ant-col ant-col-8" align="right"><span>
+<!--            <span>-->
+            <!--        <span class="font-size-14"><span class="font-color-45">单据编号：</span>-->
+            <!--          <span busitype="104">{{ this.collectionSerialNumber }}</span></span>&lt;!&ndash;&ndash;&gt;</span>-->
+            </span>
           </div>
         </div>
       </div>
@@ -19,16 +21,13 @@
       <div class="ant-row">
         经手人：
         <el-select v-model="region" placeholder="请选择" style="width: 110px">
-          <el-option label="管理员" value="管理员"/>
-          <el-option label="123" value="123"/>
+          <el-option
+              v-for="item in staffAll"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          />
         </el-select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        业务日期：
-        <el-date-picker style="width: 190px;"
-                        v-model="time"
-                        type="date"
-                        placeholder="请选择"
-                        :disabled-date="disabledDate"
-                        :shortcuts="shortcuts"/>
       </div>
       <div style="padding: 15px">
         <div>
@@ -47,6 +46,7 @@
                             v-model="payment"
                             placeholder="请选择客户"
                             class="input-with-select">
+
                   </el-input>
                 </template>
                 <el-table :data="tableData2" @row-click="a">
@@ -71,18 +71,19 @@
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column prop="address" label="欠款总计(元)" width="201"/>
+            <el-table-column prop="aggregate" label="欠款总计(元)" width="201">
+              {{ this.tableData.aggregate }}
+            </el-table-column>
             <el-table-column prop="address" label="本次付款(元)" width="203">
-              <template #default>
-                <el-input v-model="onePay" placeholder="请输入" style="width: 150px;"/>
-              </template>
+              <el-input-number v-model="onePay" :min="0" :max="10000000" :step="100" @change="calculateOne"/>
             </el-table-column>
             <el-table-column prop="address" label="优惠金额(元)" width="202">
               <template #default>
-                <el-input v-model="salePay" placeholder="请输入" style="width: 150px;"/>
+                <el-input-number v-model="salePay" :min="0" :max="10000000" :step="100" @change="calculateTwo"/>
               </template>
             </el-table-column>
             <el-table-column prop="address" label="合计(元)" width="210" align="center">
+              {{ this.tableData.combined }}
             </el-table-column>
           </el-table>
         </div>
@@ -94,52 +95,11 @@
       <el-input v-model="remark" type="textarea" placeholder="请输入备注信息"/>
       <br/>
       <br/>
-      附件上传：
-      <el-upload action="#" list-type="picture-card" :auto-upload="false">
-        <el-icon>
-          <Plus/>
-        </el-icon>
-
-        <template #file="{ file }">
-          <div>
-            <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
-            <span class="el-upload-list__item-actions">
-          <span
-              class="el-upload-list__item-preview"
-              @click="handlePictureCardPreview(file)"
-          >
-            <el-icon><zoom-in/></el-icon>
-          </span>
-          <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleDownload(file)"
-          >
-            <el-icon><Download/></el-icon>
-          </span>
-          <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleRemove(file)"
-          >
-            <el-icon><Delete/></el-icon>
-          </span>
-        </span>
-          </div>
-        </template>
-      </el-upload>
-
-      <el-dialog v-model="dialogVisible">
-        <img width="50%" :src="dialogImageUrl" alt=""/>
-      </el-dialog>
-      <div class="text">
-        仅支持jpg/jpeg/png格式，最多5张图片
-      </div>
     </div>
     <div class="ant-card-body2" style="margin-top: 70px;padding: 10px;background: white">
       <div class="ant-button">
         <el-button>取消</el-button>
-        <el-button type="primary">保存</el-button>
+        <el-button type="primary" @click="addDocuments()">保存</el-button>
       </div>
     </div>
 
@@ -154,12 +114,12 @@
     >
       <button type="button" class="fl ant-btn" @click="this.become2=true,this.become=false"><span>新增客户</span></button>&nbsp;&nbsp;
       <el-input style="width: 250px;"
-                v-model="seek"
-                placeholder="编号、名称、联系信息"
+                v-model="customerName"
+                placeholder="客户名称"
                 class="input-with-select"
       >
         <template #append>
-          <el-button @click="this.payClick=false,this.become=true">
+          <el-button @click="queryAllCustomer()">
             <el-icon>
               <search/>
             </el-icon>
@@ -218,6 +178,10 @@
           next-text="下一页"
           >
         </el-pagination>
+      </div>
+      <div style="margin-top: 10px;margin-left: 770px;">
+        <el-button @click="this.become=false,this.payment = undefined,this.currentRow=undefined">取消</el-button>
+        <el-button type="primary" @click="this.a(),this.become=false,this.currentRow=undefined">确认选择</el-button>
       </div>
     </el-dialog>
 
@@ -307,8 +271,10 @@ export default defineComponent({
       tableData: [{}],
       //表格
       tableData3: [],
-      //供应商
+      //客户
       payment: '',
+      // 客户ID
+      paymentId: '',
       //供应商2
       payment2: '',
       //结算账户
@@ -317,7 +283,7 @@ export default defineComponent({
       onePay: '',
       //优惠金额
       salePay: '',
-      //备注
+      //备注`
       remark: '',
       //图片
       dialogVisible: false,
@@ -336,7 +302,15 @@ export default defineComponent({
             trigger: 'blur'
           },
         ],
-      }
+      },
+      // 收款单编号
+      collectionSerialNumber: "",
+      // 客户名称-条件
+      customerName: "",
+      // 隐藏ID
+      Id: true,
+      // 经手人
+      staffAll: [],
     }
   },
   methods: {
@@ -419,9 +393,10 @@ export default defineComponent({
     },
     // 查询所有的客户
     queryAllCustomer() {
+      const customerNameOne = this.customerName === "" ? "*****1*****1*****1" : this.customerName;
       this.axios({
         method: 'get',
-        url: this.url + 'customer/queryAllCustomer/' + this.pageInfo.currentPage + '/' + this.pageInfo.pageSize,
+        url: this.url + 'customer/queryAllCustomer/' + this.pageInfo.currentPage + '/' + this.pageInfo.pageSize + '/' + customerNameOne,
         data: {},
         responseType: 'json',
         responseEncoding: 'utf-8',
@@ -443,19 +418,156 @@ export default defineComponent({
         }
       })
     },
+    // 根据客户编号查询其欠款总计
+    selectByCustomerIdAllMoney(val) {
+      this.axios({
+        method: 'get',
+        url: this.url + 'receivable/selectByCustomerIdAllMoney/' + val.customerId,
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("根据客户编号查询其欠款总计");
+        console.log(response);
+        if (response.data.code === 200) {
+          if (response.data.data.state === 200) {
+            this.tableData.aggregate = response.data.data.info
+          }
+        } else {
+          ElMessage({
+            message: response.data.message,
+            type: 'warning',
+          })
+        }
+      })
+    },
+    // 查询所有用户
+    selectAllStaff() {
+      this.axios({
+        method: 'get',
+        url: this.url + 'staff/selectAllStaff',
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("查询所有用户");
+        console.log(response);
+        if (response.data.code === 200) {
+          if (response.data.data.state === 200) {
+            for (let i = 0; i < response.data.data.info.length; i++) {
+              this.staffAll.push({
+                value: response.data.data.info[i].staffId,
+                label: response.data.data.info[i].staffName
+              })
+            }
+          }
+        } else {
+          ElMessage({
+            message: response.data.message,
+            type: 'warning',
+          })
+        }
+      })
+    },
+    // 保存单据
+    addDocuments() {
+      if (this.payment.length === 0) {
+        ElMessage({
+          message: "请选择客户",
+          type: 'warning',
+        })
+      } else if (this.payType === 0) {
+        ElMessage({
+          message: "请选择支付方式",
+          type: 'warning',
+        })
+      } else if (this.onePay === 0) {
+        ElMessage({
+          message: "本次付款不能为0元",
+          type: 'warning',
+        })
+      } else if (this.region === 0) {
+        ElMessage({
+          message: "经手人不能为空",
+          type: 'warning',
+        })
+      } else {
+        this.axios({
+          method: 'post',
+          url: this.url + 'receivable/addDocuments',
+          data: {
+            // 客户编号
+            'customerId': this.paymentId,
+            // 用户编号
+            'staffId': this.region,
+            // 支付方式
+            'settlement': this.payType,
+            // 实收金额
+            'aggregate': this.onePay,
+            // 优惠金额
+            'coupon': this.salePay,
+            // 备注
+            "remarks": this.remark
+          },
+          responseType: 'json',
+          responseEncoding: 'utf-8',
+        }).then((response) => {
+          console.log("保存单据");
+          console.log(response);
+          if (response.data.code === 200) {
+            if (response.data.data.state === 200) {
+              if (response.data.data.info === "成功" ) {
+                ElMessage({
+                  message: "成功",
+                  type: 'success',
+                })
+              }else {
+                ElMessage({
+                  message: response.data.data.info,
+                  type: 'warning',
+                })
+              }
+            }
+          } else {
+            ElMessage({
+              message: response.data.message,
+              type: 'warning',
+            })
+          }
+        })
+      }
+    },
+    // 计算合计
+    calculateOne() {
+      if (this.salePay === 0) {
+        this.tableData.combined = this.onePay - this.salePay
+      } else {
+        this.tableData.combined = this.onePay - this.salePay
+      }
+    },
+    // 计算合计
+    calculateTwo() {
+      if (this.onePay === 0) {
+      } else {
+        this.tableData.combined = this.onePay - this.salePay
+      }
+    },
     // 清空表单
     resetForm() {
       this.$refs.ruleForm.resetFields()
     },
     //选中名称赋值进供应商文本框
     a(val) {
-      this.payment = val.name;
+      this.payment = val.customerName;
+      this.paymentId = val.customerId;
       this.payClick = false;
       this.one = this.one + 1;
+      // 根据客户编号查询其欠款总计
+      this.selectByCustomerIdAllMoney(val);
     },
     //单选按钮选中供应商名称进文本框
     b(val) {
-      this.payment = val.address;
+      this.payment = val.customerName;
     },
     //跳转到付款历史
     goBack() {
@@ -466,6 +578,8 @@ export default defineComponent({
     this.obtainSerialNumber();
     //  查询所有客户
     this.queryAllCustomer();
+    // 查询所有用户
+    this.selectAllStaff();
   }
 
 })
