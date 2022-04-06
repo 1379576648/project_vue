@@ -59,6 +59,10 @@ const routes = [
             {path:"/otherOutStockAll",component:()=>import('../components/stock/OtherOutStockAll.vue')},
             {path:"/otherOutStockDetails",component:()=>import('../components/stock/OtherOutStockDetails.vue')},
             {path:"/Warehousing",component:()=>import('../components/stock/Warehousing.vue')},
+            {path:"/Warehousedetails",component:()=>import('../components/stock/Warehousedetails.vue')},
+            // 其他出入库类型
+            {path:"/receipttype",component:()=>import('../components/stock/receipttype.vue')},
+
             //库存查询
             {path:"/Management",component:()=>import('../components/stock/Management.vue')},
             //仓库管理
