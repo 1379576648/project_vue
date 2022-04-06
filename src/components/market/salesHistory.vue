@@ -105,8 +105,10 @@
 
             <el-button
                 type="text"
-                size="small">
-              <router-link to="details">详情</router-link>
+                size="small"
+                @click="details(scope.row.saleId)"
+            >
+             详情
             </el-button>
             &nbsp;
             <span class="span_1" v-show="zuofei">|</span>
@@ -258,8 +260,9 @@
             <template #default="scope">
             <el-button
                 type="text"
-                size="small">
-              <router-link to="details">详情</router-link>
+                size="small"
+                @click="details(scope.row.saleId)">
+              详情
             </el-button>
 
             &nbsp;
@@ -301,7 +304,7 @@
     </el-tab-pane>
 
   </el-tabs>
-
+{{tableData2}}
 </template>
 
 <script>
@@ -405,9 +408,6 @@ export default {
       })
     },
     outbound(saleId,stockId){
-
-      alert(stockId)
-
       this.axios({
         method:'post',
         url: this.url+ 'saleschedule/outbound',
@@ -449,7 +449,11 @@ export default {
         this.xianshi = true
         this.zuofei = true
       }
-    }
+    },
+    details(saleId){
+      this.$router.push({path: '/details',query:{saleId:saleId}})
+    },
+
   },created() {
     this.selectPageSale()
     this.selectPageSale2()

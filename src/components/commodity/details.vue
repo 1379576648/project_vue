@@ -15,7 +15,7 @@
 
                 <div class="ant-col ant-col-8" align="right">
                   <span style="color: #a5a5a5;">单据编号：</span>
-                  <span>{{Fromlist.bills}}</span>
+                  <span>{{this.bianhao}}</span>
                 </div>
               </div>
             </div>
@@ -25,11 +25,13 @@
           <div class="ant-row_1">
             <div class="ant-row_2">
               <span style="font-size: 16px">仓库：</span>
+              <span>{{this.cangku}}</span>
               &nbsp;&nbsp;&nbsp;
             </div>
             <div class="ant-row_2" style="display: flex">
               <div>
                 <span style="font-size: 16px">业务日期：</span>
+                <span>{{this.riqi}}</span>
               </div>
 
             </div>
@@ -45,73 +47,38 @@
                   :default-sort="{ prop: 'name', order: 'descending' }"
               >
                 <el-table-column label="序号" type="index" width="50" />
-                <el-table-column  label="商品名称" align="center" width="320px">
+                <el-table-column  label="商品名称" align="center" prop="commodityName" width="320px">
                 </el-table-column>
-                <el-table-column prop="name" label="商品编号" />
-                <el-table-column prop="name" label="规格/属性" />
-                <el-table-column prop="name" label="单位" />
-                <el-table-column prop="name" label="商品编号" />
-                <el-table-column prop="name" label="数量" />
-                <el-table-column prop="name" label="商品金额(元)" />
-                <el-table-column prop="name" label="备注" />
-                <el-table-column label="操作" width="90" align="center">
-                  <template #default="scope">
-                    <el-button type="text" size="small" @click="delData(scope.$index, scope.row)">删除</el-button>
-                    <el-button type="text" size="small" @click="addhang()">添加</el-button>
-                  </template>
+                <el-table-column prop="saleschedulePrice" label="商品价格" />
+                <el-table-column prop="commoditySpecifications" label="规格/属性" />
+                <el-table-column prop="commodityCompany" label="单位" />
+                <el-table-column prop="salescheduleNumber" label="数量" />
+                <el-table-column prop="name" label="商品金额(元  )" >
+                  {{this.amountGoods}}
                 </el-table-column>
+                <el-table-column prop="saleRemarks" label="备注" />
               </el-table>
 
             </div>
             <div style="height: 40px;width: 100%;margin-top: 12px;display: flex;align-items: center;font-weight: bold">
               <div class="ant_from">
                 <div>
-                  <label title="销售总额">销售总额：</label>
-                  <span class="pl12">0.00元</span>
-                </div>
-              </div>
-              <div class="ant_from">
-                <div>
-                  <label title="销售总额">整单折扣：</label>
-                  <span class="pl12">0.00元</span>
-                </div>
-              </div>
-              <div class="ant_from">
-                <div>
-                  <label title="销售总额">整单优惠：</label>
-                  <span class="pl12">0.00元</span>
-                </div>
-              </div>
-              <div class="ant_from">
-                <div>
-                  <label title="销售总额">其他费用：</label>
-                  <span class="pl12">0.00元</span>
+                  <label title="销售总额">客户：</label>
+                  <span class="pl12">{{this.kehu}}</span>
                 </div>
               </div>
             </div>
             <div style="height: 40px;width: 100%;display: flex;align-items: center;font-weight: bold">
               <div class="ant_from">
                 <div>
-                  <label title="销售总额">应收金额：</label>
-                  <span class="pl12">0.00元</span>
-                </div>
-              </div>
-              <div class="ant_from">
-                <div>
-                  <label title="销售总额">应收金额：</label>
-                  <span class="pl12">0.00元</span>
-                </div>
-              </div>
-              <div class="ant_from">
-                <div>
                   <label title="销售总额">实收金额：</label>
-                  <span class="pl12">0.00元</span>
+                  <span class="pl12">{{this.jine}}</span>
                 </div>
               </div>
               <div class="ant_from">
                 <div>
-                  <label title="销售总额">累加欠款：</label>
-                  <span class="pl12">0.00元</span>
+                  <label title="销售总额">销售总额：</label>
+                  <span class="pl12">{{this.zonge}}</span>
                 </div>
               </div>
             </div>
@@ -123,33 +90,65 @@
     </div>
     <div style="height: 230px;width: 100%;background-color: white">
       <div style="padding: 10px;width: 100%;height: 60px;">
-        <el-button style="float: right">返回</el-button>
+        <el-button style="float: right" @click="getBack()">返回</el-button>
 
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
+import {ElMessage} from "element-plus";
+
 export default {
   name: "details",
   data(){
     return{
+      //访问路径
+      url: "http://localhost:9090/",
       selectGoodsDialog:false,
       input:'',
-      tableData: [
-        {name:''},
-        {name:''},
-        {name:''}
-      ],
-      tableData1:[],
-      Fromlist:{
-        businessdate:'', //业务时间
-        bills:'', //单据编号
-      },
+      tableData: [],
+      saleId:"",
+      saleId2:"",
+      amountGoods:"",
+      shuxin:"",
+      cangku:"",
+      bianhao:"",
+      riqi:""
     }
-  }
+  },methods:{
+    details(){
+      this.axios({
+        method:'post',
+        url: this.url+ 'saleschedule/details',
+        data:{
+          "saleId":this.saleId
+        },
+        responseType:'json',
+        responseEncoding:'utf-8',
+      }).then((response)=>{
+        console.log(response)
+        this.tableData=response.data.data.succeed
+        this.amountGoods=response.data.data.succeed[0].salescheduleNumber * response.data.data.succeed[0].saleschedulePrice
+        this.cangku=response.data.data.succeed[0].stockName
+        this.riqi=response.data.data.succeed[0].saleTime
+        this.bianhao=response.data.data.succeed[0].billId
+        this.kehu=response.data.data.succeed[0].customerName
+        this.jine=response.data.data.succeed[0].saleMoney
+        this.zonge=response.data.data.succeed[0].saleMoney
+      })
+    },
+    getBack(){
+      this.saleId=""; this.saleId2=""
+      this.$router.push({path: '/salesHistory'})
+    }
+  },created() {
+    // 当前ID
+    this.saleId = this.$route.query.saleId
+    this.details()
+  },
+
 }
 </script>
 
