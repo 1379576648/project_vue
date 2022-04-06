@@ -227,7 +227,7 @@ import { defineComponent, ref } from "vue";
  					  console.log(node)
  			},
  			getQuerycheckList(){
- 							
+
 								 this.axios.get("http://localhost:9090/category/selectCategory")
  								  .then((res) => { 		
 									  console.log(res)
