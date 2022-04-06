@@ -9,19 +9,19 @@
           </div>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">单据编号：</span>
-          <span busitype="104">FK202203290001</span></span><!----></span></span>
+          <span busitype="104">{{ this.copeSerial }}</span></span><!----></span></span>
           </div>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">供应商名称：</span>
-          <span busitype="104">哈哈哈哈哈哈哈</span></span><!----></span></span>
+          <span busitype="104">{{ this.supplierName }}</span></span><!----></span></span>
           </div>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">经手人：</span>
-          <span busitype="104">张三</span></span><!----></span></span>
+          <span busitype="104">{{ this.staffName }}</span></span><!----></span></span>
           </div>
           <div class="ant-col ant-col-8" align="right"><span><span>
         <span class="font-size-14"><span class="font-color-45">业务日期：</span>
-          <span busitype="104">2022-3-20</span></span><!----></span></span>
+          <span busitype="104">{{ this.paymenttabTime }}</span></span><!----></span></span>
           </div>
           <br/>
           <br/>
@@ -36,16 +36,20 @@
                   :default-sort="{ prop: 'name', order: 'descending' }"
               >
                 <el-table-column prop="name" label="序号" type="index" width="80"/>
-                <el-table-column prop="address" label="结算账户" width="290"/>
-                <el-table-column prop="address" label="本单付出欠款(元)" width="296"/>
-                <el-table-column prop="address" label="本单优惠金额(元)" width="300"/>
-                <el-table-column prop="address" label="合计(元)" width="300"/>
+                <el-table-column prop="settlement" label="结算账户" width="290"/>
+                <el-table-column prop="copeMoney" label="本单付出欠款(元)" width="296">
+                </el-table-column>
+                <el-table-column prop="coupon" label="本单优惠金额(元)" width="300">
+                </el-table-column>
+                <el-table-column prop="address" label="合计(元)" width="300">
+                  {{ parseInt(this.copeMoney) + parseInt(this.coupon)}}
+                </el-table-column>
               </el-table>
               <br/>
               <br/>
-              制单人： &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
+              制单人：{{ this.staffName }} &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
               &nbsp; &nbsp;&nbsp;
-              制单日期：
+              制单日期：{{ this.paymenttabTime }}
             </div>
           </div>
         </div>
@@ -54,50 +58,50 @@
     <div class="ant-card-body2" style="margin-top: 20px;padding: 10px;background: white">
       备注：
       <br/>
-      <el-input v-model="remark" type="textarea" placeholder="请输入备注信息"/>
+      <el-input v-model="this.remarks" type="textarea" placeholder="请输入备注信息"/>
       <br/>
       <br/>
-      附件上传：
-      <el-upload action="#" list-type="picture-card" :auto-upload="false">
-        <el-icon>
-          <Plus/>
-        </el-icon>
+<!--      附件上传：-->
+<!--      <el-upload action="#" list-type="picture-card" :auto-upload="false">-->
+<!--        <el-icon>-->
+<!--          <Plus/>-->
+<!--        </el-icon>-->
 
-        <template #file="{ file }">
-          <div>
-            <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
-            <span class="el-upload-list__item-actions">
-          <span
-              class="el-upload-list__item-preview"
-              @click="handlePictureCardPreview(file)"
-          >
-            <el-icon><zoom-in/></el-icon>
-          </span>
-          <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleDownload(file)"
-          >
-            <el-icon><Download/></el-icon>
-          </span>
-          <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleRemove(file)"
-          >
-            <el-icon><Delete/></el-icon>
-          </span>
-        </span>
-          </div>
-        </template>
-      </el-upload>
+<!--        <template #file="{ file }">-->
+<!--          <div>-->
+<!--            <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>-->
+<!--            <span class="el-upload-list__item-actions">-->
+<!--          <span-->
+<!--              class="el-upload-list__item-preview"-->
+<!--              @click="handlePictureCardPreview(file)"-->
+<!--          >-->
+<!--            <el-icon><zoom-in/></el-icon>-->
+<!--          </span>-->
+<!--          <span-->
+<!--              v-if="!disabled"-->
+<!--              class="el-upload-list__item-delete"-->
+<!--              @click="handleDownload(file)"-->
+<!--          >-->
+<!--            <el-icon><Download/></el-icon>-->
+<!--          </span>-->
+<!--          <span-->
+<!--              v-if="!disabled"-->
+<!--              class="el-upload-list__item-delete"-->
+<!--              @click="handleRemove(file)"-->
+<!--          >-->
+<!--            <el-icon><Delete/></el-icon>-->
+<!--          </span>-->
+<!--        </span>-->
+<!--          </div>-->
+<!--        </template>-->
+<!--      </el-upload>-->
 
-      <el-dialog v-model="dialogVisible">
-        <img width="50%" :src="dialogImageUrl" alt=""/>
-      </el-dialog>
-      <div class="text">
-        仅支持jpg/jpeg/png格式，最多5张图片
-      </div>
+<!--      <el-dialog v-model="dialogVisible">-->
+<!--        <img width="50%" :src="dialogImageUrl" alt=""/>-->
+<!--      </el-dialog>-->
+<!--      <div class="text">-->
+<!--        仅支持jpg/jpeg/png格式，最多5张图片-->
+<!--      </div>-->
     </div>
     <div class="ant-card-body2" style="margin-top: 20px;padding: 10px;background: white">
       <div class="ant-button">
@@ -108,11 +112,23 @@
 </template>
 
 <script>
+import {ElMessage} from "element-plus";
+
 export default {
   data() {
     return {
+      // 访问地址
+      url: "http://localhost:9090/",
       //表格数据
       tableData: [],
+      tableData2:[],
+      copeSerial:"",
+      supplierName:"",
+      staffName:"",
+      paymenttabTime:"",
+      remarks:"",
+      copeMoney:"",
+      coupon:"",
     }
   },
   methods: {
@@ -120,6 +136,40 @@ export default {
     goBack() {
       this.$router.push({path: '/financing/payment_history'})
     },
+    //根据id查询付款历史信息
+    selectPaymentById() {
+      this.axios({
+        method: 'post',
+        url: this.url + 'paymenttab/selectPaymentById',
+        data: {
+          paymenttabId:this.$route.query.paymentId
+        },
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("根据id查询付款历史信息");
+        console.log(response);
+        if (response.data.state === 200 && response.data.msg === "查询成功") {
+          this.tableData = response.data.info;
+          this.copeSerial=response.data.info[0].copeSerial
+          this.supplierName=response.data.info[0].supplierName
+          this.staffName=response.data.info[0].staffName
+          this.paymenttabTime=response.data.info[0].paymenttabTime
+          this.remarks=response.data.info[0].remarks
+          this.copeMoney=response.data.info[0].copeMoney
+          this.coupon=response.data.info[0].coupon
+        } else {
+          ElMessage({
+            message: response.data.msg,
+            type: 'warning',
+          })
+        }
+      })
+    },
+  },
+  mounted() {
+    //根据id查询付款历史信息
+    this.selectPaymentById(this.$route.query.paymentId);
   }
 }
 </script>

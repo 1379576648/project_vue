@@ -1,10 +1,7 @@
-
-
 <template>
   <div class="common-layout">
     <el-container>
       <el-header>
-
 
 
       </el-header>
@@ -20,23 +17,34 @@
             </div>
             <el-button style="margin-top: 20px;margin-bottom: 10px;" @click="dialogVisible=true">新增</el-button>
           </div>
-          <el-table  border  empty-text="暂无数据"  :data="tableData" ref="tableT" @selection-change="handleSelectionChange" size="small" style="width: 99%;"  height="50vh">
+          <el-table border empty-text="暂无数据" :data="tableData" ref="tableT" @selection-change="handleSelectionChange"
+                    size="small" style="width: 99%;" height="50vh">
 
-            <el-table-column prop="customerName" label="序号" width="50%"  >
+            <el-table-column prop="stockId" label="序号" width="50%">
             </el-table-column>
-            <el-table-column prop="billMouth" label="仓库编号" width="" sortable >
+            <el-table-column prop="stockId" label="仓库编号"  sortable   :sort-by="['stockId', 'address']">
             </el-table-column>
-            <el-table-column prop="totalAmount" label="地址"  sortable >
+            <el-table-column prop="stockName" label="仓库名称" width="" sortable>
             </el-table-column>
-            <el-table-column prop="date" label="仓库状态"  sortable>
+            <el-table-column prop="stockSite" label="地址" sortable>
             </el-table-column>
-            <el-table-column prop="status" label="备注" :formatter="translationStatus" sortable>
+            <el-table-column prop="stockState" label="仓库状态" sortable>
+            </el-table-column>
+            <el-table-column prop="stockRemark" label="备注" :formatter="translationStatus" sortable>
             </el-table-column>
 
-            <el-table-column label="操作"  class="tableOperation">
+            <el-table-column label="操作" class="tableOperation">
               <template #default="scope">
-                <el-button type="text"  style="font-size: 12px" @click="dialogVisible1=true">编辑 </el-button>
-                <el-button type="text" style="font-size: 12px" @click="dialogVisible = true">  删除</el-button>
+                <el-popconfirm @confirm="deleteStort(tableData[scope.$index].stockId)"
+                               title="确认要删除此方案吗?">
+                  <template #reference>
+                    <el-button type="text" size="small" style="color:deepskyblue">删除</el-button>
+                  </template>
+                </el-popconfirm>
+                <el-button type="text" size="small" style="color:deepskyblue"
+                           @click="dialogVisible1=true,Stort1={stockId:tableData[scope.$index].stockId,stockName: tableData[scope.$index].stockName,stockSite: tableData[scope.$index].stockSite,stockState:tableData[scope.$index].stockState,stockRemark: tableData[scope.$index].stockRemark,stockDefault: tableData[scope.$index].stockDefault,deleted: tableData[scope.$index].deleted}">
+                  编辑
+                </el-button>
 
               </template>
             </el-table-column>
@@ -58,8 +66,8 @@
                 :pager-count="4"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="pageInfo.total"
-                @size-change="selectEndAuditflow"
-                @current-change="selectEndAuditflow"
+                @size-change="selectStort"
+                @current-change="selectStort"
                 prev-text="上一页"
                 next-text="下一页"
                 background
@@ -80,43 +88,39 @@
       :before-close="handleClose"
   >
     <br>
-    <el-form :model="form" label-width="120px">
+    <el-form :model="Stort" label-width="120px">
       <el-form-item label="仓库编号" style="margin-bottom: 0px;">
-        <el-input v-model="form.name" />
+        <el-input v-model="Stort.stockId"/>
       </el-form-item>
       <el-form-item label="仓库名称" style="position: relative;top: -30px; right: -325px;margin-bottom: 0px;">
-        <el-input v-model="form.name" />
+        <el-input v-model="Stort.stockName"/>
       </el-form-item>
-      <el-form-item label="仓库编号">
-        <el-input v-model="form.name" />
+      <el-form-item label="地址">
+        <el-input v-model="Stort.stockSite"/>
       </el-form-item>
 
 
       <el-form-item label="仓库状态" style="margin-bottom: 0px;">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="启用" />
-          <el-radio label="停用" />
+        <el-radio-group v-model="Stort.stockState">
+          <el-radio :label=0>启用</el-radio>
+          <el-radio :label=1>禁用</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="默认仓库" style="position: relative;top: -32px;left: 339px;margin-bottom: 0px;">
-        <el-radio-group v-model="form.resource1">
-          <el-radio label="设为默认" />
-          <el-radio label="取消默认" />
+        <el-radio-group v-model="Stort.stockDefault">
+          <el-radio :label=0>设为默认</el-radio>
+          <el-radio :label=1>取消默认</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="锁定仓库">
-        <el-switch v-model="form.delivery" />
-      </el-form-item>
+
       <el-form-item label="备注">
-        <el-input v-model="form.desc" type="textarea" />
+        <el-input v-model="Stort.stockRemark" type="textarea"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit" style="position: relative;top: 25px;left: 520px;">保存</el-button>
-        <el-button style="position: relative;top: 25px;left: 360px;">取消</el-button>
+        <el-button type="primary" @click="addStort" style="position: relative;top: 25px;left: 520px;">保存</el-button>
+        <el-button style="position: relative;top: 25px;left: 360px;" @click="look">取消</el-button>
       </el-form-item>
     </el-form>
-
-
 
 
   </el-dialog>
@@ -128,53 +132,70 @@
       :before-close="handleClose"
   >
     <br>
-    <el-form :model="form" label-width="120px">
+    <el-form :model="Stort1" label-width="120px">
       <el-form-item label="仓库编号" style="margin-bottom: 0px;">
-        <el-input v-model="form.name" />
+        <el-input v-model="Stort1.stockId"/>
       </el-form-item>
       <el-form-item label="仓库名称" style="position: relative;top: -30px; right: -325px;margin-bottom: 0px;">
-        <el-input v-model="form.name" />
+        <el-input v-model="Stort1.stockName"/>
       </el-form-item>
-      <el-form-item label="仓库编号">
-        <el-input v-model="form.name" />
+      <el-form-item label="地址">
+        <el-input v-model="Stort1.stockSite"/>
       </el-form-item>
 
 
       <el-form-item label="仓库状态" style="margin-bottom: 0px;">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="启用" />
-          <el-radio label="停用" />
+        <el-radio-group v-model="Stort1.stockState">
+          <el-radio :label=0> 启用</el-radio>
+          <el-radio :label=1>禁用</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="默认仓库" style="position: relative;top: -32px;left: 339px;margin-bottom: 0px;">
-        <el-radio-group v-model="form.resource1">
-          <el-radio label="设为默认" />
-          <el-radio label="取消默认" />
+        <el-radio-group v-model="Stort1.stockDefault">
+          <el-radio :label=0>设为默认</el-radio>
+          <el-radio :label=1>取消默认</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="锁定仓库">
-        <el-switch v-model="form.delivery" />
+        <el-switch v-model="Stort1.delivery"/>
       </el-form-item>
       <el-form-item label="备注">
-        <el-input v-model="form.desc" type="textarea" />
+        <el-input v-model="Stort1.stockRemark" type="textarea"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit" style="position: relative;top: 25px;left: 520px;">保存</el-button>
-        <el-button style="position: relative;top: 25px;left: 360px;">取消</el-button>
+        <el-button type="primary" @click="updateStort(),dialogVisible1=false" style="position: relative;top: 25px;left: 520px;" >保存</el-button>
+        <el-button style="position: relative;top: 25px;left: 360px;" @click="dialogVisible1=false">取消</el-button>
       </el-form-item>
     </el-form>
-
-
 
 
   </el-dialog>
 </template>
 <script>
+import {ElMessage} from "element-plus";
 
 export default {
-  data(){
-    return{
-      form:{
+  data() {
+    return {
+      Stort: {
+        stockId: '', //仓库编号
+        stockName: '', //仓库名称
+        stockSite: '',//仓库地址
+        stockState: '',//仓库状态
+        stockRemark: '',//备注
+        deleted: '',// 逻辑删除列（0:可用，1：不可用）
+        stockDefault: 1,// 是否默认仓库
+      },
+      Stort1: {
+        stockId: '',
+        stockName: '',
+        stockSite: '',
+        stockState: '',
+        stockRemark: '',
+        deleted: '',
+        stockDefault: '',
+      },
+      form: {
         name: '',
         region: '',
         date1: '',
@@ -185,8 +206,8 @@ export default {
         resource1: '',
         desc: '',
       },
-      checked1:"",
-      options:[
+      checked1: "",
+      options: [
         {
           value: 'guide',
           label: 'Guide',
@@ -454,8 +475,8 @@ export default {
           ],
         },
       ],
-      value:"",
-      options1:[
+      value: "",
+      options1: [
         {
           value: 'Option1',
           label: 'Option1',
@@ -477,118 +498,205 @@ export default {
           label: 'Option5',
         },
       ],
-      dialogVisible:false,
-      dialogVisible1:false,
+      dialogVisible: false,
+      dialogVisible1: false,
       pageInfo: {
         currentPage: 1,
-        pageSize: 3,
+        pageSize: 6,
         total: 0,
 
       },
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: 'Tom',
-          state: 'California',
-          city: 'Los Angeles',
-          address: 'No. 189, Grove St, Los Angeles',
-          zip: 'CA 90036',
-          tag: 'Home',
-        },
-        {
-          date: '2016-05-02',
-          name: 'Tom',
-          state: 'California',
-          city: 'Los Angeles',
-          address: 'No. 189, Grove St, Los Angeles',
-          zip: 'CA 90036',
-          tag: 'Office',
-        },
-        {
-          date: '2016-05-04',
-          name: 'Tom',
-          state: 'California',
-          city: 'Los Angeles',
-          address: 'No. 189, Grove St, Los Angeles',
-          zip: 'CA 90036',
-          tag: 'Home',
-        },
-      ],
+      tableData: [],
 
     }
 
 
-  },methods:{
-    path(){
-      this.$router.push({path: '/ck'})
+  }, methods: {
+    selectStort() {
+      this.axios({
+        method: 'post',
+        url: "http://localhost:9090/stock/selectStock",
+        data: this.pageInfo,
+        responseType: 'json',
+        responseEncoding: 'utf-8'
+      }).then((response) => {
+        console.log("查询111");
+        console.log(response);
+        this.tableData = response.data.data.records;
+        this.pageInfo.total = response.data.data.total;
+      })
+          .catch(function (error) {
+            console.log("失败")
+            console.log(error);
+
+          });
+
+
+    },
+    //添加仓库
+    addStort() {
+      this.axios.post("http://localhost:9090/stock/addStock", this.Stort)
+          .then(response => {
+            if (response.data === "失败") {
+              ElMessage.error('添加失败')
+            } else {
+              ElMessage({
+                message: '成功',
+                type: 'success'
+              })
+              this.selectStort();
+            }
+          })
+
+    },
+    deleteStort(id) {
+      this.axios({
+        url: "http://localhost:9090/stock/deleteStock",
+        method: "post",
+        data: [id],
+        responseType: 'json',
+        responseEncoding: 'utf-8'
+      })
+          .then((response) => {
+            if (response.data === "失败") {
+
+              ElMessage.error("删除失败");
+
+            } else {
+              this.selectStort();
+              ElMessage({
+                type: "success",
+                message: "删除成功",
+
+              });
+              console.log(response.data[0] + "ashdja")
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+    },
+    //修改仓库
+    updateStort(){
+      this.axios({
+        method:"put",
+        url:"http://localhost:9090/stock/updateStock",
+        data:this.Stort1,
+        responseType:'json',
+        responseEncoding:"utf-8"
+      }).then(response=>{
+        console.log(response)
+        if(response.data==="失败"){
+          ElMessage.error("修改失败")
+        }else{
+          ElMessage({
+            type:"success",
+            message:"修改成功"
+          })
+          this.selectStort();
+        }
+      })
+    },
+    look() {
+      this.dialogVisible = false;
+      this.Stort.stockName = "";
+      this.Stort.stockSite = "";
+      this.Stort.stockRemark = "";
+      this.Stort.stockState = "";
+      this.Stort.stockId = "";
+    }
+
+  }, created() {
+    this.selectStort();
+  }, watch: {
+    currentPage: {
+      handler: function () {
+        this.selectStort();
+      },
+      deep: true,
     }
   }
 }
 </script>
 
 <style scoped>
-/deep/ .el-main{
+/deep/ .el-main {
   background-color: white;
 }
-.word3{
-  color: rgba(0,0,0,.85);
+
+.word3 {
+  color: rgba(0, 0, 0, .85);
   font-size: 14px;
 }
-.word2{
-  color: rgba(0,0,0,.45);
+
+.word2 {
+  color: rgba(0, 0, 0, .45);
   font-size: 12px;
 }
-.word1{
+
+.word1 {
   font-family: Impact
 }
-/deep/ .el-dialog  {
+
+/deep/ .el-dialog {
   height: 480px;
 
 }
+
 /deep/ .el-header {
 
 }
-/deep/ .el-aside{
+
+/deep/ .el-aside {
   height: 1000px;
   background-color: #42b983;
 }
-/deept/ .el-checkbox.el-checkbox--large .el-checkbox__label{
-  color: rgba(0,0,0,.65);
+
+/deept/ .el-checkbox.el-checkbox--large .el-checkbox__label {
+  color: rgba(0, 0, 0, .65);
   font-size: 14px;
 
-  font-family: 微软雅黑,宋体,pingFang SC,Microsoft YaHei UI,Helvetica,serif;
+  font-family: 微软雅黑, 宋体, pingFang SC, Microsoft YaHei UI, Helvetica, serif;
 }
-/deep/ .el-cascader .el-input .el-input__inner{
+
+/deep/ .el-cascader .el-input .el-input__inner {
   width: 150px;
-  margin-left:5px;
+  margin-left: 5px;
 }
-/deep/ .el-input--small.el-input--suffix .el-input__inner{
+
+/deep/ .el-input--small.el-input--suffix .el-input__inner {
   height: 33px;
-  margin-left:5px;
+  margin-left: 5px;
 }
 
-/deep/ .el-input--large.el-input--suffix .el-input__inner{
-  width:143px; height: 33px;
+/deep/ .el-input--large.el-input--suffix .el-input__inner {
+  width: 143px;
+  height: 33px;
 
 }
-/deep/ .el-select--large{
-  width:143px; height: 33px;
+
+/deep/ .el-select--large {
+  width: 143px;
+  height: 33px;
   float: right;
 }
-.boox{
+
+.boox {
   /*  border: 1px solid #e8e8e8;*/
 
 }
 
-.boox_1{
+.boox_1 {
   width: 50%;
   float: left;
 }
-.word{
-  color: rgba(0,0,0,.45);
+
+.word {
+  color: rgba(0, 0, 0, .45);
   font-size: 12px;
 }
-/deep/ .el-form-item{
+
+/deep/ .el-form-item {
   width: 330px;
 }
 

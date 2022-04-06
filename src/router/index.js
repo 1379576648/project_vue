@@ -30,6 +30,9 @@ const routes = [
             {path:"/goin",component:()=>import('../components/commodity/goin.vue')},
             {path:"/edit",component:()=>import('../components/commodity/edit.vue')},
             {path:"/details",component:()=>import('../components/commodity/details.vue')},
+			 {path:"/classification",component:()=>import('../components/commodity/classification.vue')},
+			 {path:"/Purchasedetails",component:()=>import('../components/commodity/Purchasedetails.vue')},
+            {path:"/addcommodity",component:()=>import('../components/commodity/addcommodity.vue')},
         ]
     },
 
@@ -49,10 +52,17 @@ const routes = [
             {path:"/Management",component:()=>import('../components/stock/Management.vue')},
             //仓库管理
             {path: "/Warehouse",component:()=>import('../components/stock/Warehouse.vue')},
+
+            // 供应商列表
+            {path: "/supplierList",component:()=>import('../components/stock/Supplier_list.vue')},
+
+            // 供应商分类
+            {path: "/supplierClassify",component:()=>import('../components/stock/Supplier_classify.vue')}
+
+
             // {path:"/user",component:()=>import('../components/sys/user.vue')},
             // {path:"/role",component:()=>import('../components/sys/role.vue')},
             // {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
-            {path:"/menu",component:()=>import('../components/sys/menu.vue')}
         ]
     },
     //销售
@@ -73,6 +83,7 @@ const routes = [
 
         ]
     },
+    //采购
     {
         path:"/purchase",component:()=>import('../components/navigationbar.vue'),
         children:[
@@ -86,7 +97,10 @@ const routes = [
                 path:'/purchaseHistory',component:()=>import('../components/purchase/purchase_history.vue')
             },
             {
-                path:'/inGoods',component:()=>import('../components/purchase/inGoods.vue')
+                path:'/inGoods',component:()=>import('../components/purchase/inGoods.vue'),
+            },
+            {
+                path:'/returnDetails',component:()=>import('../components/purchase/return_details.vue')
             }
 
         ]
