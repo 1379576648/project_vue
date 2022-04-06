@@ -1,107 +1,298 @@
+
 <template>
+  <div style="border-width: 0 0 1px 0;
+ border-style: solid;
+ border-color: black;
+ height: 70px;">
+    <span style="font-size: 30px;">供应商分类</span>
+  </div>
+  <el-button type="primary" @click="insertjm()">添加分类</el-button>
+  <el-button type="danger" @click="updatejm()">编辑分类</el-button>
+  <el-button @click="delectSupplierCategory()">删除分类</el-button>
   <el-tree
-      :data="data"
-      node-key="id"
-      :default-expand-all="expand"
-      :accordion="accordion"
-      @node-drag-start="handleDragStart"
-      @node-drag-enter="handleDragEnter"
-      @node-drag-leave="handleDragLeave"
-      @node-drag-over="handleDragOver"
-      @node-drag-end="handleDragEnd"
-      @node-drop="handleDrop"
+      @node-click="handleBucketClick"
+      :data="treeData"
+      show-cheeckbox
+      node-key="categoryId"
+      default-expand-all
+      ref="tree"
       draggable
-      :allow-drop="allowDrop"
-      :allow-drag="allowDrag">
+      :props="defaultProps"
+
+      @node-drop="handleSupplierDrop"
+      highlight-current
+  >
+
   </el-tree>
+  <!-- 添加分类界面 -->
+  <el-dialog v-model="insert" title="添加分类" width="35%">
+    <el-form
+        ref="ruleForm"
+        class="demo-ruleForm"
+        :model="ruleForm"
+        :rules="rules"
+        :label-position="left"
+    >
+      <el-form-item label="分类名称:" prop="categoryName">
+        <el-input v-model="ruleForm.categoryName"></el-input>
+      </el-form-item>
+      <div>
+
+        <el-button
+            type="primary"
+            @click="insertSupplierCategory('ruleForm')">确定</el-button>
+      </div>
+
+    </el-form>
+  </el-dialog>
+  <!-- 编辑分类界面 -->
+  <el-dialog v-model="update" title="编辑分类" width="35%">
+    <el-form
+        ref="ruleForm"
+        class="demo-ruleForm"
+        :model="ruleForm"
+        :rules="rules"
+        :label-position="left"
+    >
+      <el-form-item label="分类名称:" prop="categoryName">
+        <el-input v-model="ruleForm.categoryName"></el-input>
+      </el-form-item>
+      <div>
+
+        <el-button
+            type="primary"
+            @click="updateSupplierCategory('ruleForm')">确定</el-button>
+      </div>
+
+    </el-form>
+  </el-dialog>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      accordion:true,
-      expand:false,
-      data: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2',
-          children: [{
-            id: 11,
-            label: '三级 3-2-1'
-          }, {
-            id: 12,
-            label: '三级 3-2-2'
-          }, {
-            id: 13,
-            label: '三级 3-2-3'
-          }]
-        }]
-      }],
-      defaultProps: {
+import { defineComponent, ref } from "vue";
+import qs from 'qs'
+import { ElMessage } from 'element-plus'
+export default{
+  data(){
+    return{
+      insert:ref(false), //添加界面
+      update:ref(false), //修改界面
+      setTree:[],
+      defaultProps:{
         children: 'children',
-        label: 'label'
+        label: 'organName',
+        disabled: 'disabled',
+      },
+      treeData:[],
+      organList:[],
+      ruleForm:{
+        categoryPid:"",
+        categoryName:"",
+        categoryId:"",
+      },
+
+      rules: {
+        categoryName: [
+          {
+            required: true,
+            message: "分类名称不能为空！",
+            trigger: "blur",
+          },
+        ],
       }
-    };
-  },
-  methods: {
-    handleDragStart(node, ev) {
-      console.log('drag start', node);
-    },
-    handleDragEnter(draggingNode, dropNode, ev) {
-      console.log('tree drag enter: ', dropNode.label);
-    },
-    handleDragLeave(draggingNode, dropNode, ev) {
-      console.log('tree drag leave: ', dropNode.label);
-    },
-    handleDragOver(draggingNode, dropNode, ev) {
-      console.log('tree drag over: ', dropNode.label);
-    },
-    handleDragEnd(draggingNode, dropNode, dropType, ev) {
-      console.log('tree drag end: ', dropNode && dropNode.label, dropType);
-    },
-    handleDrop(draggingNode, dropNode, dropType, ev) {
-      console.log('tree drop: ', dropNode.label, dropType);
-    },
-    allowDrop(draggingNode, dropNode, type) {
-      if (dropNode.data.label === '二级 3-1') {
-        return type !== 'inner';
-      } else {
-        return true;
-      }
-    },
-    allowDrag(draggingNode) {
-      return draggingNode.data.label.indexOf('三级 3-2-2') === -1;
     }
   },
+  methods:{
+    delectSupplierCategory(){   //删除商品分类
+      var _this=this
+      if(this.ruleForm.categoryId===""){
+        ElMessage({ message: "请选择节点!", type: "warning" });
+      }else if(this.ruleForm.categoryId===0){
+        ElMessage({ message: "根节点不可被删除！", type: "warning" });
+      }else{
+        this.axios.post("http://localhost:9090/supplier/delectSupplierCategory/" +this.ruleForm.categoryId)
+            .then(function(response){
+              console.log(response,"sss")
+              if(response.data.code==='0'){
+                ElMessage({ message: "删除成功！", type: "warning" });
+                _this.ruleForm.categoryId=""
+                _this.ruleForm.categoryName=""
+                _this.ruleForm.categoryPid=""     //情况被删除节点的数据
+                _this.getQuerycheckList()
+              }else{
+                alert(response.data.msg)
+              }
+            }).catch(function(error){
+          console.log(error)
+        })
+
+      }
+    },
+    updatejm(){     //打开编辑界面
+      if(this.ruleForm.categoryId===""){
+        ElMessage({ message: "请选择节点！", type: "warning" });
+      }else if(this.ruleForm.categoryId===0){
+        ElMessage({ message: "根节点不可被编辑！", type: "warning" });
+      }else{
+
+        this.update=true
+      }
+    },
+    updateSupplierCategory(formName){       //编辑商品分类
+      var _this=this
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.axios.post("http://localhost:9090/supplier/updateSupplierCategory",{
+            categoryId:this.ruleForm.categoryId,
+            categoryName:this.ruleForm.categoryName,
+
+          })
+              .then(function(response){
+                console.log(response)
+                if(response.data.code==='0'){
+                  ElMessage({ message: "编辑成功！", type: "warning" });
+                  _this.update=false
+                  _this.getQuerycheckList()
+                }else{
+                  alert(response.data.msg);
+                }
+              }).catch(function(error){
+            console.log(error)
+          })
+        }else {
+          ElMessage({ message: "请完善信息！", type: "warning" });
+          return false;
+        }
+
+      });
+
+    },
+    insertjm(){    //打开添加界面
+
+      if(this.ruleForm.categoryId===""){
+        ElMessage({ message: "请选择节点！", type: "warning" });
+      }else{
+        this.ruleForm.categoryName="";
+        this.insert=true
+      }
+    },
+    insertSupplierCategory(formName){       //添加商品分类
+      var _this=this
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.axios.post("http://localhost:9090/supplier/insertSupplierCategory",{
+            categoryName:this.ruleForm.categoryName,
+            categoryPid:this.ruleForm.categoryPid,
+          })
+              .then(function(response){
+                if(response.data.code==='0'){
+                  ElMessage({ message: "添加成功！", type: "warning" });
+                  _this.insert=false
+                  _this.getQuerycheckList()
+                }else{
+                  alert(response.data.msg);
+                }
+              }).catch(function(error){
+            console.log(error)
+          })
+        }else {
+          ElMessage({ message: "请完善信息！", type: "warning" });
+          return false;
+        }
+
+      });
+
+    },
+    handleSupplierDrop(before,after){
+      var _this=this
+      this.axios.post("http://localhost:9090/supplier/updateSupplierCategory",{
+        categoryId:before.data.id,
+        categoryPid:after.data.id,
+      })
+          .then(function(response){
+            console.log(response)
+            _this.getQuerycheckList()
+          }).catch(function(error){
+        console.log(error)
+      })
+
+
+    },
+
+    handleBucketClick(node){
+      this.ruleForm.categoryPid=node.id
+      this.ruleForm.categoryId=node.id
+      this.ruleForm.categoryName=node.organName
+      console.log(node)
+    },
+    getQuerycheckList(){
+
+      this.axios.get("http://localhost:9090/supplier/selectSupplierCategory")
+          .then((res) => {
+            console.log(res)
+            if(res.data.code==0){
+              console.log(res.data.data)
+              this.setTree = res.data.data
+              this.organList=res.data.data.map((a)=>({
+                label:a.categoryName,
+                value:a.categoryId,
+              }));
+              this.getListData();
+            }else{
+              alert(res.data.msg)
+            }
+          });
+    },
+    getListData(){
+      let dataArray =[];
+
+
+      let objTemp ={
+        id:0,
+        organName:"供应商分类",
+      };
+      dataArray.push(objTemp);
+
+      console.log(dataArray,"aaasss")
+      this.treeData=this.data2treeDG(this.setTree,dataArray);
+    },
+    data2treeDG(datas,dataArray){
+
+      for(let j=0;j<dataArray.length;j++){
+        console.log(dataArray[j],"ss")
+        let dataArrayIndex = dataArray[j];
+        let childrenArray =[];
+        let Id=dataArrayIndex.id;
+        for(let i=0; i<datas.length;i++){
+
+          let data=datas[i];
+          let parentId = data.categoryPid;
+          if(parentId === Id){
+            //判断是否为儿子节点
+            let objTemp={
+              id:data.categoryId,
+              organName:data.categoryName,
+              parentId:parentId,
+            };
+            childrenArray.push(objTemp);
+          }
+        }
+
+        dataArrayIndex.children =childrenArray;
+        if(childrenArray.length>0){
+          this.data2treeDG(datas,childrenArray);
+        }
+      }
+
+      return dataArray;
+    },
+  },
+  created(){
+    this.getQuerycheckList();
+  }
 }
 </script>
+
+<style>
+</style>
+ 
