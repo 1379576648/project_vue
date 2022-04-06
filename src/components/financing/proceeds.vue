@@ -505,7 +505,7 @@ export default defineComponent({
             // 实收金额
             'aggregate': this.onePay,
             // 优惠金额
-            'coupon':this.salePay,
+            'coupon': this.salePay,
             // 备注
             "remarks": this.remark
           },
@@ -516,7 +516,17 @@ export default defineComponent({
           console.log(response);
           if (response.data.code === 200) {
             if (response.data.data.state === 200) {
-
+              if (response.data.data.info === "成功" ) {
+                ElMessage({
+                  message: "成功",
+                  type: 'success',
+                })
+              }else {
+                ElMessage({
+                  message: response.data.data.info,
+                  type: 'warning',
+                })
+              }
             }
           } else {
             ElMessage({
