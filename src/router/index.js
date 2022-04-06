@@ -16,6 +16,10 @@ const routes = [
             {path:"/user",component:()=>import('../components/sys/user.vue')},
             {path:"/role",component:()=>import('../components/sys/role.vue')},
             {path:"/menu",component:()=>import('../components/sys/menu.vue')},
+            {path:"/financing/debt",component:()=>import('../components/financing/debt.vue')},
+            {path:"/financing/Balance",component:()=>import('../components/financing/Balance.vue')},
+            {path:"/arrearsPayable", component:()=>import('../components/financing/arrearsPayable.vue')},
+            {path:"/supplierArrearsFlow", component:()=>import('../components/financing/supplierArrearsFlow.vue')},
             // 收款历史
             {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
             // 收款详情
@@ -37,8 +41,8 @@ const routes = [
             {path:"/goin",component:()=>import('../components/commodity/goin.vue')},
             {path:"/edit",component:()=>import('../components/commodity/edit.vue')},
             {path:"/details",component:()=>import('../components/commodity/details.vue')},
-			 {path:"/classification",component:()=>import('../components/commodity/classification.vue')},
-			 {path:"/Purchasedetails",component:()=>import('../components/commodity/Purchasedetails.vue')},
+            {path:"/classification",component:()=>import('../components/commodity/classification.vue')},
+            {path:"/Purchasedetails",component:()=>import('../components/commodity/Purchasedetails.vue')},
             {path:"/addcommodity",component:()=>import('../components/commodity/addcommodity.vue')},
         ]
     },
@@ -77,15 +81,15 @@ const routes = [
         children:[
             //退货单
             {path:"/refundReturn",component:()=>import('../components/market/refundReturn.vue')},
-             //销售单
+            //销售单
             {path:"/salesTicket",component:()=>import('../components/market/salesTicket.vue')},
             //销售历史
             {path:"/salesHistory",component:()=>import('../components/market/salesHistory.vue')},
-             //销售明细
+            //销售明细
             {path:"/salesParticular",component:()=>import('../components/market/salesParticular.vue')},
-             //退货历史
+            //退货历史
             {path:"/refundHistory",component:()=>import('../components/market/refundHistory.vue')},
-             //客户
+            //客户
             {path:"/client",component:()=>import('../components/market/client.vue')},
 
         ]
@@ -126,16 +130,16 @@ const router = createRouter({
 router.beforeEach((to,from,next)=>{
     var user=store.state.user
     var menus=store.state.menu
-	if(to.path == '/login' || to.path == '/register' || JSON.stringify(user)!=="{}"){
-	  next();
-	}else{
-    //   alert('您还没有登录，请先登录');
-    ElMessage ({
-        message:'您还没有登录，请先登录',
-        type: 'warning',
-        duration:1000
-    })
-	  next('/login');
-	}
-  })
+    if(to.path == '/login' || to.path == '/register' || JSON.stringify(user)!=="{}"){
+        next();
+    }else{
+        //   alert('您还没有登录，请先登录');
+        ElMessage ({
+            message:'您还没有登录，请先登录',
+            type: 'warning',
+            duration:1000
+        })
+        next('/login');
+    }
+})
 export default router

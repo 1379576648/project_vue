@@ -1,60 +1,25 @@
 <template>
-  <div class="max">
-      <el-row :gutter="24">
-        <el-col :span="6">供应商：{{name}}</el-col>
-        <el-col :span="6"></el-col>
-        <el-col :span="6"></el-col>
-        <el-col :span="6"></el-col>
-      </el-row><br>
-      <el-row :gutter="24">
-          <el-col :span="6">
-              应付欠款：{{fk}}
-          </el-col>
-          <el-col :span="6">
-              联系电话：{{phone}}
-          </el-col>
-          <el-col :span="6"></el-col>
-          <el-col :span="6">
-              <el-input v-model="input" size="small" placeholder="编号/名称/电话" style="width:50%;margin-left:40px;">
-                  <template #append>
-                      <el-button size="small" @click="mhcx()" :icon="icon.search" />
-                  </template>
-              </el-input>
-              <el-button size="small" @click="drawer=true">高级搜索</el-button>
-          </el-col>
-      </el-row>
-      <!-- <el-row :gutter="24"> -->
-          <el-table :data="tableData" border show-summary sum-text="合计" :default-sort="{ prop: 'operationTime', order: 'descending' }" width="100%" class="table">
-               <el-table-column type="index" label="序号" width="80" />
-               <el-table-column prop="paymenttabTime" label="业务日期" />
-               <el-table-column prop="copeSerial" label="单据编号" />
-               <el-table-column prop="settlement" label="结算方式"></el-table-column>
-               <!-- <el-table-column label="收支类别">
-                   <template #default="scope">
-                       <p v-if="scope.row.type=='收入'" style="width:50px;height:30px;background-color:rgba(230,255,251,0.5);border:1px solid rgb(87,205,205);color:rgb(87,205,205);text-align:center;line-height:30px;">{{scope.row.type}}</p>
-                       <p v-if="scope.row.type=='支出'" style="width:50px;height:30px;background-color:rgba(255,241,240,0.5);border:1px solid rgb(245,67,76);color:rgb(245,67,76);text-align:center;line-height:30px;">{{scope.row.type}}</p>
-                   </template>
-               </el-table-column> -->
-               <el-table-column prop="staffName" label="经手人"></el-table-column>
-               <el-table-column prop="copeMoney" label="原单欠款"></el-table-column>
-               <el-table-column prop="money" label="付款金额"></el-table-column>
-               <el-table-column prop="coupon" label="优惠金额"></el-table-column>
-          </el-table>
-      <!-- </el-row> -->
-      <!-- <el-row :gutter="24"> -->
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="pageInfo.page"
-            :page-sizes="[10,20,30,50,80,100]"
-            :page-size="pageInfo.size"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="pageInfo.total"
-            class="page"
-          >
-          </el-pagination>
-          <el-button style=" float: right;" type="button" @click="fh()">返回应付欠款</el-button>
-      <!-- </el-row> -->
+  <div class="tou">
+    <div>
+      <br />
+      <span>客户：{{name}}</span>
+      <br />
+      <span>应收欠款{{money-cou-sk}}：</span>
+      <span>电话：{{phone}}</span>
+
+      <el-input
+        v-model="input"
+        placeholder="请输入内容"
+        style="width: 150px; margin-left: 670px"
+      ></el-input>
+      <el-button type="primary">
+        <el-icon style="vertical-align: middle">
+          <search />
+        </el-icon>
+        <span style="vertical-align: middle" @click="mhcx()"> 搜索 </span>
+      </el-button>
+      <el-button @click="drawer = true">高级搜索</el-button>
+
       <el-drawer
         title="我是标题"
         v-model="drawer"
@@ -150,38 +115,60 @@
           >
         </el-form>
       </el-drawer>
+
+      <!--
+       =========================================================================================    
+          表格
+       -->
+      <div style="   width: 100%;
+  min-height: 500px;
+  background: white;
+  margin-top: 1%;">
+      <el-table :data="tableData" border style="width: 100%">
+        <el-table-column prop="tabTime" label="业务日期" width="180">
+        </el-table-column>
+        <el-table-column prop="customerSerial" label="单据编号" width="180">
+        </el-table-column>
+        <el-table-column prop="customerName" label="结算账户"> </el-table-column>
+        <el-table-column prop="staffName" label="经手人"> </el-table-column>
+        <el-table-column prop="receivableMoney" label="原单欠款"> </el-table-column>
+        <el-table-column prop="s" label="收款金额"> </el-table-column>
+        <el-table-column prop="coupon" label="优惠金额"> </el-table-column>
+      </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageInfo.currentPage4"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageInfo.size"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="pageInfo.total"
+      >
+      </el-pagination>
+      <el-button style=" float: right;" type="button" @click="fh()">返回应收欠款</el-button>
+    </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { Search } from '@element-plus/icons-vue'
 export default {
   data() {
     return {
-        tableData:[],
-        name : this.$route.query.name,
-      fk : this.$route.query.qk,
+      tableData:[],
+      pageInfo:{
+  currentPage4: 1,
+  total:1,
+  size:10,
+},
+      name : this.$route.query.name,
+      money : this.$route.query.money,
+      cou : this.$route.query.cou,
+      sk : this.$route.query.qk,
       phone:this.$route.query.phone,
       id:this.$route.query.id,
       drawer: false,
-        icon:{
-            search:Search
-        },
-        pageInfo:{
-            page:0,
-            size:10,
-            total:1
-        },
-        gjss:{
-            djbh:"",
-            szlb:"全部",
-            jszh:"全部",
-            jsr:"0",
-            jsrData:[]
-        },
-
-        options1: [],
-        options: [
+      options: [
         {
           value: "现金",
           label: "现金",
@@ -199,25 +186,33 @@ export default {
           label: "系统账户",
         },
       ],
+      input:"",
+      options1: [],
       ruleForm: {
         value: "",
         value1: "",
         value2: "",
       },
-      input:"",
     };
   },
   methods: {
-      //返回应收列表
-    fh(){
-        this.$router.push('/arrearsPayable');
+    //查询经手人
+    cxjsr(){
+      this.axios.get("http://localhost:9090/staff/selectstaff",{
+
+      }).then(response=>{
+        console.log(response.data);
+        this.options1=response.data
+      }).catch(err=>{
+        console.log(err);
+      })
     },
-      //模糊查询
+    //模糊查询
     mhcx(){
       let sj1=this.ruleForm.value2[0]
       let sj2=this.ruleForm.value2[1]
       if(sj1!=null&&sj2!=null){
-      this.axios.get("http://localhost:9090/selectcopemh1",{
+      this.axios.get("http://localhost:9090/selectreceiva1",{
         params:{
           names:this.input,
           value:this.ruleForm.value,
@@ -236,7 +231,7 @@ export default {
         console.log(err);
       })
     }else{
-      this.axios.get("http://localhost:9090/selectcopemh2",{
+      this.axios.get("http://localhost:9090/selectreceiva2",{
         params:{
           names:this.input,
           value:this.ruleForm.value,
@@ -261,16 +256,17 @@ export default {
         let sj1=this.ruleForm.value2[0]
       let sj2=this.ruleForm.value2[1]
       if(sj1!=null&&sj2!=null){
-      this.axios.get("http://localhost:9090/selectcopemh1",{
+      this.axios.get("http://localhost:9090/selectreceiva1",{
         params:{
+          page:this.pageInfo.currentPage4,
+    size:this.pageInfo.size,
           names:this.input,
           value:this.ruleForm.value,
           value1:this.ruleForm.value1,
           sj1:sj1,
           sj2:sj2,
           ids:this.id,
-    page:this.pageInfo.page,
-    size:this.pageInfo.size,
+   
         }
       }).then(response=>{
         console.log(response.data);
@@ -280,19 +276,21 @@ export default {
         console.log(err);
       })
     }else{
-        this.axios.get("http://localhost:9090/selectcopemh2",{
+      this.axios.get("http://localhost:9090/selectreceiva2",{
         params:{
           names:this.input,
           value:this.ruleForm.value,
           value1:this.ruleForm.value1,
           ids:this.id,
-    page:this.pageInfo.page,
+    page:this.pageInfo.currentPage4,
     size:this.pageInfo.size,
         }
       }).then(response=>{
         console.log(response.data);
         this.tableData=response.data.records
         this.pageInfo.total=response.data.total
+        console.log(this.tableData);
+       
       }).catch(err=>{
         console.log(err);
       })
@@ -300,68 +298,55 @@ export default {
       },
       handleCurrentChange(page) {
         console.log(`当前页: ${page}`);
-        this.pageInfo.page = page;
+        this.pageInfo.currentPage4 = page;
         let sj1=this.ruleForm.value2[0]
       let sj2=this.ruleForm.value2[1]
       if(sj1!=null&&sj2!=null){
-      this.axios.get("http://localhost:9090/selectcopemh1",{
+      this.axios.get("http://localhost:9090/selectreceiva1",{
         params:{
+          page:this.pageInfo.currentPage4,
+    size:this.pageInfo.size,
           names:this.input,
           value:this.ruleForm.value,
           value1:this.ruleForm.value1,
           sj1:sj1,
           sj2:sj2,
           ids:this.id,
-    page:this.pageInfo.page,
-    size:this.pageInfo.size,
         }
       }).then(response=>{
         console.log(response.data);
         this.tableData=response.data.records
-      //  this.pageInfo.total=response.data.total
+        
       }).catch(err=>{
         console.log(err);
       })
     }else{
-        this.axios.get("http://localhost:9090/selectcopemh2",{
+      this.axios.get("http://localhost:9090/selectreceiva2",{
         params:{
           names:this.input,
           value:this.ruleForm.value,
           value1:this.ruleForm.value1,
           ids:this.id,
-    page:this.pageInfo.page,
+    page:this.pageInfo.currentPage4,
     size:this.pageInfo.size,
         }
       }).then(response=>{
         console.log(response.data);
         this.tableData=response.data.records
-      //  this.pageInfo.total=response.data.total
+       
       }).catch(err=>{
         console.log(err);
       })
     }
       },
 
-
-
-       //查询经手人
-    cxjsr(){
-      this.axios.get("http://localhost:9090/staff/selectstaff",{
-
-      }).then(response=>{
-        console.log(response.data);
-        this.options1=response.data
-      }).catch(err=>{
-        console.log(err);
-      })
-    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let sj1=this.ruleForm.value2[0]
       let sj2=this.ruleForm.value2[1]
       if(sj1!=null&&sj2!=null){
-      this.axios.get("http://localhost:9090/selectcopemh1",{
+      this.axios.get("http://localhost:9090/selectreceiva1",{
         params:{
           names:this.input,
           value:this.ruleForm.value,
@@ -369,8 +354,8 @@ export default {
           sj1:sj1,
           sj2:sj2,
           ids:this.id,
-        page:this.pageInfo.page,
-        size:this.pageInfo.size,
+    page:this.pageInfo.currentPage4,
+    size:this.pageInfo.size,
         }
       }).then(response=>{
         console.log(response.data);
@@ -380,14 +365,14 @@ export default {
         console.log(err);
       })
     }else{
-      this.axios.get("http://localhost:9090/selectcopemh2",{
+      this.axios.get("http://localhost:9090/selectreceiva2",{
         params:{
           names:this.input,
           value:this.ruleForm.value,
           value1:this.ruleForm.value1,
           ids:this.id,
-        page:this.pageInfo.page,
-        size:this.pageInfo.size,
+    page:this.pageInfo.currentPage4,
+    size:this.pageInfo.size,
         }
       }).then(response=>{
         console.log(response.data);
@@ -407,35 +392,37 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+
+    //返回应收列表
+    fh(){
+        this.$router.push('/financing/debt');
+    },
   },
-  created() {
-      this.axios.get("http://localhost:9090/selectcope",{
+  created(){
+      this.axios.get("http://localhost:9090/selectreceiva",{
         params:{
-            page:this.pageInfo.page,
-            size:this.pageInfo.size,
-            ids:this.id
+          ids:this.id,
+    page:this.pageInfo.currentPage4,
+    size:this.pageInfo.size,
         }
       }).then(response=>{
-        console.log(response.data);
+        console.log(response.data)
         this.tableData=response.data.records
         this.pageInfo.total=response.data.total
+        console.log(this.tableData);
       }).catch(err=>{
-          console.log(err);
+        console.log(err)
       })
-  },
-  mounted() {}
+    }
 };
 </script>
+
 <style>
-.max{
-    width: 100%;
-    height: 80vh;
-    background-color: white;
-    overflow-x: hidden;
-    padding: 10px;
-    font-size: 14px;
-}
-.table{
-    /* height: 67vh; */
+.tou {
+  width: 100%;
+  height: 80px;
+  background: white;
+ 
+
 }
 </style>
