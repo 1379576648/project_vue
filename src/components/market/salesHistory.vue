@@ -98,19 +98,11 @@
           <el-table-column
               fixed="right"
               label="操作"
-              width="200"
+              width="120"
           >
             <template #default="scope">
             <!--        @click.native.prevent="deleteRow(scope.$index, tableData)"     -->
-            <el-button
-                class="font_sty"
-                type="text"
-                size="small">
-              <router-link to="edit">编辑</router-link>
-            </el-button>
-            &nbsp;
-            <span class="span_1">|</span>
-            &nbsp;
+
             <el-button
                 type="text"
                 size="small">
@@ -139,7 +131,7 @@
         <div class="demo-pagination-block" v-show="xianshi">
           <el-pagination
               v-model:currentPage="pageInfo.currentPage"
-              :page-sizes="[1, 3, 5, 7]"
+              :page-sizes="[50, 30, 20, 10]"
               v-model:page-size="pageInfo.pageSize"
               :default-page-size="pageInfo.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
@@ -155,7 +147,6 @@
             >
           </el-pagination>
         </div>
-
       </div>
     </el-tab-pane>
 
@@ -166,9 +157,9 @@
       <div>
         <router-link to="/salesTicket"><el-button style="float:right" type="primary">新增销售单</el-button></router-link>
         <div>
-          <el-button plain style="float: right;margin-right: 30px">高级搜索</el-button>
+          <el-button plain style="float: right;margin-right: 30px" @click="selectPageSale2">高级搜索</el-button>
           <div style="width: 10px;float: right"></div>
-          <el-input v-model="input" placeholder="编号/客户/商品/备注" style="width: 200px;float: right"></el-input>
+          <el-input v-model="billId" placeholder="订单编号" style="width: 200px;float: right"></el-input>
 
         </div>
 
@@ -259,33 +250,38 @@
           <el-table-column
               fixed="right"
               label="操作"
-              width="200"
+              width="120"
           >
 
             <!--        @click.native.prevent="deleteRow(scope.$index, tableData)"     -->
-            <el-button
-                class="font_sty"
-                type="text"
-                size="small">
-              <router-link to="edit">编辑</router-link>
-            </el-button>
-            &nbsp;
-            <span class="span_1">|</span>
-            &nbsp;
+            &nbsp
+            <template #default="scope">
             <el-button
                 type="text"
                 size="small">
               <router-link to="details">详情</router-link>
             </el-button>
-          </el-table-column>
 
+            &nbsp;
+            <span class="span_1">|</span>
+            &nbsp
+          <el-button
+              class="font_sty"
+              type="text"
+              size="small"
+              @click="outbound(scope.row.saleId,scope.row.stockId)"
+          >
+            出库
+          </el-button>
+            </template>
+          </el-table-column>
         </el-table>
 
         <!-- 分页插件 -->
         <div class="demo-pagination-block">
           <el-pagination
               v-model:currentPage="pageInfo2.currentPage"
-              :page-sizes="[1, 3, 5, 7]"
+              :page-sizes="[50, 30, 20, 10]"
               v-model:page-size="pageInfo2.pageSize"
               :default-page-size="pageInfo2.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
@@ -311,7 +307,7 @@
 <script>
 import {ElNotification} from "element-plus";
 import { InfoFilled } from '@element-plus/icons-vue'
-
+import { ElMessage } from 'element-plus'
 export default {
   name: "",
   data() {
@@ -326,13 +322,13 @@ export default {
       pageInfo: {
         // 分页参数
         currentPage: 1, //当前页
-        pageSize: 3, // 页大小
+        pageSize: 10, // 页大小
         total: 0, // 总页数
       },
       pageInfo2: {
         // 分页参数
         currentPage: 1, //当前页
-        pageSize: 3, // 页大小
+        pageSize: 10, // 页大小
         total: 0, // 总页数
       },
       input: '',
@@ -365,7 +361,8 @@ export default {
         url: this.url+ 'saleschedule/selectPageSale2',
         data:{
           "currentPage": this.pageInfo2.currentPage,
-          "pageSize": this.pageInfo2.pageSize
+          "pageSize": this.pageInfo2.pageSize,
+          "billId":this.billId
         },
         responseType:'json',
         responseEncoding:'utf-8',
@@ -387,6 +384,10 @@ export default {
       }).then((response)=>{
         console.log(response)
         this.selectPageSale()
+        ElMessage({
+          message: '作废成功',
+          type: 'success',
+        })
       })
     },
     deleteId2(salescheduleId){
@@ -401,6 +402,24 @@ export default {
       }).then((response)=>{
         console.log(response)
         this.selectPageSale()
+      })
+    },
+    outbound(saleId,stockId){
+
+      alert(stockId)
+
+      this.axios({
+        method:'post',
+        url: this.url+ 'saleschedule/outbound',
+        data:{
+          "saleId":saleId,
+          "stockId":stockId
+        },
+        responseType:'json',
+        responseEncoding:'utf-8',
+      }).then((response)=>{
+        console.log(response)
+        this.selectPageSale2()
       })
     },
     invalid(){
