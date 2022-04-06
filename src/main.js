@@ -31,3 +31,6 @@ for(let iconName in ElIcons){
 /**以上代码为最新代码**/
 //注册全局组件
 app.use(VueAxios,axios).use(store).use(router).mount('#app')
+
+
+

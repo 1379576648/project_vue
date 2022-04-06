@@ -8,7 +8,7 @@
       <div class="det_body_3">
 
         <div class="det_cl">
-          <div style="float:left;margin-left: 100px;margin-top: 10px" class="edt_font">窗帘</div>
+          <div style="float:left;margin-left: 100px;margin-top: 10px" class="edt_font">{{this.tatadata.commodityName}}</div>
         </div>
 
           <span class="det_zs"  style="float:left;margin-left: 100px">在售</span>
@@ -18,47 +18,48 @@
 
           <div class="det_bh"  style="float:left;margin-left: 100px;width: 15%;text-align: left">
            <span>编号&nbsp;:&nbsp;&nbsp;</span>
-           <span>SP202203260001</span>
+           <span>{{this.tatadata.commodityId}}</span>
           </div>
 
             <div class="det_bh"  style="float:left;margin-left: 100px;width: 15%;text-align: left">
               <span>分类&nbsp;:&nbsp;&nbsp;</span>
-              <span>冰箱</span>
+              <span>{{this.tatadata.categoryId}}</span>
             </div>
 
-            <div class="det_bh"  style="float:left;margin-left: 100px;width: 15%;text-align: left">
-              <span>条形码&nbsp;:&nbsp;&nbsp;</span>
-              <span>68032608506</span>
-            </div>
+<!--            <div class="det_bh"  style="float:left;margin-left: 100px;width: 15%;text-align: left">-->
+<!--              <span>条形码&nbsp;:&nbsp;&nbsp;</span>-->
+<!--              <span>68032608506</span>-->
+<!--            </div>-->
 
             <div class="det_bh"  style="float:left;margin-left: 100px;width: 25%;text-align: left">
               <span>单位&nbsp;:&nbsp;&nbsp;</span>
-              <span>个</span>
+              <span>
+              {{this.tatadata.commodityCompany}}</span>
             </div>
 
             <div class="det_bh"  style="float:left;margin-left: 100px;width: 100%;text-align: left" >
               <span>规格&nbsp;:&nbsp;&nbsp;</span>
-              <span>无</span>
+              <span>{{this.tatadata.commoditySpecifications}}</span>
             </div>
             <div class="det_bh"  style="float:left;margin-left: 100px;width: 100%;text-align: left" >
               <span>备注&nbsp;:&nbsp;&nbsp;</span>
-              <span>无</span>
+              <span>{{this.tatadata.remark}}</span>
               <div class="productPrice">
                 <span>零售价&nbsp;:&nbsp;&nbsp;</span>
-                <span style="color: #1dcf6a;">￥100</span>
-                <span>/个</span>
+                <span style="color: #1dcf6a;">￥{{this.tatadata.retailPrice}}</span>
+                <span>/ {{this.tatadata.commodityCompany}}</span>
                 <br>
                 <span>进货价&nbsp;:&nbsp;&nbsp;</span>
-                <span style="color: #1dcf6a;">￥100.00</span>
-                <span>/个</span>
+                <span style="color: #1dcf6a;">￥{{this.tatadata.tradePrice}}</span>
+                <span>/ {{this.tatadata.commodityCompany}}</span>
                 <br>
                 <span>最低售价&nbsp;:&nbsp;&nbsp;</span>
-                <span style="color: #1dcf6a;">￥88.00</span>
-                <span>/个</span>
+                <span style="color: #1dcf6a;">￥{{this.tatadata.retailPrice}}</span>
+                <span>/ {{this.tatadata.commodityCompany}}</span>
                 <br>
                 <span>批发价&nbsp;:&nbsp;&nbsp;</span>
-                <span style="color: #1dcf6a;">￥199.00</span>
-                <span>/个</span>
+                <span style="color: #1dcf6a;">￥{{this.tatadata.tradePrice}}</span>
+                <span>/ {{this.tatadata.commodityCompany}}</span>
                 <br>
 
               </div>
@@ -80,7 +81,29 @@
 
 <script>
 export default {
-  name: "details"
+  name: "details",
+  data(){
+    return{
+      tatadata:{},
+    }
+  },methods:{
+    /*
+   * 根据id查询 商品表
+   * */
+    selectById(){
+      this.axios
+          .get("http://localhost:9090/commodity/selectById/" + this.$route.query.id)
+          .then((response => {
+            console.log(response);
+            this.tatadata = response.data;
+            console.log(this.tatadata)
+          })).catch(function (error) {
+        console.log(error);
+      })
+    }
+  },created() {
+    this.selectById()
+  }
 }
 </script>
 
