@@ -245,8 +245,6 @@ import { defineComponent, ref } from "vue";
  			},
  			getListData(){
  					  let dataArray =[];
- 					    
- 					 
  							  let objTemp ={
  								  id:0,
  								  organName:"商品分类",
