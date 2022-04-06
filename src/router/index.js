@@ -15,8 +15,12 @@ const routes = [
             {path:"/workbench",component:()=>import('../components/workbench_management/workbench_main.vue')},
             {path:"/user",component:()=>import('../components/sys/user.vue')},
             {path:"/role",component:()=>import('../components/sys/role.vue')},
-            //收款历史
+            // 收款历史
             {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
+            // 收款详情
+            {path:"/financing/collection_details",component:()=>import('../components/financing/collection_details.vue')},
+            // 收款单
+            {path:"/financing/proceeds",component:()=>import('../components/financing/proceeds.vue')},
             //付款单
             {path:"/financing/payment",component:()=>import('../components/financing/payment.vue')},
             //付款历史
@@ -26,14 +30,34 @@ const routes = [
             {path:"/goin",component:()=>import('../components/commodity/goin.vue')},
             {path:"/edit",component:()=>import('../components/commodity/edit.vue')},
             {path:"/details",component:()=>import('../components/commodity/details.vue')},
+			 {path:"/classification",component:()=>import('../components/commodity/classification.vue')},
+			 {path:"/Purchasedetails",component:()=>import('../components/commodity/Purchasedetails.vue')},
+            {path:"/addcommodity",component:()=>import('../components/commodity/addcommodity.vue')},
         ]
     },
     // 库存
     {path:"/stock",component:()=>import('../components/navigationbar.vue'),
         children:[
+            {path: "/godownEntry", component: () => import('../components/stock/godownEntry.vue')},
+            {
+                path:"/earlyWarning",
+                component:()=>import("../components/stock/earlyWarning.vue"),
+
+            },
             {path:"/otherOutStock",component:()=>import('../components/stock/OtherOutStock.vue')},
             {path:"/otherOutStockAll",component:()=>import('../components/stock/OtherOutStockAll.vue')},
             {path:"/otherOutStockDetails",component:()=>import('../components/stock/OtherOutStockDetails.vue')},
+            {path:"/Warehousing",component:()=>import('../components/stock/Warehousing.vue')},
+            //库存查询
+            {path:"/Management",component:()=>import('../components/stock/Management.vue')},
+            //仓库管理
+            {path: "/Warehouse",component:()=>import('../components/stock/Warehouse.vue')},
+
+            // 供应商列表
+            {path: "/supplierList",component:()=>import('../components/stock/Supplier_list.vue')},
+
+            // 供应商分类
+            {path: "/supplierClassify",component:()=>import('../components/stock/Supplier_classify.vue')}
 
 
             // {path:"/user",component:()=>import('../components/sys/user.vue')},
@@ -59,6 +83,7 @@ const routes = [
 
         ]
     },
+    //采购
     {
         path:"/purchase",component:()=>import('../components/navigationbar.vue'),
         children:[
@@ -72,7 +97,10 @@ const routes = [
                 path:'/purchaseHistory',component:()=>import('../components/purchase/purchase_history.vue')
             },
             {
-                path:'/inGoods',component:()=>import('../components/purchase/inGoods.vue')
+                path:'/inGoods',component:()=>import('../components/purchase/inGoods.vue'),
+            },
+            {
+                path:'/returnDetails',component:()=>import('../components/purchase/return_details.vue')
             }
 
         ]
