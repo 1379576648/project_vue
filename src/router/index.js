@@ -28,6 +28,7 @@ const routes = [
             {path:"/details",component:()=>import('../components/commodity/details.vue')},
         ]
     },
+    // 库存
     {path:"/stock",component:()=>import('../components/navigationbar.vue'),
         children:[
             {path:"/otherOutStock",component:()=>import('../components/stock/OtherOutStock.vue')},
