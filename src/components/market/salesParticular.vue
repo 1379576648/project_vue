@@ -70,12 +70,14 @@
     >
 
       <!--        @click.native.prevent="deleteRow(scope.$index, tableData)"     -->
-
-      <el-button
-          type="text"
-          size="small">
-        <router-link to="details">详情</router-link>
-      </el-button>
+      <template #default="scope">
+        <el-button
+            type="text"
+            size="small"
+            @click="details1(scope.row.saleId)">
+          详情
+        </el-button>
+      </template>
 
     </el-table-column>
 
@@ -161,16 +163,27 @@
       <el-table-column
           fixed="right"
           label="操作"
-          width="120"
-      >
+          width="120">
+        <template #default="scope">
+          <el-button
+              type="text"
+              size="small"
+              @click="details1(scope.row.saleId)">
+            详情
+          </el-button>
 
-        <!--        @click.native.prevent="deleteRow(scope.$index, tableData)"     -->
-
-        <el-button
-            type="text"
-            size="small">
-          <router-link to="details">详情</router-link>
-        </el-button>
+          &nbsp;
+          <span class="span_1">|</span>
+          &nbsp
+          <el-button
+              class="font_sty"
+              type="text"
+              size="small"
+              @click="outbound(scope.row.saleId,scope.row.stockId)"
+          >
+            出库
+          </el-button>
+        </template>
 
       </el-table-column>
 
@@ -242,6 +255,9 @@ export default {
           .catch(function (error) {
             console.log(error);
           });
+    },
+    details1(saleId){
+      this.$router.push({path: '/details',query:{saleId:saleId}})
     },
   },created(){
     this.selectBusiness()
