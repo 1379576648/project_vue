@@ -2,20 +2,22 @@
   <div>
 
     <div style="height: 430px;background: white;">
-      <div style="height: 80px;border-bottom:1px solid black; line-height: 80px">
+      <div style="height: 80px;border-bottom: 1px dashed rgb(217, 217, 217);
+    padding: 24px 12px 0px; line-height: 80px">
         <div style="float: left"><span v-for="a in tableData">供应商：<span>{{a.supplierName}}</span></span></div>
         <div><span style="font-size: 30px;margin-left:35%">退货单详情</span></div>
         <div style="float: right;margin-top: -84px;"><span v-for="ss in tableData">单据编号：<span>{{ss.billId}}</span></span></div>
       </div>
 
       <div style="margin-bottom: 40px">
-        <div style="float: left;margin-right: 606px"><span v-for="b in tableData">仓库名称：<span>{{b.stockName}}</span></span></div>
+        <div style="float: left;margin-right: 606px;margin-left: 10px"><span v-for="b in tableData">仓库名称：<span>{{b.stockName}}</span></span></div>
         <div class="box_header">
           <div>
             <span v-for="c in tableData">出库状态：
               <span v-if="c.returnGoodsState==1">
                   已出库
               </span>
+              <span v-else>未出库</span>
             </span>|
           </div>
           <div><span v-for="aa in tableData">经手人：<span>{{aa.staffName}}</span></span>|</div>
@@ -30,7 +32,7 @@
               {{ scope.row.returnGoodsId }}
             </template>
           </el-table-column>
-          <el-table-column prop="purchaseTime" label="业务日期" width="150px"/>
+          <el-table-column prop="purchaseTime" label="业务日期" width="180px"/>
           <el-table-column prop="supplierName" label="供应商名称"/>
           <el-table-column prop="commodityName" label="商品名称"/>
           <el-table-column prop="purchaseDetailsNumber" label="商品数量"/>
@@ -40,7 +42,7 @@
           <el-table-column prop="returnGoodsReason" label="退货原因"/>
         </el-table>
       </div>
-      <div>
+      <div style="margin: 10px 10px;">
         <div class="return_money">
           <div><span v-for="mm in tableData">退货总额：<span>{{mm.purchaseDetailsTotal}}元</span></span></div>
           <div><span>结算账户：</span><span>支付宝</span></div>
@@ -63,13 +65,13 @@
 export default {
   data() {
     return {
-      id: sessionStorage.getItem("aaa"),
+      id: localStorage.getItem("aaa"),
       tableData: [],
     }
   }, methods: {
     find() {
       this.axios.get("http://localhost:9090/returngoods/selectReturnGoodsById/" + this.id, {}).then(res => {
-        console.error(res)
+        console.log(res)
         this.tableData.push( res.data);
       }).catch(error => {
         console.log(error)

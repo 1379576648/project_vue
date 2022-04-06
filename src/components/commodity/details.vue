@@ -33,32 +33,33 @@
 
             <div class="det_bh"  style="float:left;margin-left: 100px;width: 25%;text-align: left">
               <span>单位&nbsp;:&nbsp;&nbsp;</span>
-              <span>{{this.tatadata.commoditySpecifications}}</span>
+              <span>
+              {{this.tatadata.commodityCompany}}</span>
             </div>
 
             <div class="det_bh"  style="float:left;margin-left: 100px;width: 100%;text-align: left" >
               <span>规格&nbsp;:&nbsp;&nbsp;</span>
-              <span>{{this.tatadata.commodityCompany}}</span>
+              <span>{{this.tatadata.commoditySpecifications}}</span>
             </div>
             <div class="det_bh"  style="float:left;margin-left: 100px;width: 100%;text-align: left" >
               <span>备注&nbsp;:&nbsp;&nbsp;</span>
-              <span>无</span>
+              <span>{{this.tatadata.remark}}</span>
               <div class="productPrice">
                 <span>零售价&nbsp;:&nbsp;&nbsp;</span>
                 <span style="color: #1dcf6a;">￥{{this.tatadata.retailPrice}}</span>
-                <span>/{{this.tatadata.commoditySpecifications}}</span>
+                <span>/ {{this.tatadata.commodityCompany}}</span>
                 <br>
                 <span>进货价&nbsp;:&nbsp;&nbsp;</span>
                 <span style="color: #1dcf6a;">￥{{this.tatadata.tradePrice}}</span>
-                <span>/{{this.tatadata.commoditySpecifications}}</span>
+                <span>/ {{this.tatadata.commodityCompany}}</span>
                 <br>
                 <span>最低售价&nbsp;:&nbsp;&nbsp;</span>
                 <span style="color: #1dcf6a;">￥{{this.tatadata.retailPrice}}</span>
-                <span>/{{this.tatadata.commoditySpecifications}}</span>
+                <span>/ {{this.tatadata.commodityCompany}}</span>
                 <br>
                 <span>批发价&nbsp;:&nbsp;&nbsp;</span>
                 <span style="color: #1dcf6a;">￥{{this.tatadata.tradePrice}}</span>
-                <span>/{{this.tatadata.commoditySpecifications}}</span>
+                <span>/ {{this.tatadata.commodityCompany}}</span>
                 <br>
 
               </div>
