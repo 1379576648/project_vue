@@ -24,6 +24,7 @@
  		 >
  		 	
  		 </el-tree>
+		
 		 <!-- 添加分类界面 -->
  		 <el-dialog v-model="insert" title="添加分类" width="35%">
 			 <el-form 
@@ -226,7 +227,7 @@ import { defineComponent, ref } from "vue";
  					  console.log(node)
  			},
  			getQuerycheckList(){
- 							
+
 								 this.axios.get("http://localhost:9090/category/selectCategory")
  								  .then((res) => { 		
 									  console.log(res)
