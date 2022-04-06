@@ -72,7 +72,7 @@
       </el-row>
       <br>
       <el-row :gutter="24">
-          <el-table :data="tableData" border show-summary sum-text="合计" :default-sort="{ prop: 'operationTime', order: 'descending' }" width="100%" class="table">
+          <el-table :data="tableData" border show-summary sum-text="合计" :summary-method="getSummaries" :default-sort="{ prop: 'operationTime', order: 'descending' }" width="100%" class="table">
                <el-table-column type="index" label="序号" width="80" />
                <el-table-column prop="operationTime" label="业务日期" />
                <el-table-column prop="billId" label="单据编号" />
@@ -142,11 +142,11 @@ export default {
             sums[index] = '总价';
             return;
           }
-
           if(index === 9){
             sums[index] = '—';
             return;
           }
+          
           const values = data.map(item => Number(item[column.property]));
           if (!values.every(value => isNaN(value))) {
             sums[index] = values.reduce((prev, curr) => {
@@ -162,6 +162,7 @@ export default {
             sums[index] = '—';
           }
         });
+        
 
         return sums;
       },
