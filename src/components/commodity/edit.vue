@@ -22,9 +22,13 @@
         <el-input v-model="form.commodityName" style="width: 500px"></el-input>
       </el-form-item>
       <el-form-item label="商品分类">
-        <el-select v-model="form.categoryId" placeholder="请选择活动区域"  style="width: 500px;">
-          <el-option label="冰箱" value="shanghai"></el-option>
-          <el-option label="空调" value="beijing"></el-option>
+        <el-select v-model="form.categoryId" @click="classify()" class="m-2" placeholder="选择" style="width: 500px">
+          <el-option
+              v-for="item in optionsDept"
+              :key="item.CATEGORY_ID"
+              :label="item.CATEGORY_NAME"
+              :value="item.CATEGORY_ID"
+          />
         </el-select>
       </el-form-item>
 <!--      <el-form-item label="条形码">-->
@@ -71,11 +75,11 @@
     <el-divider></el-divider>
     <br>
 <!--    <el-form ref="form" :model="form" label-width="80px" style="float: left">-->
-      <el-form-item label="零售价" style="float: left">
-        <el-input v-model="form.retailPrice" style="width: 200px" ></el-input>
+      <el-form-item label="零售价" style="float: left" >
+        <el-input-number controls-position="right"  v-model="form.retailPrice" style="width: 200px" ></el-input-number>
       </el-form-item>
       <el-form-item label="批发价" style="float: left">
-        <el-input v-model="form.tradePrice" style="width: 200px"></el-input>
+        <el-input-number controls-position="right"  v-model="form.tradePrice" style="width: 200px"></el-input-number>
       </el-form-item>
 <!--      <el-form-item label="最低售价" style="float: left">-->
 <!--        <el-input v-model="form.name" style="width: 200px"></el-input>-->
@@ -86,6 +90,7 @@
       </div>
 
     </el-form>
+
 
 
 
@@ -101,6 +106,9 @@ export default {
   data(){
     return{
       input:'',
+      treeData:[],
+      optionsDept:[],
+
       form: {
         categoryId: '',//商品分类id
         commodityCompany: '',//单位
@@ -120,6 +128,20 @@ export default {
     onSubmit() {
       console.log('submit!');
     },
+    /*查询分类表
+    * */
+    classify(){
+      this.axios
+          .get("http://localhost:9090/category/cla")
+          .then((response)=>{
+            console.log(response);
+            this.optionsDept=response.data;
+          })
+          .catch(function (error){
+            console.log(error);
+          })
+    },
+
     /*
     * 根据id查询 商品表
     * */
@@ -170,9 +192,16 @@ export default {
       })).catch(function (error) {
         console.log(error);
     })
-  }
+  },
+    a(){
+      location.reload();
+      back;
+    },
 },created() {
     this.selectById()
+    this.classify()
+
+
   }
 }
 </script>
@@ -194,13 +223,13 @@ export default {
   margin: 20px;
   color:#2c3e50;
 }
-.edit_body_1{
-  float: left;
-  margin-top: 10px;
-  margin-left: 30px;
-  font-size: 16px;
-  color: #2c3e50;
-}
+/*.edit_body_1{*/
+/*  float: left;*/
+/*  margin-top: 10px;*/
+/*  margin-left: 30px;*/
+/*  font-size: 16px;*/
+/*  color: #2c3e50;*/
+/*}*/
 a{
   text-decoration:none ;
   color: #409eff;

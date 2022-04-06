@@ -69,6 +69,11 @@
             label="最低库存"
             width="300">
         </el-table-column>
+        <el-table-column
+            prop="remark"
+            label="备注"
+            width="300">
+        </el-table-column>
 
         <el-table-column
             fixed="right"
