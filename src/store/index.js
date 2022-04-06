@@ -2,6 +2,10 @@ import {createStore} from 'vuex'
 
 const store = createStore({
     state: {
+
+        // 出库单
+        outStock:{},
+
         menu: [
             {
                 MENU_ID: 1,//菜单编号

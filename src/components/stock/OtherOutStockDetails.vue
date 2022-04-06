@@ -10,57 +10,60 @@
 			<span style="color: #00000073;margin-left: 80%;">
 				单据编号：
 				<span style="color: #000000D9;">
-					CK202203290001
+					{{ outStock.billId }}
 				</span>
 			</span>
 		</div>
 		<!-- 左 -->
 		<div style="margin-top: 10px;padding: 20px;float: left;">
-			仓库:12331221
+			仓库:{{ outStock.stockName }}
 <!--			<el-select v-model="value" placeholder="选择仓库">-->
 <!--				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />-->
 <!--			</el-select>-->
 
 			&nbsp;&nbsp;&nbsp;
 
-			出库类型:11111
+			出库类型:{{ outStock.outinstocktypeName }}
 <!--			<el-select v-model="value" placeholder="选择出库类型">-->
 <!--				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />-->
 <!--			</el-select>-->
 		</div>
 		<!-- 右 -->
 		<div style="margin-top: 10px;padding: 20px;float: right;">
-			经手人:11
+			经手人:{{ outStock.staffName }}
 <!--			<el-select v-model="value" placeholder="选择经手人">-->
 <!--				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />-->
 <!--			</el-select>-->
 
 			&nbsp;&nbsp;&nbsp;
 
-			业务日期:1111
+			业务日期:{{ outStock.otheroutstockTime }}
 <!--			<el-select v-model="value" placeholder="选择日期">-->
 <!--				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />-->
 <!--			</el-select>-->
 		</div>
 
 		<!-- 表格 -->
-		<el-table :data="tableData" border
+		<el-table :data="outStock.detailsList" border
 			:header-cell-style="{textAlign: 'center',background:'#F0F0F0',color:'#6C6C6C'}"
 			:cell-style="{ textAlign: 'center' }">
-			<el-table-column prop="date" label="序号" min-width="21%" />
-			<el-table-column prop="date" label="商品名称" min-width="150%"/>
-			<el-table-column prop="name" label="规格/属性" />
-			<el-table-column prop="name" label="单位" />
-			<el-table-column prop="name" label="数量" />
-			<el-table-column prop="name" label="备注" />
+			<el-table-column prop="date" label="序号" min-width="21%" >
+        <template #default="scope">
+          {{ scope.$index+1 }}
+        </template>
+      </el-table-column>
+			<el-table-column prop="commodity.commodityName" label="商品名称" min-width="150%"/>
+			<el-table-column prop="commodity.commoditySpecifications" label="规格/属性" />
+			<el-table-column prop="commodity.commodityCompany" label="单位" />
+			<el-table-column prop="goodsNumber" label="数量" />
+			<el-table-column prop="remarks" label="备注" />
 		</el-table>
 
 	</div>
 	<div  style="background-color: white;padding: 20px;margin-top: 12px">
 		备注；<br /><br />
-		<el-input :rows="2" type="textarea" placeholder="请输入备注信息" />
+		<el-input disabled v-model="outStock.remark" :rows="2" type="textarea" placeholder="请输入备注信息" />
 	</div>
-
 
 </template>
 
@@ -74,27 +77,8 @@
 		data() {
 			return {
 
-				tableData: [{
-						date: '1',
-						name: 'Tom',
-						address: 'No. 189, Grove St, Los Angeles',
-					},
-					{
-						date: '2',
-						name: 'Tom',
-						address: 'No. 189, Grove St, Los Angeles',
-					},
-					{
-						date: '3',
-						name: 'Tom',
-						address: 'No. 189, Grove St, Los Angeles',
-					},
-					{
-						date: '4',
-						name: 'Tom',
-						address: 'No. 189, Grove St, Los Angeles',
-					},
-				]
+        // 出库单
+        outStock: {},
 
 			}
 		},
@@ -103,6 +87,10 @@
 
 		},
 		created() {
+      // 从store中取出库单
+      this.outStock=this.$store.state.outStock
+
+      console.log("chukudan :",this.outStock)
 
 		}
 	}

@@ -36,7 +36,7 @@ const routes = [
             {path:"/addcommodity",component:()=>import('../components/commodity/addcommodity.vue')},
         ]
     },
-
+    // 库存
     {path:"/stock",component:()=>import('../components/navigationbar.vue'),
         children:[
             {path: "/godownEntry", component: () => import('../components/stock/godownEntry.vue')},
