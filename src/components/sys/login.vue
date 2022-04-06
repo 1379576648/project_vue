@@ -137,7 +137,7 @@ export default {
           this.axios
             .post("http://localhost:9090/login/login", this.form)
             .then((res) => {
-              if (res.data.code === "200") {
+              if (res.data.code === "0") {
                  if(time.replace(':','').slice(0,4)>'08:00:00'.replace(':','').slice(0,4) && time.replace(':','').slice(0,4)<'12:00:00'.replace(':','').slice(0,4)){
         good='早上好'+res.data.data.user.staffName+",欢迎回来"
       }else if(time.replace(':','').slice(0,4)>'12:00:00'.replace(':','').slice(0,4) && time.replace(':','').slice(0,4)<'13:00:00'.replace(':','').slice(0,4)){
@@ -160,7 +160,6 @@ export default {
                 });
                 console.error(res)
                 this.$store.state.user = res.data.data.user;
-
                 this.$store.state.menu = res.data.data.menus;
                 this.$router.push("/"); //登录成功之后进行页面的跳转，跳转到主页
               } else {

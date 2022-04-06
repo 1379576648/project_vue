@@ -212,7 +212,7 @@ export default {
         pageSize:99999,
         search:''
       }
-      this.axios.post("http://localhost:9090/role/paging",paging).then(res=>{
+      this.axios.post("http://localhost:9090/sysrole/paging",paging).then(res=>{
         this.roleTreeData=res.data.data.records
       })
     },
@@ -246,7 +246,7 @@ export default {
               deleted:this.userForm.deleted
               }
             this.axios.post("http://localhost:9090/account/perm",{staff:user,roleIds:roleIds}).then(res => {
-               if(res.data.code="200"){
+               if(res.data.code==="200"){
                  this.$message.success(res.data.msg)
                  this.roleDialogFormVisible = false
                  this.userForm={};
