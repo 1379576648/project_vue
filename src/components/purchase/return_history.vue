@@ -23,7 +23,7 @@
               {{ scope.row.returnGoodsId }}
             </template>
           </el-table-column>
-          <el-table-column prop="purchaseTime" label="业务日期" width="150px"/>
+          <el-table-column prop="purchaseTime" label="业务日期" width="180px"/>
           <el-table-column prop="supplierName" label="供应商名称"/>
           <el-table-column prop="commodityName" label="商品名称"/>
           <el-table-column prop="purchaseDetailsNumber" label="商品数量"/>
@@ -76,7 +76,7 @@
               {{ scope.row.returnGoodsId }}
             </template>
           </el-table-column>
-          <el-table-column prop="purchaseTime" label="业务日期" width="150px"/>
+          <el-table-column prop="purchaseTime" label="业务日期" width="180px"/>
           <el-table-column prop="supplierName" label="供应商名称"/>
           <el-table-column prop="commodityName" label="商品名称"/>
           <el-table-column prop="purchaseDetailsNumber" label="商品数量"/>
