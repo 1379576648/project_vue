@@ -13,31 +13,28 @@
              <div class="info">
                <div class="info_block_1 info_income">
                  <div class="info_block_title">
-                   <span class="info_block_title_text">收入(元)</span>
+                   <span class="info_block_title_text" title="收入=已销商品总金额">收入(元)</span>
 <!--                   <span class="el-tooltip info_block_title_icon iconfont icon-wenhao-01"></span>-->
                  </div>
-                 <div class="info_block_value">0</div>
+                 <div class="info_block_value">{{resFrom.shour!=null?resFrom.shour:0}}</div>
                </div>
                <div class="info_block_1 info_cost">
                  <div class="info_block_title">
                    <span class="info_block_title_text">成本(元)</span>
-                   <!--                   <span class="el-tooltip info_block_title_icon iconfont icon-wenhao-01"></span>-->
                  </div>
-                 <div class="info_block_value">0</div>
+                 <div class="info_block_value">{{resFrom.xschengb!=null?resFrom.xschengb:0}}</div>
                </div>
                <div class="info_block_1 info_expenses">
                  <div class="info_block_title">
-                   <span class="info_block_title_text">费用(元)</span>
-                   <!--                   <span class="el-tooltip info_block_title_icon iconfont icon-wenhao-01"></span>-->
+                   <span class="info_block_title_text" title="利润=销售总价 - 采购成本">利润(元)</span>
                  </div>
-                 <div class="info_block_value">0</div>
+                 <div class="info_block_value">{{(resFrom.xiaosum+resFrom.shour)-resFrom.xschengb!=null?(resFrom.xiaosum+resFrom.shour)-resFrom.xschengb:0}}</div>
                </div>
                <div class="info_block_1 info_profit">
                  <div class="info_block_title">
-                   <span class="info_block_title_text">利润(元)</span>
-                   <!--                   <span class="el-tooltip info_block_title_icon iconfont icon-wenhao-01"></span>-->
+                   <span class="info_block_title_text">预估利润(元)</span>
                  </div>
-                 <div class="info_block_value">0</div>
+                 <div class="info_block_value">{{(resFrom.xiaosum+resFrom.shour)-resFrom.xschengb!=null?(resFrom.xiaosum+resFrom.shour)-resFrom.xschengb:0}}</div>
                </div>
              </div>
            </div>
@@ -103,7 +100,7 @@
         </div>
 
 
-        <div class="blocks3">
+        <div class="blocks3" >
           <div class="saleStatus">
             <div class="header">
               <div class="header_left">
@@ -111,30 +108,40 @@
               </div>
             </div>
 
-            <div class="infoa">
+            <div class="infoa" style="height: 130px">
               <div class="info_block info_saleSum">
-                <span class="info_block_icon icon-zongjine-01"></span>
-                <div class="info_block_data">
+                <span class="info_block_icon icon-zongjine-01" style="display: flex;align-items: center;padding-left:25px;">
+                   <i class="iconfont" style="font-size: 30px ;">&#xe600;</i>
+                </span>
+                <div class="info_block_data" >
                   <div class="info_block_data_label"><span class="block_data_label_text">销售总金额</span></div>
-                  <div class="info_block_data_value"><span class="data_value_sign">¥</span><span class="data_value_num">0</span></div>
+                  <div class="info_block_data_value"><span class="data_value_sign">¥</span><span class="data_value_num">{{resFrom.shour!=null?resFrom.shour:0}}</span></div>
                 </div>
               </div>
               <div class="info_block info_saleSum">
-                <span class="info_block_icon icon-zongjine-02"></span>
+                <span class="info_block_icon icon-zongjine-02" style="display: flex;align-items: center;padding-left:25px;">
+                  <i class="iconfont" style="font-size: 30px ;">&#xe655;</i>
+                </span>
                 <div class="info_block_data">
                   <div class="info_block_data_label"><span class="block_data_label_text">销售成本</span></div>
-                  <div class="info_block_data_value"><span class="data_value_sign">¥</span><span class="data_value_num">0</span></div>
+                  <div class="info_block_data_value"><span class="data_value_sign">¥</span><span class="data_value_num">
+                    {{resFrom.xschengb!=null?resFrom.xschengb:0}}
+                  </span></div>
                 </div>
               </div>
               <div class="info_block info_saleSum">
-                <span class="info_block_icon icon-zongjine-03"></span>
+                <span class="info_block_icon icon-zongjine-03" style="display: flex;align-items: center;padding-left:25px;">
+                   <i class="iconfont" style="font-size: 30px ;">&#xe783;</i>
+                </span>
                 <div class="info_block_data">
                   <div class="info_block_data_label"><span class="block_data_label_text">优惠金额</span></div>
                   <div class="info_block_data_value"><span class="data_value_sign">¥</span><span class="data_value_num">0</span></div>
                 </div>
               </div>
               <div class="info_block info_saleSum">
-                <span class="info_block_icon icon-zongjine-04"></span>
+                <span class="info_block_icon icon-zongjine-04" style="display: flex;align-items: center;padding-left:25px;">
+                  <i class="iconfont" style="font-size: 30px ;">&#xe671;</i>
+                </span>
                 <div class="info_block_data">
                   <div class="info_block_data_label"><span class="block_data_label_text">毛利润</span></div>
                   <div class="info_block_data_value"><span class="data_value_sign">¥</span><span class="data_value_num">0</span></div>
@@ -158,7 +165,67 @@ export default {
       threes:"/salesHistory",
       fours:"/Warehouse",
       sixs:"/goin",
+      resFrom:{
+        xschengb:'', //成本价、采购成本
+        shour:'',    //收入
+        xiaosum:''   //销售总价
+      }
     }
+  },
+  methods:{
+    findbycbj(){
+      this.axios({
+        url: "http://localhost:9090/sale/workcbj",
+        method: "post",
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.error(1)
+        console.error(response)
+        this.resFrom.xschengb = response.data.data
+      }).catch(function (error) {
+        console.log('获取列表失败')
+        console.log(error);
+      })
+    },
+    findbysr(){
+      this.axios({
+        url: "http://localhost:9090/sale/worksr",
+        method: "post",
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.error(2)
+        console.error(response)
+        this.resFrom.shour = response.data.data
+      }).catch(function (error) {
+        console.log('获取列表失败')
+        console.log(error);
+      })
+    },
+    findbyxssum(){
+      this.axios({
+        url: "http://localhost:9090/sale/workxssum",
+        method: "post",
+        data: {},
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.error(3)
+        console.error(response)
+        this.resFrom.xiaosum = response.data.data
+      }).catch(function (error) {
+        console.log('获取列表失败')
+        console.log(error);
+      })
+    },
+  },
+  created() {
+    this.findbycbj();
+    this.findbysr();
+    this.findbyxssum();
   }
 }
 </script>
@@ -175,9 +242,9 @@ a{
   -moz-osx-font-smoothing: grayscale;}
 @font-face {
   font-family: 'iconfont';  /* Project id 3284006 */
-  src: url('//at.alicdn.com/t/font_3284006_uxgg9ckmfza.woff2?t=1648801247983') format('woff2'),
-  url('//at.alicdn.com/t/font_3284006_uxgg9ckmfza.woff?t=1648801247983') format('woff'),
-  url('//at.alicdn.com/t/font_3284006_uxgg9ckmfza.ttf?t=1648801247983') format('truetype');
+  src: url('//at.alicdn.com/t/font_3284006_12fgi9iassd.woff2?t=1649073854972') format('woff2'),
+  url('//at.alicdn.com/t/font_3284006_12fgi9iassd.woff?t=1649073854972') format('woff'),
+  url('//at.alicdn.com/t/font_3284006_12fgi9iassd.ttf?t=1649073854972') format('truetype');
 }
 * {
   -webkit-box-sizing: border-box;

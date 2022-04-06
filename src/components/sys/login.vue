@@ -158,6 +158,7 @@ export default {
                   message: good,
                   type: "success",
                 });
+                console.error(res)
                 this.$store.state.user = res.data.data.user;
 
                 this.$store.state.menu = res.data.data.menus;

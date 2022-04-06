@@ -43,11 +43,8 @@
               &nbsp;&nbsp;&nbsp;
             </div>
             <div class="ant-row_2" style="display: flex">
-              <div style="padding-left: 65px;margin-right: 20px">
-                <span style="font-size: 14px">经手人：</span>
-                <el-select v-model="Fromlist.warehouse" placeholder="经手人">
-                  <el-option v-for="item in options.warehouse" :key="item.stockId" :label="item.stockName" :value="item.stockId" />
-                </el-select>
+              <div style="flex: 1">
+
               </div>
               <div>
                 <span style="font-size: 14px">业务日期：</span>
@@ -91,20 +88,25 @@
                 <el-table-column prop="commodityCompany" label="单位" />
                 <el-table-column label="数量">
                   <template #default="scope">
+                    <span v-show="false">{{
+                        scope.row.number == null ? scope.row.number = 1 : scope.row.number
+                      }}</span>
                     <el-input-number
-                        v-model="scope.row.salescheduleNumber"
-                        :min="1"
+                        v-model="scope.row.number"
+                        modelValue="1"
                         size="small"
+                        min="0"
+                        :max="scope.row.availablestock"
                         controls-position="right"
                         @click="a()"
-                        @change="handleChange(scope.row.salescheduleNumber,scope.row.availablestock)"
+                        @change="handleChange(scope.row.number,scope.row.availablestock)"
                     />
                   </template>
                 </el-table-column>
                 <el-table-column prop="saleschedulePrice" label="单价(元)"/>
                 <el-table-column label="销售金额">
                    <template #default="scope">
-                     {{ scope.row.saleschedulePrice * scope.row.salescheduleNumber>0?scope.row.saleschedulePrice * scope.row.salescheduleNumber:'0.00'}}
+                     {{ scope.row.saleschedulePrice * scope.row.number>0?scope.row.saleschedulePrice * scope.row.number:'0.00'}}
                    </template>
                 </el-table-column>
                 <el-table-column label="操作" width="90" align="center">
@@ -114,7 +116,6 @@
                   </template>
                 </el-table-column>
               </el-table>
-
             </div>
             <div style="height: 40px;width: 100%;display: flex;align-items: center;font-weight: bold;margin-top: 25px">
               <div class="ant_from">
@@ -165,10 +166,8 @@
       <el-input v-model="options.vshipings" style="width: 200px;" placeholder="商品名称" />
       &nbsp;&nbsp;
       <el-button type="primary" @click="querylistsp()">搜索</el-button>
-
     </div>
     <br /><br />
-
     <el-table
         :data="tableData1"
         border
@@ -176,12 +175,14 @@
         :header-cell-style="{background:'#F8F8F9',color:'#606266'}"
         :default-sort="{ prop: 'name', order: 'descending' }"
         @selection-change="queryselecttions"
+        :row-key="getRowKey"
     >
       <el-table-column type="index" label="序号" min-width="30%" />
-      <el-table-column type="selection" min-width="25%" />
+      <el-table-column type="selection" :reserve-selection="true" min-width="25%" />
       <el-table-column prop="commodityName" label="商品名称" min-width="150%"/>
       <el-table-column prop="commoditySpecifications" label="规格/属性" />
       <el-table-column prop="commodityCompany" label="单位" />
+      <el-table-column prop="salescheduleNumber" label="数量" />
       <el-table-column prop="saleschedulePrice" label="零售价(元)" />
       <el-table-column prop="availablestock" label="可用库存" />
     </el-table>
@@ -237,7 +238,6 @@
       </div>
     </template>
   </el-dialog>
-
 </template>
 
 <script>
@@ -249,9 +249,9 @@ export default {
       selectkehuDialog:false,
       input:'',
       tableData: [
-        {name:'1'},
-        {name:'1'},
-        {name:'1'},
+        {name:'1',number:1},
+        {name:'1',number:1},
+        {name:'1',number:1}
       ],
       tableData1:[], // 商品信息
       tableData2:[], //客户信息
@@ -277,17 +277,21 @@ export default {
       shiping:[],
 
       xiaoshou:{
-        receivable:0.00,//应收金额
+        receivable:0.0,//应收金额
         amount:0.00, //实收金额
       }
     }
   },
   methods: {
+    //回显
+    // 表格 行 唯一标识
+    getRowKey(row) {
+      return row.commodityId
+    },
     a(){
       var x=0
       this.tableData.forEach(item=>{
-        x += (item.saleschedulePrice * item.salescheduleNumber)
-
+        x += isNaN(item.saleschedulePrice * item.number)?item.saleschedulePrice:(item.saleschedulePrice * item.number)
       })
       this.xiaoshou.receivable=x
       this.xiaoshou.amount = x
@@ -338,8 +342,9 @@ export default {
     addhang(){
       let list = {
         name:'',
+        number:''
       };
-      this.tableData.unshift(list)
+      this.tableData.push(list)
     },
     //table:删除行
     delData(index,row){
@@ -432,6 +437,7 @@ export default {
         })
       }else{
         this.tableData = this.shiping
+        // this.tableData.push({"number":1})
         this.selectGoodsDialog = false
       }
     },
@@ -450,7 +456,7 @@ export default {
         method: "post",
         data: {
           Sale:{
-            staffId:1, //当前登录用户id
+            staffId:this.$store.state.user.staffId, //当前登录用户id
             customerId: this.options.customerids, //客户id
             stockId:this.Fromlist.warehouse, //仓库id
             billId:this.Fromlist.bills, //单据编号

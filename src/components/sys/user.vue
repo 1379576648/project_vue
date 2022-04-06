@@ -65,11 +65,11 @@
               <el-button type="text" size="small" @click="edit(scope.row.staffId)">编辑</el-button>
               <el-divider direction="vertical" v-if="scope.row.staffName!=='admin'"/>
                 <el-popconfirm
-            title="确定停用该账户吗？"
+            :title="scope.row.staffState==0?'确定停用该账户吗?':'确定启用该账户吗？'"
             @confirm="Deactivate(scope.row)"
           >
             <template #reference>
-              <el-button size="mini" v-if="scope.row.staffName!=='admin'" type="text">{{scope.row.staffState==0?'停用':'启用'}}</el-button>
+              <el-button size="small" v-if="scope.row.staffName!=='admin'" type="text">{{scope.row.staffState==0?'停用':'启用'}}</el-button>
             </template>
           </el-popconfirm>
 
@@ -249,9 +249,12 @@ export default {
                if(res.data.code="200"){
                  this.$message.success(res.data.msg)
                  this.roleDialogFormVisible = false
+                 this.userForm={};
                  this.load()
                }else{
                  this.$message.error(res.data.msg)
+                 this.$refs[formName].resetFields();
+                 this.$refs.roleTree.setCheckedKeys([])
                }
                
             })

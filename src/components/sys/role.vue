@@ -198,7 +198,6 @@ export default {
       editmenu(roleId){
        this.menuList()
        this.role_id=roleId
-       alert(roleId);
         this.axios.get("http://localhost:9090/menu/findByRoleIdload/"+roleId)
         .then(res=>{
           const menuIds=[]
@@ -237,9 +236,11 @@ export default {
         .then(res=>{
           if(res.data.code=="200"){
              this.$message.success(res.data.msg)
+            this.roleForm={}
           this.load()
           }else{
             this.$message.error(res.data.msg);
+            this.roleForm={}
           }
          
         })

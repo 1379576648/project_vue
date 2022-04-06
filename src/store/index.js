@@ -56,7 +56,7 @@ const store = createStore({
                         MENU_ID: 2.4,//菜单编号
                         MENU_NAME: '退货单',//菜单名称
                         PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                        MENU_ROUTE: '/refundReturn',//路由地址
+                            MENU_ROUTE: '/refundReturn',//路由地址
                         MENU_MODULE: 'components/organization_management/returned',//组件地址
                         MENU_STATE: 0,//是否启用 0启用 1禁用
                         MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
