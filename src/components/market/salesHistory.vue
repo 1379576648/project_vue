@@ -304,7 +304,6 @@
     </el-tab-pane>
 
   </el-tabs>
-{{tableData2}}
 </template>
 
 <script>
