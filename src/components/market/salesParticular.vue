@@ -1,12 +1,5 @@
 <template>
   <el-button style="float:right" type="primary">添加商品</el-button>
-  <div>
-    <el-button plain style="float: right;margin-right: 30px">高级搜索</el-button>
-    <div style="width: 10px;float: right"></div>
-    <el-input v-model="input" placeholder="请输入内容" style="width: 200px;float: right"></el-input>
-
-  </div>
-
   <br><br><br>
   <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
 <el-tab-pane label="已出库" name="first">

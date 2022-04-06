@@ -22,7 +22,7 @@
 
             <el-table-column prop="stockId" label="序号" width="50%">
             </el-table-column>
-            <el-table-column prop="stockId" label="仓库编号" width="" sortable>
+            <el-table-column prop="stockId" label="仓库编号"  sortable   :sort-by="['stockId', 'address']">
             </el-table-column>
             <el-table-column prop="stockName" label="仓库名称" width="" sortable>
             </el-table-column>

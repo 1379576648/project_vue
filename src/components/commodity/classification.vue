@@ -24,6 +24,7 @@
  		 >
  		 	
  		 </el-tree>
+		
 		 <!-- 添加分类界面 -->
  		 <el-dialog v-model="insert" title="添加分类" width="35%">
 			 <el-form 

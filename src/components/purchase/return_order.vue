@@ -12,7 +12,7 @@
       </span>
     </div>
     <!-- 左 -->
-    <div style="margin-top: 10px;padding: 20px;float: left;">
+    <div style="margin-top: 10px;padding: 20px;float: left;" id="demo">
       仓库:
       <el-select v-model="stock" placeholder="选择仓库" @change="selectCommodity()">
         <el-option v-for="item in returnStock" :key="item.stockId" :label="item.stockName" :value="item.stockId"/>
@@ -58,7 +58,7 @@
   </div>
   <div class="button_box">
     <div style="display: inline-block;margin-left: 1076px">
-      <el-button>取消</el-button>
+      <el-button @click="clear">取消</el-button>
       <el-button @click="insertReturnGoods()">保存</el-button>
       <el-button type="primary" @click="insertStock()">保存出库</el-button>
     </div>
@@ -111,6 +111,9 @@ export default {
     }
   },
   methods: {
+    clear(){
+      this.$router.push("/returnHistory")
+    },
     //获取选中的复选框
     handleSelectionChange(sels) {
       this.purchaseDetailsTotal=0
@@ -169,7 +172,7 @@ export default {
             returngoodsState:2
           }).then(res=>{
             console.log(res.data.msg)
-            if(res.data.code==0){
+            if(res.data.msg=='成功'){
               ElMessage({
                 message: "退货成功",
                 type: "success",
@@ -204,7 +207,7 @@ export default {
             returngoodsState:1
           }).then(res=>{
             console.log(res.data.msg)
-            if(res.data.code==0){
+            if(res.data.msg=='成功'){
               ElMessage({
                 message: "退货成功",
                 type: "success",

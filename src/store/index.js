@@ -2,6 +2,10 @@ import {createStore} from 'vuex'
 
 const store = createStore({
     state: {
+
+        // 出库单
+        outStock:{},
+
         menu: [
             {
                 MENU_ID: 1,//菜单编号
@@ -98,7 +102,7 @@ const store = createStore({
                         MENU_ID: 3.1,//菜单编号
                         MENU_NAME: '商品列表',//菜单名称
                         PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                        MENU_ROUTE: 'goin',//路由地址z
+                        MENU_ROUTE: '/goin',//路由地址
                         MENU_MODULE: 'organization_management/organization_main',//组件地址
                         MENU_STATE: 0,//是否启用 0启用 1禁用
                         MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -108,7 +112,7 @@ const store = createStore({
                         MENU_ID: 3.2,//菜单编号
                         MENU_NAME: '添加商品',//菜单名称
                         PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                        MENU_ROUTE: 'addcommodity',//路由地址
+                        MENU_ROUTE: '/addcommodity',//路由地址
                         MENU_MODULE: 'organization_management/organization_main',//组件地址
                         MENU_STATE: 0,//是否启用 0启用 1禁用
                         MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -118,7 +122,7 @@ const store = createStore({
                         MENU_ID: 3.3,//菜单编号
                         MENU_NAME: '商品分类',//菜单名称
                         PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                        MENU_ROUTE: 'classification',//路由地址
+                        MENU_ROUTE: '/classification',//路由地址
                         MENU_MODULE: 'organization_management/organization_main',//组件地址
                         MENU_STATE: 0,//是否启用 0启用 1禁用
                         MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -209,7 +213,7 @@ const store = createStore({
                     MENU_ID: 5.3,//菜单编号
                     MENU_NAME: '仓库管理',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                    MENU_ROUTE: 'Warehouse',//路由地址
+                    MENU_ROUTE: '/Warehouse',//路由地址
                     MENU_MODULE: '/components/stock/Management',//组件地址
                     MENU_STATE: 0,//是否启用 0启用 1禁用
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -218,7 +222,7 @@ const store = createStore({
                     MENU_ID: 5.4,//菜单编号
                     MENU_NAME: '供应商列表',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                    MENU_ROUTE: 'supplierList',//路由地址
+                    MENU_ROUTE: '/supplierList',//路由地址
                     MENU_MODULE: '/components/financing/',//组件地址
                     MENU_STATE: 0,//是否启用 0启用 1禁用
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -227,7 +231,7 @@ const store = createStore({
                     MENU_ID: 5.5,//菜单编号
                     MENU_NAME: '供应商分类',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                    MENU_ROUTE: 'supplierClassify',//路由地址
+                    MENU_ROUTE: '/supplierClassify',//路由地址
                     MENU_MODULE: '/components/financing/',//组件地址
                     MENU_STATE: 0,//是否启用 0启用 1禁用
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -257,7 +261,7 @@ const store = createStore({
                     MENU_NAME: '其他出库单',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
                     MENU_ROUTE: '/otherOutStock',//路由地址
-                    MENU_MODULE: '/components/financing/',//组件地址
+                    MENU_MODULE: '/components/financing',//组件地址
                     MENU_STATE: 0,//是否启用 0启用 1禁用
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
                     MENU_LEAF: 1,//是否有叶子 0有 1没有
@@ -395,7 +399,7 @@ const store = createStore({
                 ]
             }
         ],
-
+        user:{},
     }
 })
 export default store
