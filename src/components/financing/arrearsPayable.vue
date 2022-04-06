@@ -172,7 +172,7 @@ export default {
     height: 93%;
 }
 .table{
-    height: 66vh;
+    /* height: 66vh; */
     font-size: 12px;
 }
 .page{

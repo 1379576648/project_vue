@@ -23,7 +23,7 @@
               <el-button size="small" @click="drawer=true">高级搜索</el-button>
           </el-col>
       </el-row>
-      <el-row :gutter="24">
+      <!-- <el-row :gutter="24"> -->
           <el-table :data="tableData" border show-summary sum-text="合计" :default-sort="{ prop: 'operationTime', order: 'descending' }" width="100%" class="table">
                <el-table-column type="index" label="序号" width="80" />
                <el-table-column prop="paymenttabTime" label="业务日期" />
@@ -40,8 +40,8 @@
                <el-table-column prop="money" label="付款金额"></el-table-column>
                <el-table-column prop="coupon" label="优惠金额"></el-table-column>
           </el-table>
-      </el-row>
-      <el-row :gutter="24">
+      <!-- </el-row> -->
+      <!-- <el-row :gutter="24"> -->
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -53,7 +53,8 @@
             class="page"
           >
           </el-pagination>
-      </el-row>
+          <el-button style=" float: right;" type="button" @click="fh()">返回应付欠款</el-button>
+      <!-- </el-row> -->
       <el-drawer
         title="我是标题"
         v-model="drawer"
@@ -207,6 +208,10 @@ export default {
     };
   },
   methods: {
+      //返回应收列表
+    fh(){
+        this.$router.push('/arrearsPayable');
+    },
       //模糊查询
     mhcx(){
       let sj1=this.ruleForm.value2[0]
@@ -431,6 +436,6 @@ export default {
     font-size: 14px;
 }
 .table{
-    height: 67vh;
+    /* height: 67vh; */
 }
 </style>

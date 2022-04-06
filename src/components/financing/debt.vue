@@ -28,7 +28,6 @@
             </el-icon>
             <span style="vertical-align: middle" @click="mhcx()"> 搜索 </span>
           </el-button>
-          <el-button>导出</el-button>
         </el-col>
       </el-row>
     </div>
