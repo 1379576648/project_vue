@@ -190,7 +190,10 @@
       <el-form-item label="期初应付款">
         <el-input-number v-model="form2.copeMoney" placeholder="期初应付款" />
       </el-form-item>
-
+      <el-form-item label="供应商状态">
+        <el-radio v-model="form2.deleted" label="0" size="large"> 正常</el-radio>
+        <el-radio v-model="form2.deleted" label="1" size="large">停用</el-radio>
+      </el-form-item>
       <el-form-item label="地址">
         <el-input style="width: 500px" v-model="form2.supplierAddress" type="textarea" />
       </el-form-item>
@@ -279,6 +282,7 @@ export default {
         supplierAddress: '',
         supplierRemark: '',
         copeMoney:"",
+        deleted:'',
 
       },
       form3:{
@@ -485,6 +489,7 @@ export default {
       this.form2.supplierPhone=row.supplierPhone;
       this.form2.supplierRemark=row.supplierRemark;
       this.form2.supplierName=row.supplierName;
+      this.form2.deleted=row.deleted;
     },
     //编辑保存事件
     editPreservation(){
@@ -526,6 +531,7 @@ export default {
       this.form3.supplierName=row.supplierName;
     },
 
+    //删除供应商
     deleted(id){
       this.pageInfo.supplierId=id;
       this.axios({
