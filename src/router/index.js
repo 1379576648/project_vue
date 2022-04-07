@@ -95,6 +95,13 @@ const routes = [
             {path:"/refundHistory",component:()=>import('../components/market/refundHistory.vue')},
             //客户
             {path:"/client",component:()=>import('../components/market/client.vue')},
+            //
+            {path:"/transfer",component:()=>import('../components/market/transfer.vue'),
+                children:[
+                    {path:"/refundHistory",component:()=>import('../components/market/refundHistory.vue')},
+                    {path:"/BeforeRefundHistory",component:()=>import('../components/market/BeforeRefundHistory.vue')},
+                ]
+            },
 
         ]
     },
