@@ -165,6 +165,10 @@
 
     <el-form :model="form2" :inline="true" label-width="120px">
 
+      <el-form-item label="供应商编号">
+        <el-input v-model="form2.supplierId" disabled placeholder="输入供应商编号" />
+      </el-form-item>
+
       <el-form-item label="供应商名称">
         <el-input v-model="form2.supplierName" placeholder="输入供应商名称" />
       </el-form-item>
@@ -186,7 +190,10 @@
       <el-form-item label="期初应付款">
         <el-input-number v-model="form2.copeMoney" placeholder="期初应付款" />
       </el-form-item>
-
+      <el-form-item label="供应商状态">
+        <el-radio v-model="form2.deleted" label="0" size="large"> 正常</el-radio>
+        <el-radio v-model="form2.deleted" label="1" size="large">停用</el-radio>
+      </el-form-item>
       <el-form-item label="地址">
         <el-input style="width: 500px" v-model="form2.supplierAddress" type="textarea" />
       </el-form-item>
@@ -201,10 +208,8 @@
 
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="insertSupplier"
-        >保存</el-button
-        >
+        <el-button @click="dialogVisible2 = false">取消</el-button>
+        <el-button type="primary" @click="editPreservation">保存</el-button>
       </span>
     </template>
   </el-dialog>
@@ -213,52 +218,38 @@
 
     <el-form :model="form3" :inline="true" label-width="120px">
 
+      <el-form-item label="供应商编号">
+        <el-input v-model="form3.supplierId" disabled placeholder="输入供应商编号" />
+      </el-form-item>
+
       <el-form-item label="供应商名称">
-        <el-input v-model="form3.supplierName" placeholder="输入供应商名称" />
+        <el-input v-model="form3.supplierName" disabled placeholder="输入供应商名称" />
       </el-form-item>
 
       <el-form-item label="联系电话">
-        <el-input v-model="form3.supplierPhone" placeholder="输入联系电话" />
+        <el-input v-model="form3.supplierPhone" disabled placeholder="输入联系电话" />
       </el-form-item>
 
       <el-form-item label="供应商分类">
-        <el-input v-model="form3.categoryName" placeholder="输入联系电话" />
+        <el-input v-model="form3.categoryName" disabled placeholder="输入联系电话" />
       </el-form-item>
 
-<!--      <el-form-item label="供应商分类">-->
-
-<!--        &lt;!&ndash; 供应商分类 &ndash;&gt;-->
-<!--        <el-select v-model="supplierCategoryNameLabel" placeholder="选择供应商分类">-->
-<!--          <el-option hidden/>-->
-<!--          <el-tree :data="allSupplierCategory" :props="defaultProps" @node-click="handleNodeClick"/>-->
-<!--        </el-select>-->
-
-<!--      </el-form-item>-->
-
       <el-form-item label="期初应付款">
-        <el-input-number v-model="form1.copeMoney" placeholder="期初应付款" />
+        <el-input v-model="form3.copeMoney" disabled placeholder="期初应付款" />
       </el-form-item>
 
       <el-form-item label="地址">
-        <el-input style="width: 500px" v-model="form1.supplierAddress" type="textarea" />
+        <el-input style="width: 500px" v-model="form3.supplierAddress" disabled  />
       </el-form-item>
 
       <br>
 
       <el-form-item label="备注">
-        <el-input style="width: 500px" v-model="form1.supplierRemark" type="textarea" />
+        <el-input style="width: 500px" v-model="form3.supplierRemark" disabled />
       </el-form-item>
 
     </el-form>
 
-<!--    <template #footer>-->
-<!--      <span class="dialog-footer">-->
-<!--        <el-button @click="dialogVisible = false">取消</el-button>-->
-<!--        <el-button type="primary" @click="insertSupplier"-->
-<!--        >保存</el-button-->
-<!--        >-->
-<!--      </span>-->
-<!--    </template>-->
   </el-dialog>
 
 
@@ -284,15 +275,18 @@ export default {
       },
 
       form2:{
+        supplierId: '',
         supplierName: '',
         supplierPhone: '',
         categoryId:"",
         supplierAddress: '',
         supplierRemark: '',
         copeMoney:"",
+        deleted:'',
 
       },
       form3:{
+        supplierId:'',
         supplierName: '',
         supplierPhone: '',
         categoryId:"",
@@ -488,12 +482,42 @@ export default {
     //编辑
     edit(row){
       this.dialogVisible2=true;
+      this.form2.supplierId=row.supplierId;
       this.form2.categoryId=row.categoryId;
       this.form2.copeMoney=row.copeMoney;
       this.form2.supplierAddress=row.supplierAddress;
       this.form2.supplierPhone=row.supplierPhone;
       this.form2.supplierRemark=row.supplierRemark;
       this.form2.supplierName=row.supplierName;
+      this.form2.deleted=row.deleted;
+    },
+    //编辑保存事件
+    editPreservation(){
+      this.axios({
+        method: 'post',
+        url: 'http://localhost:9090/supplier/updataSupplier',
+        data: this.form2,
+        responseType: 'json',
+        responseEncoding: 'utf-8',
+      }).then((response) => {
+        console.log("添加供应商");
+        console.log(response);
+
+        if (response.data.code === 200) {
+          ElMessage({
+            message: "添加成功",
+            type: 'success',
+          })
+          this.dialogVisible = false
+          this.Supplier(null);
+        } else {
+          ElMessage({
+            message: response.data.message,
+            type: 'warning',
+          })
+          this.dialogVisible = false
+        }
+      })
     },
 
     //详情
@@ -507,6 +531,7 @@ export default {
       this.form3.supplierName=row.supplierName;
     },
 
+    //删除供应商
     deleted(id){
       this.pageInfo.supplierId=id;
       this.axios({
