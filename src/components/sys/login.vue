@@ -137,6 +137,7 @@ export default {
           this.axios
             .post("http://localhost:9090/login/login", this.form)
             .then((res) => {
+              console.error("===========",res)
               if (res.data.code === "0") {
                  if(time.replace(':','').slice(0,4)>'08:00:00'.replace(':','').slice(0,4) && time.replace(':','').slice(0,4)<'12:00:00'.replace(':','').slice(0,4)){
         good='早上好'+res.data.data.user.staffName+",欢迎回来"

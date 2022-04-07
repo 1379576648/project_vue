@@ -19,8 +19,14 @@
           </div>
           <el-table border empty-text="暂无数据" :data="tableData" ref="tableT" @selection-change="handleSelectionChange"
                     size="small" style="width: 99%;" height="50vh">
-
-            <el-table-column prop="stockId" label="序号" width="50%">
+            <el-table-column
+                label="序号"
+                width="70px"
+                sortable
+                fixed>
+              <template #default="scope">
+                {{(pageInfo.currentPage - 1) * pageInfo.pageSize + scope.$index + 1}}
+              </template>
             </el-table-column>
             <el-table-column prop="stockId" label="仓库编号"  sortable   :sort-by="['stockId', 'address']">
             </el-table-column>
