@@ -24,6 +24,7 @@
  		 >
  		 	
  		 </el-tree>
+		
 		 <!-- 添加分类界面 -->
  		 <el-dialog v-model="insert" title="添加分类" width="35%">
 			 <el-form 
@@ -245,8 +246,6 @@ import { defineComponent, ref } from "vue";
  			},
  			getListData(){
  					  let dataArray =[];
- 					    
- 					 
  							  let objTemp ={
  								  id:0,
  								  organName:"商品分类",

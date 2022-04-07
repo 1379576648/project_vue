@@ -50,6 +50,10 @@
         <el-input v-model="fo.commoditySpecifications" style="width: 500px"></el-input>
       </el-form-item>
 
+      <el-form-item label="备注">
+        <el-input type="textarea" v-model="fo.remark" maxlength="30" show-word-limit style="width: 500px;"></el-input>
+      </el-form-item>
+
     </el-form>
 
 
@@ -145,6 +149,7 @@ export default {
         commodityCompany: '',
         categoryId: '',
         commoditySpecifications:'',
+        remark:'',
         retailPrice:ref(1),
         tradePrice:ref(1),
         minNumber:ref(1),
@@ -193,6 +198,7 @@ export default {
       this.fo.tradePrice=1
       this.fo.minNumber=1
       this.fo.maxNumber=1
+      this.fo.remark=""
     },
     //添加
     add(){

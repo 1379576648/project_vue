@@ -1,12 +1,5 @@
 <template>
   <el-button style="float:right" type="primary">添加商品</el-button>
-  <div>
-    <el-button plain style="float: right;margin-right: 30px">高级搜索</el-button>
-    <div style="width: 10px;float: right"></div>
-    <el-input v-model="input" placeholder="请输入内容" style="width: 200px;float: right"></el-input>
-
-  </div>
-
   <br><br><br>
   <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
 <el-tab-pane label="已出库" name="first">
@@ -77,12 +70,14 @@
     >
 
       <!--        @click.native.prevent="deleteRow(scope.$index, tableData)"     -->
-
-      <el-button
-          type="text"
-          size="small">
-        <router-link to="details">详情</router-link>
-      </el-button>
+      <template #default="scope">
+        <el-button
+            type="text"
+            size="small"
+            @click="details1(scope.row.saleId)">
+          详情
+        </el-button>
+      </template>
 
     </el-table-column>
 
@@ -168,16 +163,27 @@
       <el-table-column
           fixed="right"
           label="操作"
-          width="120"
-      >
+          width="120">
+        <template #default="scope">
+          <el-button
+              type="text"
+              size="small"
+              @click="details1(scope.row.saleId)">
+            详情
+          </el-button>
 
-        <!--        @click.native.prevent="deleteRow(scope.$index, tableData)"     -->
-
-        <el-button
-            type="text"
-            size="small">
-          <router-link to="details">详情</router-link>
-        </el-button>
+          &nbsp;
+          <span class="span_1">|</span>
+          &nbsp
+          <el-button
+              class="font_sty"
+              type="text"
+              size="small"
+              @click="outbound(scope.row.saleId,scope.row.stockId)"
+          >
+            出库
+          </el-button>
+        </template>
 
       </el-table-column>
 
@@ -249,6 +255,9 @@ export default {
           .catch(function (error) {
             console.log(error);
           });
+    },
+    details1(saleId){
+      this.$router.push({path: '/details',query:{saleId:saleId}})
     },
   },created(){
     this.selectBusiness()
