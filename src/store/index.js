@@ -144,7 +144,7 @@ const store = createStore({
                         MENU_ID: 4.1,//菜单编号
                         MENU_NAME: '退货单',//菜单名称
                         PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                        MENU_ROUTE: 'returnOrder',//路由地址
+                        MENU_ROUTE: '/returnOrder',//路由地址
                         MENU_MODULE: 'organization_management/organization_main',//组件地址
                         MENU_STATE: 0,//是否启用 0启用 1禁用
                         MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -154,7 +154,7 @@ const store = createStore({
                         MENU_ID: 4.2,//菜单编号
                         MENU_NAME: '退货历史',//菜单名称
                         PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                        MENU_ROUTE: 'returnHistory',//路由地址
+                        MENU_ROUTE: '/returnHistory',//路由地址
                         MENU_MODULE: 'organization_management/organization_main',//组件地址
                         MENU_STATE: 0,//是否启用 0启用 1禁用
                         MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -164,7 +164,7 @@ const store = createStore({
                         MENU_ID: 4.3,//菜单编号
                         MENU_NAME: '进货单',//菜单名称
                         PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                        MENU_ROUTE: 'inGoods',//路由地址
+                        MENU_ROUTE: '/inGoods',//路由地址
                         MENU_MODULE: 'organization_management/organization_main',//组件地址
                         MENU_STATE: 0,//是否启用 0启用 1禁用
                         MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -174,7 +174,7 @@ const store = createStore({
                         MENU_ID: 4.4,//菜单编号
                         MENU_NAME: '进货历史',//菜单名称
                         PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                        MENU_ROUTE: 'purchaseHistory',//路由地址
+                        MENU_ROUTE: '/purchaseHistory',//路由地址
                         MENU_MODULE: 'organization_management/organization_main',//组件地址
                         MENU_STATE: 0,//是否启用 0启用 1禁用
                         MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -195,7 +195,7 @@ const store = createStore({
                     MENU_ID: 5.1,//菜单编号
                     MENU_NAME: '库存查询',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
-                    MENU_ROUTE: 'Management',//路由地址
+                    MENU_ROUTE: '/Management',//路由地址
                     MENU_MODULE: '/components/stock/Management',//组件地址
                     MENU_STATE: 0,//是否启用 0启用 1禁用
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
@@ -205,7 +205,7 @@ const store = createStore({
                     MENU_NAME: '库存预警',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
                     MENU_ROUTE: '/earlyWarning',//路由地址
-                    MENU_MODULE: '/components/financing/',//组件地址
+                    MENU_MODULE: '/components/stock/earlyWarning',//组件地址
                     MENU_STATE: 0,//是否启用 0启用 1禁用
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
                     MENU_LEAF: 0,//是否有叶子 0有 1没有
@@ -279,7 +279,7 @@ const store = createStore({
                     MENU_NAME: '其他出入库类型',//菜单名称
                     PICTURE_ADDRESS: '&#xe64c;',//图片地址
                     MENU_ROUTE: '/receipttype',//路由地址
-                    MENU_MODULE: '/components/stock/receipttype.vue',//组件地址
+                    MENU_MODULE: '/components/stock/receipttype',//组件地址
                     MENU_STATE: 0,//是否启用 0启用 1禁用
                     MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
                     MENU_LEAF: 1,//是否有叶子 0有 1没有
@@ -359,7 +359,7 @@ const store = createStore({
                         MENU_NAME: '资金流水',//菜单名称
                         PICTURE_ADDRESS: '&#xe64c;',//图片地址
                         MENU_ROUTE: '/capitalFlow',//路由地址
-                        MENU_MODULE: 'components/financing/capitalFlow',//组件地址
+                        MENU_MODULE: '/components/financing/capitalFlow',//组件地址
                         MENU_STATE: 0,//是否启用 0启用 1禁用
                         MENU_TYPE: 0,//菜单类型 0:菜单 1:按钮
                         MENU_LEAF: 1,//是否有叶子 0有 1没有

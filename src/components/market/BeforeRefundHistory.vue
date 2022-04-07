@@ -10,34 +10,26 @@
         placeholder="请输入内容"
         style="width: 200px; float: right"
       ></el-input>
-      <el-checkbox
-        v-model="radio"
-        label="1"
-        size="large"
-        style="float: right; margin-right: 25px"
-        @change="mh()"
-        >查看已作废</el-checkbox
-      >
     </div>
 
     <br /><br /><br />
     <el-table :data="tableData" style="width: 100%" height="500px">
-      <el-table-column prop="returnsaleId" label="序号" width="300px">
+      <el-table-column prop="returnsaleId" label="序号" width="100px">
       </el-table-column>
 
-      <el-table-column prop="commodityName" label="商品名称" width="300px">
+      <el-table-column prop="commodityName" label="商品名称" width="180px">
       </el-table-column>
 
-      <el-table-column prop="returnsaleReason" label="退货原因" width="300px">
+      <el-table-column prop="returnsaleReason" label="退货原因" width="180px">
       </el-table-column>
 
-      <el-table-column prop="returnsaleMoney" label="退货金额" width="300px">
+      <el-table-column prop="returnsaleMoney" label="退货金额" width="180px">
       </el-table-column>
-      <el-table-column prop="salescheduleNumber" label="商品数量" width="300px">
+      <el-table-column prop="salescheduleNumber" label="商品数量" width="180px">
       </el-table-column>
-      <el-table-column prop="saleschedulePrice" label="商品价格" width="300px">
+      <el-table-column prop="saleschedulePrice" label="商品价格" width="180px">
       </el-table-column>
-      <el-table-column prop="salescheduleTotal" label="商品总价" width="300px">
+      <el-table-column prop="salescheduleTotal" label="商品总价" width="180px">
       </el-table-column>
 
       <el-table-column fixed="right" label="操作" width="200">
@@ -54,9 +46,9 @@
             type="text"
             size="small"
             style="color: red"
-            @click="del(scope.row)"
+            @click="warehouse(scope.row)"
           >
-            作废
+            入库
           </el-button>
         </template>
       </el-table-column>
@@ -96,26 +88,6 @@ export default {
       sessionStorage.setItem("userInfo", JSON.stringify(row));
       this.$router.push("/returnHistorydetails");
     },
-    mh() {
-      this.axios
-        .get("http://localhost:9090/returnsale/select?id=1", {
-          params: {
-            radio: this.radio,
-            page: this.infopage.page,
-            size: this.infopage.size,
-            like: this.input,
-          },
-        })
-        .then((res) => {
-          console.log(res.data);
-          this.tableData = res.data.data.records;
-          this.infopage.total = res.data.data.total;
-        })
-        .catch((err) => {
-          console.log("失败");
-          console.log(err);
-        });
-    },
     //分页方法
     handleCurrentChange(page) {
       var _this = this;
@@ -123,9 +95,8 @@ export default {
       var ps = qs.stringify(this.infopage);
       //   console.log(ps);
       this.axios
-        .get(" http://localhost:9090/returnsale/select?id=1", {
+        .get(" http://localhost:9090/returnsale/before", {
           params: {
-            radio: this.radio,
             page: this.infopage.page,
             size: this.infopage.size,
             like: this.input,
@@ -146,9 +117,8 @@ export default {
       var ps = qs.stringify(this.infopage);
       console.log(ps);
       this.axios
-        .get("http://localhost:9090/returnsale/select?id=1", {
+        .get("http://localhost:9090/returnsale/before", {
           params: {
-            radio: this.radio,
             page: this.infopage.page,
             size: this.infopage.size,
             like: this.input,
@@ -164,31 +134,11 @@ export default {
           console.log(error);
         });
     },
-    //作废
-    del(row) {
-      this.axios
-        .post("http://localhost:9090/returnsale/del", {
-          returnsaleId: row.returnsaleId,
-        })
-        .then((res) => {
-          ElMessage({
-            message: "作废成功",
-            type: "success",
-          });
-          this.shuaxin();
-          console.log(res);
-          this.tableData = res.data.data.records;
-        })
-        .catch(function (error) {
-          console.log("失败");
-          console.log(error);
-        });
-    },
+
     shuaxin() {
       this.axios
-        .get("http://localhost:9090/returnsale/select?id=1", {
+        .get("http://localhost:9090/returnsale/before", {
           params: {
-            radio: this.radio,
             page: this.infopage.page,
             size: this.infopage.size,
             like: this.input,
@@ -204,12 +154,15 @@ export default {
           console.log(error);
         });
     },
+    //入库操作
+    warehouse(row){
+        
+    }
   },
   created() {
     this.axios
-      .get("http://localhost:9090/returnsale/select?id=1", {
+      .get("http://localhost:9090/returnsale/before", {
         params: {
-          radio: this.radio,
           page: this.infopage.page,
           size: this.infopage.size,
           like: this.input,
