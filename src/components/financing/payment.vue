@@ -285,7 +285,7 @@
           </el-form-item>
           <el-form-item>
             <el-button @click="this.become2=false,this.become=true,rest()">取消并返回</el-button>
-            <el-button type="primary" @click="this.become2=false,this.become=true,insertSupplier()"
+            <el-button type="primary" @click="this.become2=false,this.become=true,addSupplier()"
             >保存
             </el-button
             >
@@ -458,10 +458,10 @@ export default defineComponent({
       })
     },
     //添加供应商
-    insertSupplier() {
+    addSupplier() {
       this.axios({
         method: 'post',
-        url: this.url + 'supplier/insertSupplier',
+        url: this.url + 'supplier/addSupplier',
         data: {
           //供应商编号
           supplierSerial:this.ruleForm.id,
@@ -488,6 +488,7 @@ export default defineComponent({
                 message: '添加成功',
                 type: 'success',
               })
+              this.obtainSupplierNumber();
               this.selectSupplier();
               this.selectSupplierPage();
               this.ruleForm={}

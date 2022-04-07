@@ -144,7 +144,7 @@
                 <el-radio
                     :label="scope.$index"
                     v-model="currentRow"
-                    @click="b(scope.row)"
+                    @click="a(scope.row)"
                     style="color: #fff; padding-left: 10px; margin-right: -25px"
                 ></el-radio>
               </template>
@@ -381,6 +381,7 @@ export default defineComponent({
               // 清空表单
               this.resetForm();
               this.obtainSerialNumber();
+              this.queryAllCustomer();
             }
           } else {
             ElMessage({
