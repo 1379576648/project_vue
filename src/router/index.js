@@ -16,10 +16,10 @@ const routes = [
             {path:"/user",component:()=>import('../components/sys/user.vue')},
             {path:"/role",component:()=>import('../components/sys/role.vue')},
             {path:"/menu",component:()=>import('../components/sys/menu.vue')},
+            //应收欠款
             {path:"/financing/debt",component:()=>import('../components/financing/debt.vue')},
+            //应收欠款流水
             {path:"/financing/Balance",component:()=>import('../components/financing/Balance.vue')},
-            {path:"/arrearsPayable", component:()=>import('../components/financing/arrearsPayable.vue')},
-            {path:"/supplierArrearsFlow", component:()=>import('../components/financing/supplierArrearsFlow.vue')},
             // 收款历史
             {path:"/financing/collection",component:()=>import('../components/financing/collection.vue')},
             // 收款详情
