@@ -54,7 +54,15 @@
           <el-table border empty-text="暂无数据" :stripe="true" :data="tableData" ref="tableT"
                     @selection-change="handleSelectionChange" size="small" style="width: 99%;" height="50vh">
 
-        
+            <el-table-column
+                label="序号"
+                width="70px"
+                sortable
+                fixed>
+              <template #default="scope">
+                {{(pageInfo.currentPage - 1) * pageInfo.pageSize + scope.$index + 1}}
+              </template>
+            </el-table-column>
             <el-table-column prop="commodityId" label="商品编号" width="100" sortable fixed   :sort-by="['commodityId', 'address']">
             </el-table-column>
             <el-table-column prop="commodityName" label="商品名称" width="100" sortable fixed>
@@ -138,7 +146,16 @@
     <span style="margin-bottom: 10px">{{commodityName}}</span><br>
     <span>商品编号：</span><span>{{commodityId}}</span> <span style="margin-left: 20px">商品单位  </span><span>{{commodityCompany}}</span><br>
     <el-table :data="tableData1" border style="width: 100%">
-      <el-table-column prop="stockId" label="序号" width="80"/>
+      <el-table-column
+          label="序号"
+          width="70px"
+          sortable
+          fixed>
+        <template #default="scope">
+          {{(pageInfo1.currentPage - 1) * pageInfo1.pageSize + scope.$index + 1}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="stockId" label="编号" width="80"/>
       <el-table-column prop="stockName" label="仓库名称" width="100"/>
       <el-table-column prop="staylnstock" label="代入库数量" width="100"/>
       <el-table-column prop="stayoutstock" label="代出库数量" width="100"/>
